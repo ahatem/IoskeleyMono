@@ -222,3 +222,49 @@ essRatioLower = 1.03
 essRatioQuestion = 1.03
 archDepth = 152
 smallArchDepth = 157
+
+
+# ============================================================
+# IOSKELEY MONO TERM
+# Identical to Ioskeley Mono, but with spacing appropriate for
+# terminal emulators.
+# ============================================================
+
+[buildPlans.IoskeleyMonoTerm]
+family = "Ioskeley Mono Term"
+spacing = "term"
+serifs = "sans"
+noCvSs = true
+exportGlyphNames = false
+
+[buildPlans.IoskeleyMonoTerm.variants]
+inherits = "buildPlans.IoskeleyMono"
+[buildPlans.IoskeleyMonoTerm.weights]
+inherits = "buildPlans.IoskeleyMono"
+[buildPlans.IoskeleyMonoTerm.widths]
+inherits = "buildPlans.IoskeleyMono"
+[buildPlans.IoskeleyMonoTerm.slopes]
+inherits = "buildPlans.IoskeleyMono"
+
+[buildPlans.IoskeleyMonoTerm.metricOverride]
+xHeight = 520
+cap = 690
+ascender = 740
+sb = 85
+
+accentWidth = 182
+accentClearance = 76
+accentHeight = 162
+accentStackOffset = 208
+
+leading = 1250
+parenSize = 860
+dotSize = 'blend(weight, [100, 110], [400, 125], [900, 150])'
+periodSize = 140
+
+essRatio = 1.03
+essRatioUpper = 1.03
+essRatioLower = 1.03
+essRatioQuestion = 1.03
+archDepth = 152
+smallArchDepth = 157

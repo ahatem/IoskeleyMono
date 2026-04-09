@@ -28,11 +28,11 @@ Download the latest release from the [Releases page](https://github.com/ahatem/I
 
 **Step 1 — Pick your use case:**
 
-| I want to… | Download |
-|---|---|
-| Use it in my editor / IDE | A TTF zip |
-| Use it in my terminal with icons | A Nerd Font zip |
-| Use it on the web | `IoskeleyMono-Web.zip` |
+| I want to…                       | Download                              |
+|----------------------------------|---------------------------------------|
+| Use it in my editor / IDE        | A TTF zip                             |
+| Use it in my terminal with icons | A Nerd Font zip of Ioskeley Mono Term |
+| Use it on the web                | `IoskeleyMono-Web.zip`                |
 
 **Step 2 — Pick your width:**
 
@@ -88,6 +88,12 @@ For the full list of configuration choices, see [`private-build-plans.toml`](./p
 
 ---
 
+## Ioskeley Mono Term
+
+This is a variant of Ioskeley Mono tuned for terminal emulators. It has narrower arrows and geometric symbols.
+
+---
+
 ## Building from Source
 
 The font is built automatically via GitHub Actions on every version tag push. To build locally:
@@ -104,6 +110,14 @@ npm run build -- contents::IoskeleyMono
 
 Output will be in `Iosevka/dist/IoskeleyMono/`.
 
+To build the terminal variant afterward:
+
+```bash
+npm run build -- contents::IoskeleyMonoTerm
+```
+
+Output will be in `Iosevka/dist/IoskeleyMonoTerm/`.
+
 ---
 
 ## Contributing
@@ -114,6 +128,6 @@ This project is just a build configuration on top of Iosevka — changes are oft
 
 ## License & Credits
 
-Ioskeley Mono is a custom configuration of [Iosevka](https://github.com/be5invis/Iosevka). All credit for the original design and build system goes to [Belleve Invis](https://github.com/be5invis) and the Iosevka contributors.
+Ioskeley Mono and Ioskeley Mono Term are a custom configuration of [Iosevka](https://github.com/be5invis/Iosevka). All credit for the original design and build system goes to [Belleve Invis](https://github.com/be5invis) and the Iosevka contributors.
 
 Licensed under the [SIL Open Font License 1.1](./LICENSE).
