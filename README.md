@@ -18,40 +18,55 @@ The name is a mashup: **Iosevka** + **Berkeley** = **Ioskeley**.
 
 ![Ioskeley Mono in Action](assets/InAction.png)
 
+> Theme: [Kanagawa Dragon Theme](https://plugins.jetbrains.com/plugin/27101-kanagawa-dragon-theme)
 ---
 
 ## Installation
 
 Download the latest release from the [Releases page](https://github.com/ahatem/IoskeleyMono/releases).
 
-### Which file should I download?
+### Which file do I need?
 
-**Step 1 — Pick your use case:**
-
-| I want to… | Download |
+| Situation | Download |
 |---|---|
-| Use it in my editor / IDE | A TTF zip |
-| Use it in my terminal with icons | A Nerd Font zip |
-| Use it on the web | `IoskeleyMono-Web.zip` |
+| Editor or IDE (VS Code, JetBrains, Zed…) | `IoskeleyMono.zip` |
+| Terminal with icons (Neovim, Starship…) | `IoskeleyMono-NerdFont.zip` |
+| Arrows or box-drawing look wrong in my terminal | `IoskeleyMono-Term.zip` |
+| Terminal with icons _and_ rendering issues | `IoskeleyMono-Term-NerdFont.zip` |
+| Web / CSS (`@font-face`) | `IoskeleyMono-Web.zip` |
 
-**Step 2 — Pick your width:**
+> **Not sure?** Start with `IoskeleyMono.zip`.
 
-| Width | Best for |
-|---|---|
-| `Normal` | Default — works everywhere |
-| `SemiCondensed` | More columns without sacrificing readability |
-| `Condensed` | Maximum density |
+### What's inside each TTF zip?
 
-> Not sure? Start with **Normal**.
+Every TTF zip contains all three widths, each with hinted and unhinted variants:
+
+```
+Normal/
+  Hinted/    ← standard-DPI screens (most Windows setups)
+  Unhinted/  ← high-DPI / Retina (macOS, Linux HiDPI)
+SemiCondensed/
+  Hinted/
+  Unhinted/
+Condensed/
+  Hinted/
+  Unhinted/
+```
+
+Install all fonts in your chosen folder — your OS will expose the full weight axis (Thin → Black) automatically. Start with `Normal/` if you're unsure which width you prefer.
 
 ### Installing the fonts
 
 1. Download and unzip your chosen file
-2. Select all `.ttf` files inside
-3. Install on your system:
+2. Open the width and hint folder that matches your setup
+3. Select all `.ttf` files and install:
    - **macOS** — double-click any font → Install Font, or drag all into Font Book
-   - **Windows** — select all → right-click → Install
+   - **Windows** — select all → right-click → Install for all users
    - **Linux** — copy to `~/.local/share/fonts/` then run `fc-cache -fv`
+
+### About the Term variant
+
+`Ioskeley Mono Term` uses `spacing = "term"`, which constrains every glyph to its cell boundary. Use it if arrows (`→ ← ↑ ↓`), box-drawing characters, or ligatures render incorrectly in your terminal (known affected: kitty, Ghostty). The glyph design is identical to the standard variant — it's purely a spacing change.
 
 ---
 
@@ -72,7 +87,7 @@ Ioskeley Mono matches Berkeley Mono's full weight axis across all widths:
 | ExtraBold | 800 |
 | Black | 900 |
 
-Every weight is available in both **Upright** and **Italic**.
+Every weight is available in all three widths, both Upright and Italic.
 
 ---
 
@@ -99,10 +114,10 @@ git clone --depth 1 https://github.com/be5invis/Iosevka.git
 cp IoskeleyMono/private-build-plans.toml Iosevka/
 cd Iosevka
 npm install
-npm run build -- contents::IoskeleyMono
+npm run build -- contents::IoskeleyMono contents::IoskeleyMonoTerm
 ```
 
-Output will be in `Iosevka/dist/IoskeleyMono/`.
+Output will be in `Iosevka/dist/IoskeleyMono/` and `Iosevka/dist/IoskeleyMonoTerm/`.
 
 ---
 

@@ -45,12 +45,16 @@ jobs:
           cp private-build-plans.toml iosevka-src/
           cd iosevka-src
           npm install
-          npm run build -- contents::IoskeleyMono
+          npm run build -- contents::IoskeleyMono contents::IoskeleyMonoTerm
 
       - name: Verify build output
         run: |
           if [ ! -d "iosevka-src/dist/IoskeleyMono/TTF" ] || [ ! -d "iosevka-src/dist/IoskeleyMono/WOFF2" ]; then
-            echo "Build output directories not found!"
+            echo "IoskeleyMono build output not found!"
+            exit 1
+          fi
+          if [ ! -d "iosevka-src/dist/IoskeleyMonoTerm/TTF" ]; then
+            echo "IoskeleyMonoTerm build output not found!"
             exit 1
           fi
 
@@ -68,7 +72,9 @@ jobs:
       - name: Patch fonts with Nerd Font glyphs
         run: |
           mkdir -p patched-fonts/Normal patched-fonts/SemiCondensed patched-fonts/Condensed
+          mkdir -p patched-fonts-term/Normal patched-fonts-term/SemiCondensed patched-fonts-term/Condensed
           DIST="iosevka-src/dist/IoskeleyMono/TTF"
+          DIST_TERM="iosevka-src/dist/IoskeleyMonoTerm/TTF"
           PATCHER="nerd-fonts-patcher/font-patcher"
 
           for font in "$DIST"/IoskeleyMono-SemiCondensed*.ttf; do
@@ -85,46 +91,68 @@ jobs:
             fontforge -script "$PATCHER" "$font" --complete --careful --outputdir patched-fonts/Normal
           done
 
-      - name: Package TTF archives per width
+          for font in "$DIST_TERM"/IoskeleyMonoTerm-SemiCondensed*.ttf; do
+            fontforge -script "$PATCHER" "$font" --complete --careful --outputdir patched-fonts-term/SemiCondensed
+          done
+
+          for font in "$DIST_TERM"/IoskeleyMonoTerm-Condensed*.ttf; do
+            [[ "$font" == *SemiCondensed* ]] && continue
+            fontforge -script "$PATCHER" "$font" --complete --careful --outputdir patched-fonts-term/Condensed
+          done
+
+          for font in "$DIST_TERM"/IoskeleyMonoTerm-*.ttf; do
+            [[ "$font" == *Condensed* ]] && continue
+            fontforge -script "$PATCHER" "$font" --complete --careful --outputdir patched-fonts-term/Normal
+          done
+
+      - name: Package release archives
         run: |
           DIST="iosevka-src/dist/IoskeleyMono"
-          mkdir -p pkg-ttf/Normal/Hinted pkg-ttf/Normal/Unhinted
-          mkdir -p pkg-ttf/SemiCondensed/Hinted pkg-ttf/SemiCondensed/Unhinted
-          mkdir -p pkg-ttf/Condensed/Hinted pkg-ttf/Condensed/Unhinted
+          DIST_TERM="iosevka-src/dist/IoskeleyMonoTerm"
 
-          # SemiCondensed
-          cp "$DIST"/TTF/IoskeleyMono-SemiCondensed*.ttf pkg-ttf/SemiCondensed/Hinted/
-          cp "$DIST"/TTF-Unhinted/IoskeleyMono-SemiCondensed*.ttf pkg-ttf/SemiCondensed/Unhinted/
+          # ── IoskeleyMono.zip — all widths, TTF hinted + unhinted ──────────
+          mkdir -p pkg/Normal/Hinted      pkg/Normal/Unhinted
+          mkdir -p pkg/SemiCondensed/Hinted pkg/SemiCondensed/Unhinted
+          mkdir -p pkg/Condensed/Hinted   pkg/Condensed/Unhinted
 
-          # Condensed
-          for font in "$DIST"/TTF/IoskeleyMono-Condensed*.ttf; do
-            [[ "$font" == *SemiCondensed* ]] && continue
-            cp "$font" pkg-ttf/Condensed/Hinted/
-          done
-          for font in "$DIST"/TTF-Unhinted/IoskeleyMono-Condensed*.ttf; do
-            [[ "$font" == *SemiCondensed* ]] && continue
-            cp "$font" pkg-ttf/Condensed/Unhinted/
-          done
+          cp "$DIST"/TTF/IoskeleyMono-SemiCondensed*.ttf          pkg/SemiCondensed/Hinted/
+          cp "$DIST"/TTF-Unhinted/IoskeleyMono-SemiCondensed*.ttf pkg/SemiCondensed/Unhinted/
 
-          # Normal
-          for font in "$DIST"/TTF/IoskeleyMono-*.ttf; do
-            [[ "$font" == *Condensed* ]] && continue
-            cp "$font" pkg-ttf/Normal/Hinted/
-          done
-          for font in "$DIST"/TTF-Unhinted/IoskeleyMono-*.ttf; do
-            [[ "$font" == *Condensed* ]] && continue
-            cp "$font" pkg-ttf/Normal/Unhinted/
-          done
+          for f in "$DIST"/TTF/IoskeleyMono-Condensed*.ttf;          do [[ "$f" == *SemiCondensed* ]] && continue; cp "$f" pkg/Condensed/Hinted/;    done
+          for f in "$DIST"/TTF-Unhinted/IoskeleyMono-Condensed*.ttf; do [[ "$f" == *SemiCondensed* ]] && continue; cp "$f" pkg/Condensed/Unhinted/;  done
+          for f in "$DIST"/TTF/IoskeleyMono-*.ttf;                   do [[ "$f" == *Condensed* ]]     && continue; cp "$f" pkg/Normal/Hinted/;        done
+          for f in "$DIST"/TTF-Unhinted/IoskeleyMono-*.ttf;          do [[ "$f" == *Condensed* ]]     && continue; cp "$f" pkg/Normal/Unhinted/;      done
 
-          cd pkg-ttf/Normal && zip -r ../../IoskeleyMono-Normal.zip . && cd ../..
-          cd pkg-ttf/SemiCondensed && zip -r ../../IoskeleyMono-SemiCondensed.zip . && cd ../..
-          cd pkg-ttf/Condensed && zip -r ../../IoskeleyMono-Condensed.zip . && cd ../..
+          cd pkg && zip -r ../IoskeleyMono.zip . && cd ..
 
-      - name: Package Nerd Font archives per width
-        run: |
-          cd patched-fonts/Normal && zip -r ../../IoskeleyMono-NerdFont-Normal.zip . && cd ../..
-          cd patched-fonts/SemiCondensed && zip -r ../../IoskeleyMono-NerdFont-SemiCondensed.zip . && cd ../..
-          cd patched-fonts/Condensed && zip -r ../../IoskeleyMono-NerdFont-Condensed.zip . && cd ../..
+          # ── IoskeleyMono-NerdFont.zip — all widths, Nerd Font patched ─────
+          mkdir -p pkg-nf/Normal pkg-nf/SemiCondensed pkg-nf/Condensed
+          cp patched-fonts/Normal/*.ttf         pkg-nf/Normal/
+          cp patched-fonts/SemiCondensed/*.ttf  pkg-nf/SemiCondensed/
+          cp patched-fonts/Condensed/*.ttf      pkg-nf/Condensed/
+          cd pkg-nf && zip -r ../IoskeleyMono-NerdFont.zip . && cd ..
+
+          # ── IoskeleyMono-Term.zip — all widths, term spacing ──────────────
+          mkdir -p pkg-term/Normal/Hinted      pkg-term/Normal/Unhinted
+          mkdir -p pkg-term/SemiCondensed/Hinted pkg-term/SemiCondensed/Unhinted
+          mkdir -p pkg-term/Condensed/Hinted   pkg-term/Condensed/Unhinted
+
+          cp "$DIST_TERM"/TTF/IoskeleyMonoTerm-SemiCondensed*.ttf          pkg-term/SemiCondensed/Hinted/
+          cp "$DIST_TERM"/TTF-Unhinted/IoskeleyMonoTerm-SemiCondensed*.ttf pkg-term/SemiCondensed/Unhinted/
+
+          for f in "$DIST_TERM"/TTF/IoskeleyMonoTerm-Condensed*.ttf;          do [[ "$f" == *SemiCondensed* ]] && continue; cp "$f" pkg-term/Condensed/Hinted/;   done
+          for f in "$DIST_TERM"/TTF-Unhinted/IoskeleyMonoTerm-Condensed*.ttf; do [[ "$f" == *SemiCondensed* ]] && continue; cp "$f" pkg-term/Condensed/Unhinted/; done
+          for f in "$DIST_TERM"/TTF/IoskeleyMonoTerm-*.ttf;                   do [[ "$f" == *Condensed* ]]     && continue; cp "$f" pkg-term/Normal/Hinted/;       done
+          for f in "$DIST_TERM"/TTF-Unhinted/IoskeleyMonoTerm-*.ttf;          do [[ "$f" == *Condensed* ]]     && continue; cp "$f" pkg-term/Normal/Unhinted/;     done
+
+          cd pkg-term && zip -r ../IoskeleyMono-Term.zip . && cd ..
+
+          # ── IoskeleyMono-Term-NerdFont.zip — term spacing + Nerd Font ─────
+          mkdir -p pkg-term-nf/Normal pkg-term-nf/SemiCondensed pkg-term-nf/Condensed
+          cp patched-fonts-term/Normal/*.ttf         pkg-term-nf/Normal/
+          cp patched-fonts-term/SemiCondensed/*.ttf  pkg-term-nf/SemiCondensed/
+          cp patched-fonts-term/Condensed/*.ttf      pkg-term-nf/Condensed/
+          cd pkg-term-nf && zip -r ../IoskeleyMono-Term-NerdFont.zip . && cd ..
 
       - name: Package Web archive
         run: |
@@ -148,28 +176,55 @@ jobs:
           body: |
             ## Ioskeley Mono ${{ steps.vars.outputs.tag }}
 
-            **For Desktop Users:**
-            - `IoskeleyMono-Normal.zip` — Normal width, all 10 weights. Best starting point for most users.
-            - `IoskeleyMono-SemiCondensed.zip` — Slightly narrower. Great for fitting more code on screen.
-            - `IoskeleyMono-Condensed.zip` — Maximum density. Each zip includes a `Hinted/` and `Unhinted/` folder — use Hinted on standard screens, Unhinted on high-DPI/Retina.
-
-            **For Terminal Users (Nerd Font):**
-            - `IoskeleyMono-NerdFont-Normal.zip` — Normal width, patched with the full Nerd Font glyph set.
-            - `IoskeleyMono-NerdFont-SemiCondensed.zip` — Semi Condensed, Nerd Font patched.
-            - `IoskeleyMono-NerdFont-Condensed.zip` — Condensed, Nerd Font patched.
-
-            **For Web Developers:**
-            - `IoskeleyMono-Web.zip` — All WOFF2 files, hinted and unhinted, all widths and weights.
+            A free, open-source alternative to [Berkeley Mono](https://berkeleygraphics.com/typefaces/berkeley-mono/) — built on [Iosevka](https://github.com/be5invis/Iosevka).
+            10 weights · 3 widths · Upright & Italic · Nerd Font patched
 
             ---
-            Got a bug or idea? PRs and issues are welcome — this is just a config on top of Iosevka, easy to contribute. 🙌
+
+            ### Which file do I need?
+
+            | Situation | Download |
+            |---|---|
+            | Editor / IDE (VS Code, JetBrains, Zed…) | `IoskeleyMono.zip` |
+            | Terminal with icons (Neovim, Starship…) | `IoskeleyMono-NerdFont.zip` |
+            | Arrows or box-drawing look wrong in my terminal | `IoskeleyMono-Term.zip` |
+            | Terminal with icons _and_ rendering issues | `IoskeleyMono-Term-NerdFont.zip` |
+            | Web / CSS (`@font-face`) | `IoskeleyMono-Web.zip` |
+
+            > **Not sure?** Download `IoskeleyMono.zip` and start with the `Normal/Hinted/` folder.
+
+            ---
+
+            ### Inside each TTF zip
+
+            ```
+            Normal/
+              Hinted/    ← standard-DPI screens (most Windows setups)
+              Unhinted/  ← high-DPI / Retina (macOS, Linux HiDPI)
+            SemiCondensed/
+              Hinted/
+              Unhinted/
+            Condensed/
+              Hinted/
+              Unhinted/
+            ```
+
+            Install all fonts in your chosen folder — your OS will expose the full weight axis (Thin → Black) automatically.
+
+            ---
+
+            ### About the Term variant
+
+            `IoskeleyMono-Term` uses `spacing = "term"`, which constrains every glyph to its cell boundary. Use it if arrows (`→ ← ↑ ↓`), box-drawing characters, or ligatures render incorrectly in your terminal emulator (known affected: kitty, Ghostty). The glyph design is identical to the standard variant.
+
+            ---
+
+            Found a bug or have an idea? This is just a config on top of Iosevka — PRs and issues are welcome.
           files: |
-            IoskeleyMono-Normal.zip
-            IoskeleyMono-SemiCondensed.zip
-            IoskeleyMono-Condensed.zip
-            IoskeleyMono-NerdFont-Normal.zip
-            IoskeleyMono-NerdFont-SemiCondensed.zip
-            IoskeleyMono-NerdFont-Condensed.zip
+            IoskeleyMono.zip
+            IoskeleyMono-NerdFont.zip
+            IoskeleyMono-Term.zip
+            IoskeleyMono-Term-NerdFont.zip
             IoskeleyMono-Web.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
