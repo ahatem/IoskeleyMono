@@ -173,6 +173,7 @@ jobs:
         with:
           tag_name: ${{ steps.vars.outputs.tag }}
           name: "Ioskeley Mono ${{ steps.vars.outputs.tag }}"
+          draft: ${{ github.event_name == 'workflow_dispatch' }}
           body: |
             ## Ioskeley Mono ${{ steps.vars.outputs.tag }}
 
