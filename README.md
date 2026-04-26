@@ -33,6 +33,8 @@ Download the latest release from the [Releases page](https://github.com/ahatem/I
 | Terminal with icons (Neovim, Starship…) | `IoskeleyMono-NerdFont.zip` |
 | Arrows or box-drawing look wrong in my terminal | `IoskeleyMono-Term.zip` |
 | Terminal with icons _and_ rendering issues | `IoskeleyMono-Term-NerdFont.zip` |
+| App that can't disable ligatures (Xcode…) | `IoskeleyMono-NL.zip` |
+| Same, but also need Nerd Font icons | `IoskeleyMono-NL-NerdFont.zip` |
 | Web / CSS (`@font-face`) | `IoskeleyMono-Web.zip` |
 
 > **Not sure?** Start with `IoskeleyMono.zip`.
@@ -67,6 +69,10 @@ Install all fonts in your chosen folder — your OS will expose the full weight 
 ### About the Term variant
 
 `Ioskeley Mono Term` uses `spacing = "term"`, which constrains every glyph to its cell boundary. Use it if arrows (`→ ← ↑ ↓`), box-drawing characters, or ligatures render incorrectly in your terminal (known affected: kitty, Ghostty). The glyph design is identical to the standard variant — it's purely a spacing change.
+
+### About the NL variant
+
+`Ioskeley Mono NL` has all ligature substitutions disabled. Use it in apps that can't toggle ligatures off themselves (e.g. Xcode). Everything else — weights, widths, glyph shapes, metrics — is identical to the standard variant.
 
 ---
 

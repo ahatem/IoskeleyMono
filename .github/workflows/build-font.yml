@@ -45,7 +45,7 @@ jobs:
           cp private-build-plans.toml iosevka-src/
           cd iosevka-src
           npm install
-          npm run build -- contents::IoskeleyMono contents::IoskeleyMonoTerm
+          npm run build -- contents::IoskeleyMono contents::IoskeleyMonoTerm contents::IoskeleyMonoNL
 
       - name: Verify build output
         run: |
@@ -55,6 +55,10 @@ jobs:
           fi
           if [ ! -d "iosevka-src/dist/IoskeleyMonoTerm/TTF" ]; then
             echo "IoskeleyMonoTerm build output not found!"
+            exit 1
+          fi
+          if [ ! -d "iosevka-src/dist/IoskeleyMonoNL/TTF" ]; then
+            echo "IoskeleyMonoNL build output not found!"
             exit 1
           fi
 
@@ -73,8 +77,10 @@ jobs:
         run: |
           mkdir -p patched-fonts/Normal patched-fonts/SemiCondensed patched-fonts/Condensed
           mkdir -p patched-fonts-term/Normal patched-fonts-term/SemiCondensed patched-fonts-term/Condensed
+          mkdir -p patched-fonts-nl/Normal patched-fonts-nl/SemiCondensed patched-fonts-nl/Condensed
           DIST="iosevka-src/dist/IoskeleyMono/TTF"
           DIST_TERM="iosevka-src/dist/IoskeleyMonoTerm/TTF"
+          DIST_NL="iosevka-src/dist/IoskeleyMonoNL/TTF"
           PATCHER="nerd-fonts-patcher/font-patcher"
 
           for font in "$DIST"/IoskeleyMono-SemiCondensed*.ttf; do
@@ -103,6 +109,20 @@ jobs:
           for font in "$DIST_TERM"/IoskeleyMonoTerm-*.ttf; do
             [[ "$font" == *Condensed* ]] && continue
             fontforge -script "$PATCHER" "$font" --complete --careful --outputdir patched-fonts-term/Normal
+          done
+
+          for font in "$DIST_NL"/IoskeleyMonoNL-SemiCondensed*.ttf; do
+            fontforge -script "$PATCHER" "$font" --complete --careful --outputdir patched-fonts-nl/SemiCondensed
+          done
+
+          for font in "$DIST_NL"/IoskeleyMonoNL-Condensed*.ttf; do
+            [[ "$font" == *SemiCondensed* ]] && continue
+            fontforge -script "$PATCHER" "$font" --complete --careful --outputdir patched-fonts-nl/Condensed
+          done
+
+          for font in "$DIST_NL"/IoskeleyMonoNL-*.ttf; do
+            [[ "$font" == *Condensed* ]] && continue
+            fontforge -script "$PATCHER" "$font" --complete --careful --outputdir patched-fonts-nl/Normal
           done
 
       - name: Package release archives
@@ -147,12 +167,35 @@ jobs:
 
           cd pkg-term && zip -r ../IoskeleyMono-Term.zip . && cd ..
 
+          # ── IoskeleyMono-NL.zip — all widths, no ligatures ────────────────
+          DIST_NL="iosevka-src/dist/IoskeleyMonoNL"
+          mkdir -p pkg-nl/Normal/Hinted      pkg-nl/Normal/Unhinted
+          mkdir -p pkg-nl/SemiCondensed/Hinted pkg-nl/SemiCondensed/Unhinted
+          mkdir -p pkg-nl/Condensed/Hinted   pkg-nl/Condensed/Unhinted
+
+          cp "$DIST_NL"/TTF/IoskeleyMonoNL-SemiCondensed*.ttf          pkg-nl/SemiCondensed/Hinted/
+          cp "$DIST_NL"/TTF-Unhinted/IoskeleyMonoNL-SemiCondensed*.ttf pkg-nl/SemiCondensed/Unhinted/
+
+          for f in "$DIST_NL"/TTF/IoskeleyMonoNL-Condensed*.ttf;          do [[ "$f" == *SemiCondensed* ]] && continue; cp "$f" pkg-nl/Condensed/Hinted/;   done
+          for f in "$DIST_NL"/TTF-Unhinted/IoskeleyMonoNL-Condensed*.ttf; do [[ "$f" == *SemiCondensed* ]] && continue; cp "$f" pkg-nl/Condensed/Unhinted/; done
+          for f in "$DIST_NL"/TTF/IoskeleyMonoNL-*.ttf;                   do [[ "$f" == *Condensed* ]]     && continue; cp "$f" pkg-nl/Normal/Hinted/;       done
+          for f in "$DIST_NL"/TTF-Unhinted/IoskeleyMonoNL-*.ttf;          do [[ "$f" == *Condensed* ]]     && continue; cp "$f" pkg-nl/Normal/Unhinted/;     done
+
+          cd pkg-nl && zip -r ../IoskeleyMono-NL.zip . && cd ..
+
           # ── IoskeleyMono-Term-NerdFont.zip — term spacing + Nerd Font ─────
           mkdir -p pkg-term-nf/Normal pkg-term-nf/SemiCondensed pkg-term-nf/Condensed
           cp patched-fonts-term/Normal/*.ttf         pkg-term-nf/Normal/
           cp patched-fonts-term/SemiCondensed/*.ttf  pkg-term-nf/SemiCondensed/
           cp patched-fonts-term/Condensed/*.ttf      pkg-term-nf/Condensed/
           cd pkg-term-nf && zip -r ../IoskeleyMono-Term-NerdFont.zip . && cd ..
+
+          # ── IoskeleyMono-NL-NerdFont.zip — no ligatures + Nerd Font ───────
+          mkdir -p pkg-nl-nf/Normal pkg-nl-nf/SemiCondensed pkg-nl-nf/Condensed
+          cp patched-fonts-nl/Normal/*.ttf         pkg-nl-nf/Normal/
+          cp patched-fonts-nl/SemiCondensed/*.ttf  pkg-nl-nf/SemiCondensed/
+          cp patched-fonts-nl/Condensed/*.ttf      pkg-nl-nf/Condensed/
+          cd pkg-nl-nf && zip -r ../IoskeleyMono-NL-NerdFont.zip . && cd ..
 
       - name: Package Web archive
         run: |
@@ -177,55 +220,30 @@ jobs:
           body: |
             ## Ioskeley Mono ${{ steps.vars.outputs.tag }}
 
-            A free, open-source alternative to [Berkeley Mono](https://berkeleygraphics.com/typefaces/berkeley-mono/) — built on [Iosevka](https://github.com/be5invis/Iosevka).
-            10 weights · 3 widths · Upright & Italic · Nerd Font patched
+            <!-- What's new in this release -->
 
             ---
 
-            ### Which file do I need?
+            ### Downloads
 
             | Situation | Download |
             |---|---|
-            | Editor / IDE (VS Code, JetBrains, Zed…) | `IoskeleyMono.zip` |
-            | Terminal with icons (Neovim, Starship…) | `IoskeleyMono-NerdFont.zip` |
-            | Arrows or box-drawing look wrong in my terminal | `IoskeleyMono-Term.zip` |
-            | Terminal with icons _and_ rendering issues | `IoskeleyMono-Term-NerdFont.zip` |
-            | Web / CSS (`@font-face`) | `IoskeleyMono-Web.zip` |
+            | Editor / IDE | `IoskeleyMono.zip` |
+            | Terminal with icons | `IoskeleyMono-NerdFont.zip` |
+            | Terminal rendering issues | `IoskeleyMono-Term.zip` |
+            | Terminal icons + rendering issues | `IoskeleyMono-Term-NerdFont.zip` |
+            | App that can't disable ligatures | `IoskeleyMono-NL.zip` |
+            | Same + Nerd Font icons | `IoskeleyMono-NL-NerdFont.zip` |
+            | Web | `IoskeleyMono-Web.zip` |
 
-            > **Not sure?** Download `IoskeleyMono.zip` and start with the `Normal/Hinted/` folder.
-
-            ---
-
-            ### Inside each TTF zip
-
-            ```
-            Normal/
-              Hinted/    ← standard-DPI screens (most Windows setups)
-              Unhinted/  ← high-DPI / Retina (macOS, Linux HiDPI)
-            SemiCondensed/
-              Hinted/
-              Unhinted/
-            Condensed/
-              Hinted/
-              Unhinted/
-            ```
-
-            Install all fonts in your chosen folder — your OS will expose the full weight axis (Thin → Black) automatically.
-
-            ---
-
-            ### About the Term variant
-
-            `IoskeleyMono-Term` uses `spacing = "term"`, which constrains every glyph to its cell boundary. Use it if arrows (`→ ← ↑ ↓`), box-drawing characters, or ligatures render incorrectly in your terminal emulator (known affected: kitty, Ghostty). The glyph design is identical to the standard variant.
-
-            ---
-
-            Found a bug or have an idea? This is just a config on top of Iosevka — PRs and issues are welcome.
+            Not sure which to pick? [See the README](https://github.com/ahatem/IoskeleyMono#which-file-do-i-need).
           files: |
             IoskeleyMono.zip
             IoskeleyMono-NerdFont.zip
             IoskeleyMono-Term.zip
             IoskeleyMono-Term-NerdFont.zip
+            IoskeleyMono-NL.zip
+            IoskeleyMono-NL-NerdFont.zip
             IoskeleyMono-Web.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
