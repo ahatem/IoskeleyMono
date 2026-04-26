@@ -133,6 +133,14 @@ This project is just a build configuration on top of Iosevka — changes are oft
 
 ---
 
+## Support
+
+If Ioskeley Mono saves you money on a font license, consider buying me a coffee — it keeps the project going!
+
+[![Buy Me a Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ahmedhatem-FFDD00?style=flat&logo=buy-me-a-coffee&logoColor=black)](https://www.buymeacoffee.com/ahmedhatem)
+
+---
+
 ## License & Credits
 
 Ioskeley Mono is a custom configuration of [Iosevka](https://github.com/be5invis/Iosevka). All credit for the original design and build system goes to [Belleve Invis](https://github.com/be5invis) and the Iosevka contributors.
