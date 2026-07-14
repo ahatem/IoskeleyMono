@@ -41,7 +41,7 @@
     <p class="tagline">
       A free, open-source monospace font crafted to match Berkeley Mono's aesthetic.
       Built by configuring <a href="https://github.com/be5invis/Iosevka" target="_blank" rel="noopener">Iosevka</a>.
-      Three widths, ten weights, italic variants, and Nerd Font support.
+      Three widths, ten weights, italic variants, Nerd Font support, and a quasi-proportional reading variant.
       <strong>Iosevka + Berkeley = Ioskeley</strong>.
     </p>
 
@@ -130,7 +130,9 @@
 
   <!-- Download -->
   <h2 id="download">Download</h2>
-  <p>Not sure which file? Start with <strong>IoskeleyMono.zip</strong>.</p>
+  <p>Not sure which file? Start with <strong>IoskeleyMono.zip</strong> for coding, or <strong>IoskeleySans.zip</strong> for note-taking.</p>
+  
+  <h3 style="margin-top: 1.5rem; margin-bottom: 0.5rem;">1. Monospace Variants (Coding &amp; Terminals)</h3>
   <table class="dl-table">
     <thead>
       <tr><th>File</th><th>Best for</th><th style="text-align:center">Downloads</th><th></th></tr>
@@ -177,6 +179,45 @@
         <td>Web / CSS — WOFF2 for <kbd>@font-face</kbd></td>
         <td class="dl-cell" data-zip="IoskeleyMono-Web.zip"><span class="dl-num">—</span><span class="dl-fill"></span></td>
         <td><a href="https://github.com/ahatem/IoskeleyMono/releases/download/v2.0.0/IoskeleyMono-Web.zip" target="_blank" rel="noopener">Download →</a></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3 style="margin-top: 2rem; margin-bottom: 0.5rem;">2. Quasi-Proportional Variants (Notes, Prose &amp; UI)</h3>
+  <table class="dl-table">
+    <thead>
+      <tr><th>File</th><th>Best for</th><th style="text-align:center">Downloads</th><th></th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>IoskeleySans.zip</td>
+        <td>Prose, note-taking, or writing — Obsidian, Typora, Notion</td>
+        <td class="dl-cell" data-zip="IoskeleySans.zip"><span class="dl-num">—</span><span class="dl-fill"></span></td>
+        <td><a href="https://github.com/ahatem/IoskeleyMono/releases/download/v2.0.0/IoskeleySans.zip" target="_blank" rel="noopener">Download →</a></td>
+      </tr>
+      <tr>
+        <td>IoskeleySans-NerdFont.zip</td>
+        <td>Proportional writing with Nerd Font icons</td>
+        <td class="dl-cell" data-zip="IoskeleySans-NerdFont.zip"><span class="dl-num">—</span><span class="dl-fill"></span></td>
+        <td><a href="https://github.com/ahatem/IoskeleyMono/releases/download/v2.0.0/IoskeleySans-NerdFont.zip" target="_blank" rel="noopener">Download →</a></td>
+      </tr>
+      <tr>
+        <td>IoskeleySans-NL.zip</td>
+        <td>Proportional apps that can't disable ligatures</td>
+        <td class="dl-cell" data-zip="IoskeleySans-NL.zip"><span class="dl-num">—</span><span class="dl-fill"></span></td>
+        <td><a href="https://github.com/ahatem/IoskeleyMono/releases/download/v2.0.0/IoskeleySans-NL.zip" target="_blank" rel="noopener">Download →</a></td>
+      </tr>
+      <tr>
+        <td>IoskeleySans-NL-NerdFont.zip</td>
+        <td>Same, with Nerd Font icons</td>
+        <td class="dl-cell" data-zip="IoskeleySans-NL-NerdFont.zip"><span class="dl-num">—</span><span class="dl-fill"></span></td>
+        <td><a href="https://github.com/ahatem/IoskeleyMono/releases/download/v2.0.0/IoskeleySans-NL-NerdFont.zip" target="_blank" rel="noopener">Download →</a></td>
+      </tr>
+      <tr>
+        <td>IoskeleySans-Web.zip</td>
+        <td>Web / CSS — WOFF2 for proportional layout</td>
+        <td class="dl-cell" data-zip="IoskeleySans-Web.zip"><span class="dl-num">—</span><span class="dl-fill"></span></td>
+        <td><a href="https://github.com/ahatem/IoskeleyMono/releases/download/v2.0.0/IoskeleySans-Web.zip" target="_blank" rel="noopener">Download →</a></td>
       </tr>
     </tbody>
   </table>
@@ -347,6 +388,18 @@ How vexingly quick daft zebras jump!
       </div>
     </details>
     <details>
+      <summary>What is the Sans variant?</summary>
+      <div class="rel-notes">
+        <p><code>Ioskeley Sans</code> uses <code>spacing = "quasi-proportional"</code>. Unlike standard monospace fonts where every letter occupies the exact same width, a quasi-proportional font adjusts character widths dynamically to optimize reading layout:</p>
+        <ul style="margin: 0.5rem 0 0.5rem 1.25rem; padding: 0; list-style-type: disc;">
+          <li>Narrow letters like <code>i</code>, <code>l</code>, and <code>1</code> are slimmed down.</li>
+          <li>Wide letters like <code>m</code> and <code>w</code> are allowed to expand.</li>
+          <li>Dynamic kerning is applied to create a smoother, more natural reading flow.</li>
+        </ul>
+        <p style="margin-top:0.5rem;">This maintains the geometric, technical aesthetic of Ioskeley Mono, but optimizes the layout for reading prose. It is incredible for markdown note-taking (in apps like Obsidian), reading documentation, and even coding in environments that support proportional layouts (such as GNU Emacs).</p>
+      </div>
+    </details>
+    <details>
       <summary>What's inside each TTF zip?</summary>
       <div class="rel-notes">
         <div class="preview-box" style="font-family:var(--m);font-size:0.78rem;line-height:1.6;">
@@ -377,9 +430,9 @@ git clone --depth 1 https://github.com/be5invis/Iosevka.git
 cp IoskeleyMono/private-build-plans.toml Iosevka/
 cd Iosevka
 npm install
-npm run build -- contents::IoskeleyMono contents::IoskeleyMonoTerm
+npm run build -- contents::IoskeleyMono contents::IoskeleyMonoTerm contents::IoskeleyMonoNL contents::IoskeleySans contents::IoskeleySansNL
   </div>
-  <p style="margin-top:0.75rem;">Output in <code>Iosevka/dist/IoskeleyMono/</code> and <code>Iosevka/dist/IoskeleyMonoTerm/</code>.</p>
+  <p style="margin-top:0.75rem;">Output in the respective folders under <code>Iosevka/dist/</code>.</p>
 
   <hr>
 

@@ -311,3 +311,30 @@ essRatioLower = 1.03
 essRatioQuestion = 1.03
 archDepth = 152
 smallArchDepth = 157
+
+[buildPlans.IoskeleySans]
+family = "Ioskeley Sans"
+spacing = "quasi-proportional"
+serifs = "sans"
+noCvSs = true
+exportGlyphNames = false
+
+variants.inherits       = "buildPlans.IoskeleyMono"
+weights.inherits        = "buildPlans.IoskeleyMono"
+widths.inherits         = "buildPlans.IoskeleyMono"
+slopes.inherits         = "buildPlans.IoskeleyMono"
+metricOverride.inherits = "buildPlans.IoskeleyMono"
+
+[buildPlans.IoskeleySansNL]
+family = "Ioskeley Sans NL"
+spacing = "quasi-proportional"
+serifs = "sans"
+noCvSs = true
+noLigation = true
+exportGlyphNames = false
+
+variants.inherits       = "buildPlans.IoskeleySans"
+weights.inherits        = "buildPlans.IoskeleySans"
+widths.inherits         = "buildPlans.IoskeleySans"
+slopes.inherits         = "buildPlans.IoskeleySans"
+metricOverride.inherits = "buildPlans.IoskeleySans"

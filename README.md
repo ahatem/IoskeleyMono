@@ -6,6 +6,8 @@ A free, open-source alternative to [Berkeley Mono](https://berkeleygraphics.com/
 
 The name is a mashup: **Iosevka** + **Berkeley** = **Ioskeley**.
 
+> **Bonus Variant:** This repository also includes **Ioskeley Sans**, a quasi-proportional reading font built with the exact same aesthetic design choices.
+
 ---
 
 ## Live Preview
@@ -36,6 +38,8 @@ Download the latest release from the [Releases page](https://github.com/ahatem/I
 
 ### Which file do I need?
 
+#### Standard Monospace Variants (Coding & Terminals)
+
 | Situation | Download |
 |---|---|
 | Editor or IDE (VS Code, JetBrains, Zed…) | `IoskeleyMono.zip` |
@@ -45,6 +49,16 @@ Download the latest release from the [Releases page](https://github.com/ahatem/I
 | App that can't disable ligatures (Xcode…) | `IoskeleyMono-NL.zip` |
 | Same, but also need Nerd Font icons | `IoskeleyMono-NL-NerdFont.zip` |
 | Web / CSS (`@font-face`) | `IoskeleyMono-Web.zip` |
+
+#### Quasi-Proportional Variants (Notes, Prose & UI)
+
+| Situation | Download |
+|---|---|
+| Prose, note-taking, or writing (Obsidian, Typora…) | `IoskeleySans.zip` |
+| Proportional writing with icons | `IoskeleySans-NerdFont.zip` |
+| Proportional app that can't disable ligatures | `IoskeleySans-NL.zip` |
+| Same, but also need Nerd Font icons | `IoskeleySans-NL-NerdFont.zip` |
+| Web / CSS (`@font-face`) | `IoskeleySans-Web.zip` |
 
 > **Not sure?** Start with `IoskeleyMono.zip`.
 
@@ -81,7 +95,16 @@ Install all fonts in your chosen folder — your OS will expose the full weight 
 
 ### About the NL variant
 
-`Ioskeley Mono NL` has all ligature substitutions disabled. Use it in apps that can't toggle ligatures off themselves (e.g. Xcode). Everything else — weights, widths, glyph shapes, metrics — is identical to the standard variant.
+`Ioskeley Mono NL` (and `Ioskeley Sans NL`) has all ligature substitutions disabled. Use it in apps that can't toggle ligatures off themselves (e.g. Xcode). Everything else — weights, widths, glyph shapes, metrics — is identical to the standard variant.
+
+### About the Sans variant
+
+`Ioskeley Sans` uses `spacing = "quasi-proportional"`. Unlike standard monospace fonts where every letter occupies the exact same width, a quasi-proportional font adjusts character widths dynamically to optimize reading layout:
+* Narrow letters like `i`, `l`, and `1` are slimmed down.
+* Wide letters like `m` and `w` are allowed to expand.
+* Dynamic kerning is applied to create a smoother, more natural reading flow.
+
+This maintains the geometric, technical look of the Ioskeley Mono aesthetics, but optimizes the layout for prose. It is incredible for markdown note-taking (in apps like Obsidian), reading documentation, and even coding in environments that support proportional layouts (such as GNU Emacs).
 
 ---
 
@@ -129,10 +152,10 @@ git clone --depth 1 https://github.com/be5invis/Iosevka.git
 cp IoskeleyMono/private-build-plans.toml Iosevka/
 cd Iosevka
 npm install
-npm run build -- contents::IoskeleyMono contents::IoskeleyMonoTerm
+npm run build -- contents::IoskeleyMono contents::IoskeleyMonoTerm contents::IoskeleyMonoNL contents::IoskeleySans contents::IoskeleySansNL
 ```
 
-Output will be in `Iosevka/dist/IoskeleyMono/` and `Iosevka/dist/IoskeleyMonoTerm/`.
+Output will be in the respective folders under `Iosevka/dist/`.
 
 ---
 
