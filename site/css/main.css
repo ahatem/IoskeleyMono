@@ -328,25 +328,269 @@ code {
 
 strong { font-weight: 600; color: var(--text); }
 
-/* Comparison */
-.comp-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1px;
-  background: var(--border);
+/* Comparison Gallery */
+.comp-gallery {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+.comp-card {
+  position: relative;
   border: 1px solid var(--border);
+  background: #080808;
+  overflow: hidden;
+  cursor: zoom-in;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.comp-card:hover {
+  border-color: var(--accent);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.7);
+}
+.comp-card img {
+  width: 100%;
+  height: auto;
+  display: block;
+  transition: transform 0.25s cubic-bezier(0.2, 0, 0.2, 1);
+}
+.comp-card:hover img {
+  transform: scale(1.006);
+}
+.comp-card-action {
+  position: absolute;
+  bottom: 0.75rem;
+  right: 0.75rem;
+  background: rgba(10, 10, 10, 0.85);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--border);
+  color: var(--text-2);
+  font-size: 0.7rem;
+  padding: 0.3em 0.7em;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  pointer-events: none;
+  opacity: 0.65;
+  transform: translateY(0);
+  transition: opacity 0.2s ease, color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+  font-family: var(--m);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.comp-card:hover .comp-card-action {
+  opacity: 1;
+  color: var(--accent);
+  border-color: var(--accent);
+  background: rgba(18, 15, 10, 0.95);
+}
+.comp-card-action svg {
+  flex-shrink: 0;
+  color: inherit;
+}
+
+/* Hover Loupe Magnifier */
+.comp-loupe {
+  position: absolute;
+  width: 175px;
+  height: 175px;
+  border-radius: 50%;
+  border: 2px solid var(--accent);
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.85), 0 0 18px rgba(184, 148, 58, 0.35);
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.75);
+  transition: opacity 0.16s ease, transform 0.16s cubic-bezier(0.2, 0, 0.2, 1);
+  z-index: 20;
+  background-repeat: no-repeat;
+  background-color: #080808;
+  display: none;
   overflow: hidden;
 }
-.comp-item { display: block; background: #151515; }
-.comp-item img { width: 100%; display: block; }
-.comp-label {
-  display: block;
+
+@media (hover: hover) and (pointer: fine) {
+  .comp-loupe {
+    display: block;
+  }
+}
+
+.comp-loupe.is-active {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.comp-loupe::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 6px;
+  height: 6px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 1px solid rgba(184, 148, 58, 0.7);
+  background: rgba(184, 148, 58, 0.25);
+  pointer-events: none;
+}
+
+/* Lightbox Modal */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+.lightbox.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+.lightbox-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(4, 4, 4, 0.94);
+  backdrop-filter: blur(10px);
+}
+.lightbox-container {
+  position: relative;
+  width: 95vw;
+  max-width: 1250px;
+  height: 92vh;
+  display: flex;
+  flex-direction: column;
+  background: #090909;
+  border: 1px solid var(--border);
+  box-shadow: 0 16px 56px rgba(0, 0, 0, 0.95);
+  z-index: 1;
+  overflow: hidden;
+}
+.lightbox-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.55rem 1rem;
+  background: #111111;
+  border-bottom: 1px solid var(--border);
+  gap: 1rem;
+}
+.lightbox-title {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--accent);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: var(--m);
+  letter-spacing: 0.02em;
+}
+.lightbox-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-shrink: 0;
+}
+.lightbox-btn {
+  font-family: var(--m);
   font-size: 0.72rem;
-  text-align: center;
+  background: #161616;
   color: var(--text-2);
-  padding: 0.5em;
-  background: var(--bg-2);
+  border: 1px solid var(--border);
+  padding: 0.32em 0.75em;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  text-decoration: none !important;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.lightbox-btn:hover {
+  background: #201b12;
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.lightbox-btn svg {
+  flex-shrink: 0;
+  color: inherit;
+}
+.lightbox-btn--close {
+  padding: 0.32em 0.55em;
+}
+.lightbox-stage {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: #050505;
+  user-select: none;
+}
+.lightbox-viewport {
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: zoom-in;
+  padding: 0.75rem;
+  scrollbar-gutter: stable;
+}
+.lightbox-viewport.is-zoomed {
+  cursor: zoom-out;
+  display: block;
+  overflow: auto;
+}
+.lightbox-img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  display: block;
+  margin: auto;
+  transition: max-width 0.2s ease, max-height 0.2s ease;
+}
+.lightbox-viewport.is-zoomed .lightbox-img {
+  max-width: none;
+  max-height: none;
+  width: auto;
+  height: auto;
+}
+.lightbox-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  background: rgba(14, 14, 14, 0.85);
+  border: 1px solid var(--border);
+  color: var(--text-2);
+  width: 2.4rem;
+  height: 3.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.lightbox-arrow:hover {
+  background: #1c180e;
+  color: var(--accent);
+  border-color: var(--accent);
+}
+.lightbox-arrow svg {
+  color: inherit;
+}
+.lightbox-arrow--prev { left: 0.6rem; }
+.lightbox-arrow--next { right: 0.6rem; }
+.lightbox-footer {
+  padding: 0.35rem 1rem;
+  font-size: 0.68rem;
+  color: var(--text-2);
+  background: #0b0b0b;
   border-top: 1px solid var(--border);
+  text-align: center;
+  font-family: var(--m);
 }
 
 /* Code display boxes */
@@ -727,7 +971,6 @@ footer p { font-size: 0.82rem; color: var(--text-2); }
 .coffee-line { margin-top: 0.5rem; }
 
 @media (max-width: 500px) {
-  .comp-grid { grid-template-columns: 1fr; }
   .stats-row { flex-direction: column; }
   .header-top { flex-direction: column; gap: 0.75rem; }
   .dl-table td:first-child { white-space: normal; }

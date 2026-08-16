@@ -28,6 +28,7 @@
     <div class="header-top">
       <span class="site-name">Ioskeley Mono</span>
       <nav>
+        <a href="#comparison">Comparison</a>
         <a href="#download">Download</a>
         <a href="#tryit">Try It</a>
         <a href="#weights">Weights</a>
@@ -81,20 +82,30 @@
   </div>
 
   <!-- Comparison -->
-  <h2 id="comparison">Side by Side</h2>
-  <div class="comp-grid">
-    <div class="comp-item">
-      <img src="imgs/IoskeleyMono.png" alt="Ioskeley Mono sample" loading="lazy">
-      <span class="comp-label">Ioskeley Mono</span>
+  <h2 id="comparison">Comparison with Berkeley Mono</h2>
+  <div class="comp-gallery">
+    <div class="comp-card" data-title="01 — Character Forms: Ioskeley Mono × Berkeley Mono">
+      <img src="imgs/01-Ioskeley-vs-Berkeley-Character-Forms.png" alt="Ioskeley Mono vs Berkeley Mono — Character Forms" loading="lazy">
+      <div class="comp-card-action">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+        <span>Expand</span>
+      </div>
     </div>
-    <div class="comp-item">
-      <img src="imgs/BerkeleyMono.png" alt="Berkeley Mono sample" loading="lazy">
-      <span class="comp-label">Berkeley Mono</span>
+    <div class="comp-card" data-title="02 — Pixel Overlay: Where the forms actually differ">
+      <img src="imgs/02-Ioskeley-vs-Berkeley-Pixel-Overlay.png" alt="Ioskeley Mono vs Berkeley Mono — Pixel Overlay" loading="lazy">
+      <div class="comp-card-action">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+        <span>Expand</span>
+      </div>
+    </div>
+    <div class="comp-card" data-title="03 — Real Code: Same code. Same metrics. Different font.">
+      <img src="imgs/03-Ioskeley-vs-Berkeley-Real-Code.png" alt="Ioskeley Mono vs Berkeley Mono — Real Code" loading="lazy">
+      <div class="comp-card-action">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+        <span>Expand</span>
+      </div>
     </div>
   </div>
-  <p style="margin-top:0.75rem;font-size:0.8rem;">
-    Theme: <a href="https://marketplace.visualstudio.com/items?itemName=ahmedhatem.kintsugi" target="_blank" rel="noopener">Kintsugi Dark Flared</a>
-  </p>
 
   <hr>
 
@@ -404,6 +415,43 @@ npm run build -- contents::IoskeleyMono contents::IoskeleyMonoTerm
 
 </div>
 
+<!-- Lightbox Modal -->
+<div class="lightbox" id="lightbox" aria-hidden="true" role="dialog" aria-modal="true">
+  <div class="lightbox-backdrop" id="lightbox-backdrop"></div>
+  <div class="lightbox-container">
+    <div class="lightbox-bar">
+      <span class="lightbox-title" id="lightbox-title">Comparison Specimen</span>
+      <div class="lightbox-controls">
+        <button class="lightbox-btn" id="lightbox-zoom" type="button" title="Toggle 1:1 Pixel Zoom (Z)">
+          <svg class="lightbox-btn-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
+          <span id="lightbox-zoom-label">1:1 Zoom</span>
+        </button>
+        <a class="lightbox-btn" id="lightbox-raw" href="#" target="_blank" rel="noopener" title="Open Original in New Tab">
+          <svg class="lightbox-btn-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+          <span>Original</span>
+        </a>
+        <button class="lightbox-btn lightbox-btn--close" id="lightbox-close" type="button" title="Close (Esc)" aria-label="Close">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+    </div>
+    <div class="lightbox-stage" id="lightbox-stage">
+      <button class="lightbox-arrow lightbox-arrow--prev" id="lightbox-prev" type="button" aria-label="Previous image">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+      </button>
+      <div class="lightbox-viewport" id="lightbox-viewport">
+        <img src="" alt="" id="lightbox-img" class="lightbox-img">
+      </div>
+      <button class="lightbox-arrow lightbox-arrow--next" id="lightbox-next" type="button" aria-label="Next image">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+      </button>
+    </div>
+    <div class="lightbox-footer">
+      <span>Click image or press <kbd>Z</kbd> to toggle 1:1 pixel view &middot; <kbd>&larr;</kbd> / <kbd>&rarr;</kbd> to navigate &middot; <kbd>Esc</kbd> to exit</span>
+    </div>
+  </div>
+</div>
+
 <script>
 (function() {
   const os = navigator.platform;
@@ -429,10 +477,9 @@ document.querySelectorAll('.terminal-tab').forEach(tab => {
   });
 });
 </script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js" data-autoloader-path="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/"></script>
-<script data-goatcounter="https://ahatem.goatcounter.com/count"
-        async src="//gc.zgo.at/count.js"></script>
-<script src="js/main.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js" data-autoloader-path="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/"></script>
+  <script data-goatcounter="https://ahatem.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+  <script src="js/main.js"></script>
 </body>
 </html>

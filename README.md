@@ -1,61 +1,82 @@
 # Ioskeley Mono
 
-![Ioskeley Mono Cover](assets/SocialPreview.png)
+<p align="center">
+  <img src="assets/SocialPreview.png" alt="Ioskeley Mono — Free Open Source Monospace Font" width="100%">
+</p>
 
-A free, open-source alternative to [Berkeley Mono](https://berkeleygraphics.com/typefaces/berkeley-mono/) — built by configuring [Iosevka](https://github.com/be5invis/Iosevka) to match its look and feel as closely as possible.
+<p align="center">
+  <a href="https://github.com/ahatem/IoskeleyMono/releases/latest"><img src="https://img.shields.io/github/v/release/ahatem/IoskeleyMono?style=flat-square&color=b8943a" alt="Latest Release"></a>
+  <a href="https://github.com/ahatem/IoskeleyMono/releases"><img src="https://img.shields.io/github/downloads/ahatem/IoskeleyMono/total?style=flat-square&color=333" alt="Downloads"></a>
+  <a href="./LICENSE"><img src="https://img.shields.io/badge/license-SIL%20OFL%201.1-b8943a?style=flat-square" alt="License"></a>
+  <a href="https://ahatem.github.io/IoskeleyMono/"><img src="https://img.shields.io/badge/showcase-interactive%20demo-b8943a?style=flat-square" alt="Showcase"></a>
+</p>
 
-The name is a mashup: **Iosevka** + **Berkeley** = **Ioskeley**.
+<p align="center">
+  <strong>A free, open-source monospace font engineered to deliver the aesthetic, geometry, and metric parity of <a href="https://berkeleygraphics.com/typefaces/berkeley-mono/">Berkeley Mono</a>.</strong><br>
+  Built by configuring <a href="https://github.com/be5invis/Iosevka">Iosevka</a> with custom glyph variants, metrics, and weight distributions.
+</p>
 
----
-
-## Live Preview
-
-See Ioskeley Mono in action with real-time editable samples, multiple programming languages, and side-by-side comparison with Berkeley Mono:
-
-**[→ Open Interactive Showcase](https://ahatem.github.io/IoskeleyMono/)**
-
----
-
-## Static Preview
-
-| Ioskeley Mono | Berkeley Mono |
-| --- | --- |
-| ![Ioskeley Mono Sample](assets/IoskeleyMono.png) | ![Berkeley Mono Sample](assets/BerkeleyMono.png) |
-
-> Theme: [Kintsugi Dark Flared](https://marketplace.visualstudio.com/items?itemName=ahmedhatem.kintsugi)
-
-![Ioskeley Mono in Action](assets/InAction.png)
-
-> Theme: [Kanagawa Dragon Theme](https://plugins.jetbrains.com/plugin/27101-kanagawa-dragon-theme)
+<p align="center">
+  <a href="https://ahatem.github.io/IoskeleyMono/"><strong>Explore Live Showcase →</strong></a> &nbsp;|&nbsp; 
+  <a href="https://github.com/ahatem/IoskeleyMono/releases/latest"><strong>Download Latest Release →</strong></a>
+</p>
 
 ---
 
-## Installation
+## ⚡ Highlights
 
-Download the latest release from the [Releases page](https://github.com/ahatem/IoskeleyMono/releases).
+- **📐 Metric & Geometric Parity**: Custom line height, letter spacing, and character bounds tuned to Berkeley Mono's compact density.
+- **🎨 10 Weights & 3 Widths**: Full weight spectrum (Thin `100` → Black `900`) across Normal, SemiCondensed, and Condensed, each with matching true italics (60 styles total).
+- **🔤 Distinctive Glyph Engineering**: Dotted `0`, single-storey `g`, flat-arc parentheses `()`, open-contour `6` and `9`, two-circle `8`, raised underscore, and square punctuation.
+- **💻 Tailored Variants**: Out-of-the-box support for Nerd Font icons, strict terminal grid alignment (`Term`), and ligature-free environments (`NL`).
+- **🌐 Web Ready**: Pre-packaged WOFF2 web fonts with optimized `@font-face` definitions.
 
-### Which file do I need?
+---
 
-| Situation | Download |
-|---|---|
-| Editor or IDE (VS Code, JetBrains, Zed…) | `IoskeleyMono.zip` |
-| Terminal with icons (Neovim, Starship…) | `IoskeleyMono-NerdFont.zip` |
-| Arrows or box-drawing look wrong in my terminal | `IoskeleyMono-Term.zip` |
-| Terminal with icons _and_ rendering issues | `IoskeleyMono-Term-NerdFont.zip` |
-| App that can't disable ligatures (Xcode…) | `IoskeleyMono-NL.zip` |
-| Same, but also need Nerd Font icons | `IoskeleyMono-NL-NerdFont.zip` |
-| Web / CSS (`@font-face`) | `IoskeleyMono-Web.zip` |
+## 🔍 Comparison with Berkeley Mono
 
-> **Not sure?** Start with `IoskeleyMono.zip`.
+Ioskeley Mono is calibrated across character shapes, pixel overlays, and real-world code density.
 
-### What's inside each TTF zip?
+### 01. Character Forms
+> Exact identity glyphs, ambiguity-free numeral forms, compact punctuation bounds, and programming operators.
 
-Every TTF zip contains all three widths, each with hinted and unhinted variants:
+![Ioskeley Mono vs Berkeley Mono - Character Forms](assets/01-Ioskeley-vs-Berkeley-Character-Forms.png)
+
+### 02. Pixel Overlay
+> 1:1 origin and baseline overlay showing shared shape agreement (ivory) and minimal edge variances (colored).
+
+![Ioskeley Mono vs Berkeley Mono - Pixel Overlay](assets/02-Ioskeley-vs-Berkeley-Pixel-Overlay.png)
+
+### 03. Real-World Code Specimen
+> Identical rhythm, line spacing, tracking, and visual weight in typical editor themes.
+
+![Ioskeley Mono vs Berkeley Mono - Real Code](assets/03-Ioskeley-vs-Berkeley-Real-Code.png)
+
+---
+
+## 📦 Downloads & Variants
+
+Grab pre-built packages from the [Releases page](https://github.com/ahatem/IoskeleyMono/releases/latest).
+
+| Package | Use Case | Ligatures | Nerd Icons |
+|---|---|:---:|:---:|
+| **`IoskeleyMono.zip`** *(Recommended)* | VS Code, JetBrains, Zed, Sublime Text, Cursor | ✅ | — |
+| **`IoskeleyMono-NerdFont.zip`** | Neovim, Starship, modern terminals with icon support | ✅ | ✅ |
+| **`IoskeleyMono-Term.zip`** | Strict terminal grids (Kitty, Ghostty, WezTerm) | Grid | — |
+| **`IoskeleyMono-Term-NerdFont.zip`** | Strict terminal grids + Nerd Font icons | Grid | ✅ |
+| **`IoskeleyMono-NL.zip`** | Environments with forced ligatures (e.g. Xcode) | ❌ | — |
+| **`IoskeleyMono-NL-NerdFont.zip`** | No ligatures + Nerd Font icons | ❌ | ✅ |
+| **`IoskeleyMono-Web.zip`** | Web applications and CSS `@font-face` (WOFF2) | ✅ | — |
+
+<details>
+<summary><strong>📁 Package Internal Structure (Widths & Hinting)</strong></summary>
+
+Every TTF package contains all 3 widths, organized by screen rendering target:
 
 ```
 Normal/
-  Hinted/    ← standard-DPI screens (most Windows setups)
-  Unhinted/  ← high-DPI / Retina (macOS, Linux HiDPI)
+  Hinted/    ← ClearType / standard-DPI screens (Windows)
+  Unhinted/  ← High-DPI / Retina screens (macOS, Linux HiDPI)
 SemiCondensed/
   Hinted/
   Unhinted/
@@ -63,95 +84,123 @@ Condensed/
   Hinted/
   Unhinted/
 ```
-
-Install all fonts in your chosen folder — your OS will expose the full weight axis (Thin → Black) automatically. Start with `Normal/` if you're unsure which width you prefer.
-
-### Installing the fonts
-
-1. Download and unzip your chosen file
-2. Open the width and hint folder that matches your setup
-3. Select all `.ttf` files and install:
-   - **macOS** — double-click any font → Install Font, or drag all into Font Book
-   - **Windows** — select all → right-click → Install for all users
-   - **Linux** — copy to `~/.local/share/fonts/` then run `fc-cache -fv`
-
-### About the Term variant
-
-`Ioskeley Mono Term` uses `spacing = "term"`, which constrains every glyph to its cell boundary. Use it if arrows (`→ ← ↑ ↓`), box-drawing characters, or ligatures render incorrectly in your terminal (known affected: kitty, Ghostty). The glyph design is identical to the standard variant — it's purely a spacing change.
-
-### About the NL variant
-
-`Ioskeley Mono NL` has all ligature substitutions disabled. Use it in apps that can't toggle ligatures off themselves (e.g. Xcode). Everything else — weights, widths, glyph shapes, metrics — is identical to the standard variant.
+> *Recommendation:* If using macOS or high-DPI displays, install `Unhinted/`. For Windows standard-DPI monitors, install `Hinted/`.
+</details>
 
 ---
 
-## Weights
+## 🚀 Quick Setup & Editor Configuration
 
-Ioskeley Mono matches Berkeley Mono's full weight axis across all widths:
+### Installation
+- **macOS**: Unzip → Select all `.ttf` files in your chosen folder → Double click & click **Install Font** (or drag into Font Book).
+- **Windows**: Unzip → Select all `.ttf` files → Right click → **Install for all users**.
+- **Linux**: Unzip → Copy `.ttf` files to `~/.local/share/fonts/` (or `~/.fonts/`) → Run `fc-cache -fv`.
 
-| Weight | CSS value |
-|---|---|
-| Thin | 100 |
-| ExtraLight | 200 |
-| Light | 300 |
-| SemiLight | 350 |
-| Regular | 400 |
-| Medium | 500 |
-| SemiBold | 600 |
-| Bold | 700 |
-| ExtraBold | 800 |
-| Black | 900 |
+### Editor Configuration
 
-Every weight is available in all three widths, both Upright and Italic.
+#### VS Code / Cursor
+```json
+{
+  "editor.fontFamily": "'Ioskeley Mono', monospace",
+  "editor.fontLigatures": true,
+  "editor.fontWeight": "400",
+  "editor.fontSize": 14.5,
+  "editor.lineHeight": 1.55
+}
+```
+*(If using the Nerd Font variant, set `"editor.fontFamily": "'IoskeleyMono Nerd Font', monospace"`)*
+
+#### Zed
+```json
+{
+  "buffer_font_family": "Ioskeley Mono",
+  "buffer_font_size": 15,
+  "buffer_line_height": "comfortable"
+}
+```
+
+#### Ghostty
+```ini
+font-family = Ioskeley Mono
+font-size = 14
+```
+
+#### Alacritty
+```toml
+[font.normal]
+family = "Ioskeley Mono"
+style = "Regular"
+```
+
+#### Kitty
+```conf
+font_family      Ioskeley Mono Term
+bold_font        auto
+italic_font      auto
+bold_italic_font auto
+font_size        14.0
+```
 
 ---
 
-## Design Choices
+## 📊 Weight Spectrum
 
-Ioskeley Mono uses specific character variants and custom metrics to closely match Berkeley Mono's aesthetic.
+Ioskeley Mono provides a full continuous weight spectrum across all 3 widths:
 
-**Custom metrics** — vertical proportions, letter spacing, and parenthesis size are tuned to capture Berkeley's compact, geometric feel.
-
-**Distinctive glyphs** — single-storey `g`, flat-arc parentheses `()`, two-circle `8`, dotted `0`, open-contour `6` and `9`, square punctuation dots, and a raised underscore.
-
-For the full list of configuration choices, see [`private-build-plans.toml`](./private-build-plans.toml).
+| Weight Name | CSS `font-weight` | Upright | Italic |
+|---|---|:---:|:---:|
+| **Thin** | `100` | Included | Included |
+| **ExtraLight** | `200` | Included | Included |
+| **Light** | `300` | Included | Included |
+| **SemiLight** | `350` | Included | Included |
+| **Regular** | `400` | Included | Included |
+| **Medium** | `500` | Included | Included |
+| **SemiBold** | `600` | Included | Included |
+| **Bold** | `700` | Included | Included |
+| **ExtraBold** | `800` | Included | Included |
+| **Black** | `900` | Included | Included |
 
 ---
 
-## Building from Source
+## 🛠️ Build from Source
 
-The font is built automatically via GitHub Actions on every version tag push. To build locally:
+Builds are executed via GitHub Actions on tagged releases. To reproduce locally:
 
 ```bash
+# 1. Clone repositories
 git clone https://github.com/ahatem/IoskeleyMono.git
 git clone --depth 1 https://github.com/be5invis/Iosevka.git
 
+# 2. Copy the customized build plan
 cp IoskeleyMono/private-build-plans.toml Iosevka/
+
+# 3. Install dependencies and compile
 cd Iosevka
 npm install
 npm run build -- contents::IoskeleyMono contents::IoskeleyMonoTerm
 ```
-
-Output will be in `Iosevka/dist/IoskeleyMono/` and `Iosevka/dist/IoskeleyMonoTerm/`.
-
----
-
-## Contributing
-
-This project is just a build configuration on top of Iosevka — changes are often just a few lines in `private-build-plans.toml`. If you spot something off or have an idea, open an issue or send a PR. All contributions are welcome!
+Compiled TTF binaries will be output to `Iosevka/dist/IoskeleyMono/` and `Iosevka/dist/IoskeleyMonoTerm/`.
 
 ---
 
-## Support
+## 🤝 Contributing
 
-If Ioskeley Mono saves you money on a font license, consider buying me a coffee — it keeps the project going!
-
-[![Buy Me a Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ahmedhatem-FFDD00?style=flat&logo=buy-me-a-coffee&logoColor=black)](https://www.buymeacoffee.com/ahmedhatem)
+Contributions, glyph refinement proposals, and build plan tweaks are welcome!
+- For proposed character adjustments, check [`private-build-plans.toml`](./private-build-plans.toml).
+- Submit bug reports, ligature suggestions, or PRs via GitHub Issues.
 
 ---
 
-## License & Credits
+## ☕ Support
 
-Ioskeley Mono is a custom configuration of [Iosevka](https://github.com/be5invis/Iosevka). All credit for the original design and build system goes to [Belleve Invis](https://github.com/be5invis) and the Iosevka contributors.
+If Ioskeley Mono enhances your daily coding workflow or saves you font licensing fees, consider supporting ongoing development:
 
-Licensed under the [SIL Open Font License 1.1](./LICENSE).
+[![Buy Me a Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ahmedhatem-FFDD00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://www.buymeacoffee.com/ahmedhatem)
+
+---
+
+## 📜 License & Acknowledgments
+
+- **Ioskeley Mono** is released under the [SIL Open Font License 1.1](./LICENSE).
+- Built on top of the [Iosevka](https://github.com/be5invis/Iosevka) font generation engine by [Belleve Invis](https://github.com/be5invis) and contributors.
+- Design aesthetic inspired by [Berkeley Mono](https://berkeleygraphics.com/typefaces/berkeley-mono/) by Berkeley Graphics.

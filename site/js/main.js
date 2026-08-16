@@ -533,3 +533,169 @@ Prism.plugins.autoloader.loadLanguages(
     });
   } catch (_) {}
 })();
+
+// ── Hover Loupe Magnifier ─────────────────────────────────────────────
+
+(function initLoupe() {
+  if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+
+  const cards = document.querySelectorAll('.comp-card');
+  const ZOOM_LEVEL = 2.4;
+
+  cards.forEach(card => {
+    const img = card.querySelector('img');
+    if (!img) return;
+
+    const loupe = document.createElement('div');
+    loupe.className = 'comp-loupe';
+    card.appendChild(loupe);
+
+    let rect = null;
+
+    function updateRect() {
+      rect = card.getBoundingClientRect();
+      loupe.style.backgroundImage = `url("${img.currentSrc || img.src}")`;
+      loupe.style.backgroundSize = `${rect.width * ZOOM_LEVEL}px ${rect.height * ZOOM_LEVEL}px`;
+    }
+
+    card.addEventListener('mouseenter', (e) => {
+      updateRect();
+      loupe.classList.add('is-active');
+      moveLoupe(e);
+    });
+
+    card.addEventListener('mouseleave', () => {
+      loupe.classList.remove('is-active');
+    });
+
+    function moveLoupe(e) {
+      if (!rect) updateRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      loupe.style.left = `${x}px`;
+      loupe.style.top = `${y}px`;
+
+      const bgX = (x / rect.width) * 100;
+      const bgY = (y / rect.height) * 100;
+      loupe.style.backgroundPosition = `${bgX}% ${bgY}%`;
+    }
+
+    card.addEventListener('mousemove', moveLoupe);
+  });
+})();
+
+// ── Lightbox & Image Zoom ─────────────────────────────────────────────
+
+(function initLightbox() {
+  const lightbox = document.getElementById('lightbox');
+  if (!lightbox) return;
+
+  const backdrop = document.getElementById('lightbox-backdrop');
+  const closeBtn = document.getElementById('lightbox-close');
+  const prevBtn = document.getElementById('lightbox-prev');
+  const nextBtn = document.getElementById('lightbox-next');
+  const zoomBtn = document.getElementById('lightbox-zoom');
+  const zoomLabel = document.getElementById('lightbox-zoom-label');
+  const rawLink = document.getElementById('lightbox-raw');
+  const titleEl = document.getElementById('lightbox-title');
+  const viewport = document.getElementById('lightbox-viewport');
+  const imgEl = document.getElementById('lightbox-img');
+  const cards = Array.from(document.querySelectorAll('.comp-card'));
+
+  if (!cards.length) return;
+
+  let currentIndex = 0;
+  let isZoomed = false;
+
+  const galleryItems = cards.map(card => {
+    const img = card.querySelector('img');
+    return {
+      src: img ? img.getAttribute('src') : '',
+      alt: img ? img.getAttribute('alt') : '',
+      title: card.dataset.title || (img ? img.getAttribute('alt') : 'Comparison Specimen'),
+    };
+  });
+
+  function showImage(index) {
+    if (index < 0) index = galleryItems.length - 1;
+    if (index >= galleryItems.length) index = 0;
+    currentIndex = index;
+
+    const item = galleryItems[currentIndex];
+    imgEl.src = item.src;
+    imgEl.alt = item.alt;
+    titleEl.textContent = item.title;
+    if (rawLink) rawLink.href = item.src;
+
+    setZoom(false);
+  }
+
+  function setZoom(zoomed) {
+    isZoomed = zoomed;
+    if (isZoomed) {
+      viewport.classList.add('is-zoomed');
+      if (zoomLabel) zoomLabel.textContent = 'Fit Screen';
+    } else {
+      viewport.classList.remove('is-zoomed');
+      if (zoomLabel) zoomLabel.textContent = '1:1 Zoom';
+      viewport.scrollTop = 0;
+      viewport.scrollLeft = 0;
+    }
+  }
+
+  function toggleZoom() {
+    setZoom(!isZoomed);
+  }
+
+  function openLightbox(index) {
+    showImage(index);
+    lightbox.classList.add('active');
+    lightbox.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox() {
+    lightbox.classList.remove('active');
+    lightbox.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    setZoom(false);
+  }
+
+  cards.forEach((card, i) => {
+    card.addEventListener('click', () => openLightbox(i));
+  });
+
+  if (backdrop) backdrop.addEventListener('click', closeLightbox);
+  if (closeBtn) closeBtn.addEventListener('click', closeLightbox);
+  if (zoomBtn) zoomBtn.addEventListener('click', toggleZoom);
+  if (viewport) viewport.addEventListener('click', (e) => {
+    if (e.target === viewport || e.target === imgEl) {
+      toggleZoom();
+    }
+  });
+
+  if (prevBtn) prevBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    showImage(currentIndex - 1);
+  });
+
+  if (nextBtn) nextBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    showImage(currentIndex + 1);
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (!lightbox.classList.contains('active')) return;
+
+    if (e.key === 'Escape') {
+      closeLightbox();
+    } else if (e.key === 'ArrowLeft') {
+      showImage(currentIndex - 1);
+    } else if (e.key === 'ArrowRight') {
+      showImage(currentIndex + 1);
+    } else if (e.key === 'z' || e.key === 'Z') {
+      toggleZoom();
+    }
+  });
+})();

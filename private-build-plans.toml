@@ -166,7 +166,7 @@ css = 900
 # ============================================================
 
 [buildPlans.IoskeleyMono.widths.Condensed]
-shape = 480
+shape = 495
 menu = 3
 css = "condensed"
 
