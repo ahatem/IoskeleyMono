@@ -59,6 +59,76 @@ code[class*="language-"]::selection, code[class*="language-"] ::selection {
 .theme-solarized-light .token.keyword { color: #b58900; font-weight: bold; }
 .theme-solarized-light .token.function, .theme-solarized-light .token.class-name { color: #268bd2; }
 .theme-solarized-light .token.variable { color: #cb4b16; }
+
+/* 6. Gruvbox Dark */
+.theme-gruvbox .token.comment { color: #928374; }
+.theme-gruvbox .token.punctuation { color: #d5c4a1; }
+.theme-gruvbox .token.number, .theme-gruvbox .token.boolean, .theme-gruvbox .token.constant { color: #d3869b; }
+.theme-gruvbox .token.string, .theme-gruvbox .token.char { color: #b8bb26; }
+.theme-gruvbox .token.operator { color: #83a598; }
+.theme-gruvbox .token.keyword { color: #fb4934; font-weight: bold; }
+.theme-gruvbox .token.function, .theme-gruvbox .token.class-name { color: #fabd2f; }
+.theme-gruvbox .token.variable { color: #fe8019; }
+
+/* 7. Nord */
+.theme-nord .token.comment { color: #616e88; }
+.theme-nord .token.punctuation { color: #81a1c1; }
+.theme-nord .token.number, .theme-nord .token.boolean, .theme-nord .token.constant { color: #b48ead; }
+.theme-nord .token.string, .theme-nord .token.char { color: #a3be8c; }
+.theme-nord .token.operator { color: #88c0d0; }
+.theme-nord .token.keyword { color: #81a1c1; font-weight: bold; }
+.theme-nord .token.function, .theme-nord .token.class-name { color: #88c0d0; }
+.theme-nord .token.variable { color: #d08770; }
+
+/* 8. Dracula */
+.theme-dracula .token.comment { color: #6272a4; }
+.theme-dracula .token.punctuation { color: #f8f8f2; }
+.theme-dracula .token.number, .theme-dracula .token.boolean, .theme-dracula .token.constant { color: #bd93f9; }
+.theme-dracula .token.string, .theme-dracula .token.char { color: #f1fa8c; }
+.theme-dracula .token.operator { color: #ff79c6; }
+.theme-dracula .token.keyword { color: #ff79c6; font-weight: bold; }
+.theme-dracula .token.function, .theme-dracula .token.class-name { color: #50fa7b; }
+.theme-dracula .token.variable { color: #8be9fd; }
+
+/* 9. One Dark */
+.theme-onedark .token.comment { color: #5c6370; }
+.theme-onedark .token.punctuation { color: #abb2bf; }
+.theme-onedark .token.number, .theme-onedark .token.boolean, .theme-onedark .token.constant { color: #d19a66; }
+.theme-onedark .token.string, .theme-onedark .token.char { color: #98c379; }
+.theme-onedark .token.operator { color: #56b6c2; }
+.theme-onedark .token.keyword { color: #c678dd; font-weight: bold; }
+.theme-onedark .token.function, .theme-onedark .token.class-name { color: #61afef; }
+.theme-onedark .token.variable { color: #e06c75; }
+
+/* 10. Solarized Dark */
+.theme-solarized-dark .token.comment { color: #586e75; }
+.theme-solarized-dark .token.punctuation { color: #839496; }
+.theme-solarized-dark .token.number, .theme-solarized-dark .token.boolean, .theme-solarized-dark .token.constant { color: #d33682; }
+.theme-solarized-dark .token.string, .theme-solarized-dark .token.char { color: #2aa198; }
+.theme-solarized-dark .token.operator { color: #859900; }
+.theme-solarized-dark .token.keyword { color: #b58900; font-weight: bold; }
+.theme-solarized-dark .token.function, .theme-solarized-dark .token.class-name { color: #268bd2; }
+.theme-solarized-dark .token.variable { color: #cb4b16; }
+
+/* 11. GitHub Dark */
+.theme-github-dark .token.comment { color: #8b949e; }
+.theme-github-dark .token.punctuation { color: #c9d1d9; }
+.theme-github-dark .token.number, .theme-github-dark .token.boolean, .theme-github-dark .token.constant { color: #79c0ff; }
+.theme-github-dark .token.string, .theme-github-dark .token.char { color: #a5d6ff; }
+.theme-github-dark .token.operator { color: #ff7b72; }
+.theme-github-dark .token.keyword { color: #ff7b72; font-weight: bold; }
+.theme-github-dark .token.function, .theme-github-dark .token.class-name { color: #d2a8ff; }
+.theme-github-dark .token.variable { color: #ffa657; }
+
+/* 12. Monokai Pro */
+.theme-monokai .token.comment { color: #75715e; }
+.theme-monokai .token.punctuation { color: #f8f8f2; }
+.theme-monokai .token.number, .theme-monokai .token.boolean, .theme-monokai .token.constant { color: #ae81ff; }
+.theme-monokai .token.string, .theme-monokai .token.char { color: #e6db74; }
+.theme-monokai .token.operator { color: #f92672; }
+.theme-monokai .token.keyword { color: #f92672; font-weight: bold; }
+.theme-monokai .token.function, .theme-monokai .token.class-name { color: #a6e22e; }
+.theme-monokai .token.variable { color: #66d9e8; }
 `.trim();
 
 (function() {
@@ -548,27 +618,35 @@ const weightSel = document.getElementById('try-weight-sel');
 const themeSel = document.getElementById('try-theme-sel');
 const ligaturesBtn = document.getElementById('try-ligatures-btn');
 
-if (sizeSlider && sizeVal) {
+if (sizeSlider && sizeVal && tryEditorBox) {
   sizeSlider.addEventListener('input', () => {
     const val = sizeSlider.value;
     sizeVal.textContent = `${val}px`;
-    tryInput.style.fontSize = `${val}px`;
-    tryHighlight.style.fontSize = `${val}px`;
-    tryGutter.style.fontSize = `${val}px`;
+    // Drive ALL layers via CSS variables — no per-element style mutations
+    // This prevents the highlight/input font-size desync (jaggedness bug)
+    tryEditorBox.style.setProperty('--try-fz', `${val}px`);
+    updateEditor();
   });
 }
 
 if (weightSel) {
   weightSel.addEventListener('change', () => {
     const w = weightSel.value;
+    tryEditorBox.style.setProperty('--try-fw', w);
     tryInput.style.fontWeight = w;
     tryHighlight.style.fontWeight = w;
   });
 }
 
+const ALL_THEMES = [
+  'theme-kintsugi', 'theme-kanagawa', 'theme-tokyonight', 'theme-catppuccin',
+  'theme-gruvbox', 'theme-nord', 'theme-dracula', 'theme-onedark',
+  'theme-solarized-dark', 'theme-solarized-light', 'theme-github-dark', 'theme-monokai'
+];
+
 if (themeSel && tryEditorBox) {
   themeSel.addEventListener('change', () => {
-    tryEditorBox.classList.remove('theme-kintsugi', 'theme-tokyonight', 'theme-kanagawa', 'theme-catppuccin', 'theme-solarized-light');
+    tryEditorBox.classList.remove(...ALL_THEMES);
     tryEditorBox.classList.add(themeSel.value);
   });
 }
@@ -854,5 +932,224 @@ vim.opt.guifont = "IoskeleyMono Nerd Font:h14"`
     } else if (e.key === 'z' || e.key === 'Z') {
       toggleZoom();
     }
+  });
+})();
+
+// ── Split Diff Slider ─────────────────────────────────────────────────
+
+(function initSplitDiff() {
+  const container = document.querySelector('.split-diff-container');
+  if (!container) return;
+
+  const beforeLayer = container.querySelector('.split-diff-layer--before');
+  const handle = container.querySelector('.split-diff-handle');
+  if (!beforeLayer || !handle) return;
+
+  let dragging = false;
+
+  function setPosition(clientX) {
+    const rect = container.getBoundingClientRect();
+    let pct = ((clientX - rect.left) / rect.width) * 100;
+    pct = Math.max(5, Math.min(95, pct));
+    beforeLayer.style.width = pct + '%';
+    handle.style.left = pct + '%';
+  }
+
+  handle.addEventListener('mousedown', (e) => {
+    e.preventDefault();
+    dragging = true;
+    document.body.style.cursor = 'ew-resize';
+    document.body.style.userSelect = 'none';
+  });
+
+  document.addEventListener('mousemove', (e) => {
+    if (!dragging) return;
+    setPosition(e.clientX);
+  });
+
+  document.addEventListener('mouseup', () => {
+    if (!dragging) return;
+    dragging = false;
+    document.body.style.cursor = '';
+    document.body.style.userSelect = '';
+  });
+
+  // Touch support
+  handle.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    dragging = true;
+  }, { passive: false });
+
+  document.addEventListener('touchmove', (e) => {
+    if (!dragging) return;
+    setPosition(e.touches[0].clientX);
+  }, { passive: true });
+
+  document.addEventListener('touchend', () => { dragging = false; });
+})();
+
+// ── Header Width Switcher Sync ────────────────────────────────────────
+
+(function initHeaderWidth() {
+  const headerBtns = document.querySelectorAll('.header-width-btn');
+  const tryWidthSel = document.getElementById('try-width-sel');
+
+  function applyWidthClass(w) {
+    document.documentElement.classList.remove('sc', 'condensed');
+    if (w === 'sc') document.documentElement.classList.add('sc');
+    if (w === 'cond') document.documentElement.classList.add('condensed');
+    localStorage.setItem('ioskeley-width', w);
+  }
+
+  function syncAll(w) {
+    // sync header buttons
+    headerBtns.forEach(b => b.classList.toggle('active', b.dataset.w === w));
+    // sync existing segment buttons
+    document.querySelectorAll('#width-switcher .seg-opt').forEach(b => {
+      b.classList.toggle('active', b.dataset.width === w);
+    });
+    // sync Try It dropdown
+    if (tryWidthSel) tryWidthSel.value = w;
+    applyWidthClass(w);
+  }
+
+  headerBtns.forEach(btn => {
+    btn.addEventListener('click', () => syncAll(btn.dataset.w));
+  });
+
+  if (tryWidthSel) {
+    tryWidthSel.addEventListener('change', () => syncAll(tryWidthSel.value));
+  }
+
+  // Restore saved width
+  const saved = localStorage.getItem('ioskeley-width');
+  if (saved) syncAll(saved);
+})();
+
+// ── CLI Quick Install Copy ────────────────────────────────────────────
+
+(function initCLICopy() {
+  const btn = document.querySelector('.cli-copy-btn');
+  const code = document.querySelector('.cli-cmd');
+  if (!btn || !code) return;
+
+  btn.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(code.textContent.trim());
+      const prev = btn.textContent;
+      btn.textContent = '✓ Copied';
+      btn.style.color = '#28c840';
+      setTimeout(() => {
+        btn.textContent = prev;
+        btn.style.color = '';
+      }, 2000);
+    } catch (_) {}
+  });
+})();
+
+// ── Installation Tabs ─────────────────────────────────────────────────
+
+(function initInstallTabs() {
+  const tabs = document.querySelectorAll('.install-tab');
+  const panels = document.querySelectorAll('.install-tab-content');
+  if (!tabs.length) return;
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      panels.forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      const target = document.querySelector(`.install-tab-content[data-os-content="${tab.dataset.os}"]`);
+      if (target) target.classList.add('active');
+    });
+  });
+
+  // Activate first tab
+  if (tabs[0]) tabs[0].click();
+})();
+
+// ── Kintsugi Config Syntax Highlight ─────────────────────────────────
+// Color the config code blocks (not Prism, uses custom span classes)
+
+(function highlightConfigs() {
+  const snippets = {
+    vscode: [
+      { key: 'editor.fontFamily',   val: '"\'Ioskeley Mono\', monospace"' },
+      { key: 'editor.fontLigatures', val: 'true' },
+      { key: 'editor.fontWeight',   val: '"400"' },
+      { key: 'editor.fontSize',     val: 14.5 },
+      { key: 'editor.lineHeight',   val: 1.55 },
+    ],
+    zed: [
+      { key: 'buffer_font_family', val: '"Ioskeley Mono"' },
+      { key: 'buffer_font_size',   val: 15 },
+      { key: 'buffer_line_height', val: '"comfortable"' },
+    ],
+    ghostty: null,  // raw text, color handled via cfg-kw spans
+    kitty:   null,
+    alacritty: null,
+    wezterm: null,
+    neovim:  null,
+  };
+
+  // Use a regex-based approach on the raw text to apply spans
+  function highlight(raw) {
+    // Escape HTML entities first
+    let s = raw
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+
+    // JSON keys: "key":
+    s = s.replace(/"([^"]+)"(\s*:)/g, '<span class="cfg-key">"$1"</span><span class="cfg-punc">$2</span>');
+    // Strings after colon: "value"
+    s = s.replace(/:\s*"([^"]*)"/g, (m, v) => `: <span class="cfg-str">"${v}"</span>`);
+    // booleans
+    s = s.replace(/\b(true|false)\b/g, '<span class="cfg-bool">$1</span>');
+    // numbers (standalone)
+    s = s.replace(/:\s*(\d+\.?\d*)\b/g, (m, n) => `: <span class="cfg-num">${n}</span>`);
+    // Comment lines (// or #)
+    s = s.replace(/(\/\/[^\n]*|#[^\n]*)/g, '<span class="cfg-cmt">$1</span>');
+    // TOML/Lua keys (word = )
+    s = s.replace(/^(\s*)([\w.]+)(\s*=)/gm, '$1<span class="cfg-key">$2</span><span class="cfg-punc">$3</span>');
+    // Lua require / local / return
+    s = s.replace(/\b(require|local|return)\b/g, '<span class="cfg-kw">$1</span>');
+
+    return s;
+  }
+
+  const codeEl = document.getElementById('config-code');
+  if (!codeEl) return;
+
+  // Store originals keyed by config tab
+  const rawMap = {};
+  const tabs = document.querySelectorAll('.config-tab');
+  tabs.forEach(tab => {
+    const key = tab.dataset.cfg;
+    if (key && window._configSnippets && window._configSnippets[key]) {
+      rawMap[key] = window._configSnippets[key];
+    }
+  });
+
+  // Expose snippets to this scope (main.js configSnippets defined above)
+  // Override renderConfig to also apply highlights
+  const origRender = window._renderConfig;
+  if (origRender) return; // already patched
+
+  // Patch renderConfig at source
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      // Slight delay so main renderConfig runs first
+      requestAnimationFrame(() => {
+        const raw = codeEl.textContent;
+        codeEl.innerHTML = highlight(raw);
+      });
+    });
+  });
+
+  // Apply on initial load
+  requestAnimationFrame(() => {
+    const raw = codeEl.textContent;
+    codeEl.innerHTML = highlight(raw);
   });
 })();
