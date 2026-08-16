@@ -51,7 +51,7 @@ html.condensed { --m: "Ioskeley Mono C", "IBM Plex Mono", "Cascadia Code", "JetB
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html {
   scroll-behavior: smooth;
-} scroll-behavior: smooth; }
+}
 
 /* Scrollbars */
 * { scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
@@ -658,26 +658,7 @@ strong { font-weight: 600; color: var(--text); }
   text-shadow: none;
 }
 
-/* Try It editor */
-.try-editor {
-  border: 1px solid var(--border);
-  overflow: hidden;
-}
-
-.try-header {
-  display: flex;
-  align-items: stretch;
-  background: var(--bg-2);
-  border-bottom: 1px solid var(--border);
-}
-
-.try-header .try-lang-wrap {
-  display: flex;
-  gap: 0;
-}
-
-.try-header .try-lang-opt {
-/* Split Diff Comparison Slider */
+/* ── Split Diff Comparison Slider ──────────────────────────────────── */
 .split-diff-card {
   border: 1px solid var(--border);
   background: #080808;
