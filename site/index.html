@@ -29,8 +29,10 @@
       <span class="site-name">Ioskeley Mono</span>
       <nav>
         <a href="#comparison">Comparison</a>
-        <a href="#download">Download</a>
         <a href="#tryit">Try It</a>
+        <a href="#waterfall">Scale</a>
+        <a href="#download">Download</a>
+        <a href="#setup">Setup</a>
         <a href="#weights">Weights</a>
         <a href="#glyphs">Glyphs</a>
         <a href="#install">Install</a>
@@ -111,7 +113,7 @@
 
   <!-- Try It editor -->
   <h2 id="tryit">Try It</h2>
-  <div class="try-editor">
+  <div class="try-editor theme-kintsugi" id="try-editor-box">
     <div class="try-header">
       <div class="try-lang-wrap">
         <button class="try-lang-opt active" data-try-lang="js">JS</button>
@@ -124,6 +126,45 @@
       </div>
       <div class="try-samples" id="try-samples"></div>
     </div>
+
+    <!-- Playground Controls Bar -->
+    <div class="try-controls-bar">
+      <div class="try-ctrl-group">
+        <label for="try-size-slider">Size: <span id="try-size-val">14.5px</span></label>
+        <input type="range" id="try-size-slider" min="11" max="24" step="0.5" value="14.5">
+      </div>
+      <div class="try-ctrl-group">
+        <label for="try-weight-sel">Weight</label>
+        <select id="try-weight-sel">
+          <option value="100">100 Thin</option>
+          <option value="200">200 ExtraLight</option>
+          <option value="300">300 Light</option>
+          <option value="350">350 SemiLight</option>
+          <option value="400" selected>400 Regular</option>
+          <option value="500">500 Medium</option>
+          <option value="600">600 SemiBold</option>
+          <option value="700">700 Bold</option>
+          <option value="800">800 ExtraBold</option>
+          <option value="900">900 Black</option>
+        </select>
+      </div>
+      <div class="try-ctrl-group">
+        <label for="try-theme-sel">Theme</label>
+        <select id="try-theme-sel">
+          <option value="theme-kintsugi" selected>Kintsugi Dark</option>
+          <option value="theme-tokyonight">Tokyo Night</option>
+          <option value="theme-kanagawa">Kanagawa Dragon</option>
+          <option value="theme-catppuccin">Catppuccin Mocha</option>
+          <option value="theme-solarized-light">Solarized Light</option>
+        </select>
+      </div>
+      <div class="try-ctrl-group">
+        <button class="try-toggle-btn active" id="try-ligatures-btn" type="button" title="Toggle OpenType Ligatures">
+          <span class="dot-indicator"></span> Ligatures
+        </button>
+      </div>
+    </div>
+
     <div class="try-body">
       <pre class="try-gutter" id="try-gutter"></pre>
       <div class="try-input-wrap">
@@ -134,6 +175,38 @@
     <div class="try-status">
       <span>Ioskeley Mono</span>
       <span id="try-status-lang">JavaScript</span>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- Optical Size Waterfall -->
+  <h2 id="waterfall">Optical Size Waterfall</h2>
+  <p>Engineered geometric rhythm and uncompromised hinting preserved across all display scales.</p>
+  <div class="waterfall-box">
+    <div class="waterfall-row" style="--fz: 32px;">
+      <span class="waterfall-meta">32px</span>
+      <span class="waterfall-text">Ioskeley Mono — geometric monospace</span>
+    </div>
+    <div class="waterfall-row" style="--fz: 24px;">
+      <span class="waterfall-meta">24px</span>
+      <span class="waterfall-text">const specimen = render({ mono: true, weights: 10 });</span>
+    </div>
+    <div class="waterfall-row" style="--fz: 18px;">
+      <span class="waterfall-meta">18px</span>
+      <span class="waterfall-text">fn verify_parity(origin: Point, baseline: f64) -&gt; Result&lt;Diff&gt;</span>
+    </div>
+    <div class="waterfall-row" style="--fz: 14px;">
+      <span class="waterfall-meta">14px</span>
+      <span class="waterfall-text">export async function loadBuffer(q: Map&lt;string, number&gt;) =&gt; `Q::${q.get("@$")}`</span>
+    </div>
+    <div class="waterfall-row" style="--fz: 12px;">
+      <span class="waterfall-meta">12px</span>
+      <span class="waterfall-text">0123456789 != == === -&gt; =&gt; &gt;= &lt;= {} [] () &lt;&gt; /* !@#$%^&amp;* */ 0xFC82 100_000 0.0</span>
+    </div>
+    <div class="waterfall-row" style="--fz: 10px;">
+      <span class="waterfall-meta">10px</span>
+      <span class="waterfall-text">drwxr-xr-x  12 user staff 384 May 26 23:40 Cargo.lock (98752 iTerm2 2.3% 1.2% VSZ 4284956)</span>
     </div>
   </div>
 
@@ -191,6 +264,30 @@
       </tr>
     </tbody>
   </table>
+
+  <!-- Editor & Terminal Quick Setup -->
+  <div style="margin-top: 2rem;">
+    <h2 id="setup">Editor &amp; Terminal Setup</h2>
+    <p>Copy-paste ready configs for your favorite environment.</p>
+    <div class="config-tabs-box">
+      <div class="config-tabs-nav">
+        <button class="config-tab active" data-cfg="vscode">VS Code</button>
+        <button class="config-tab" data-cfg="zed">Zed</button>
+        <button class="config-tab" data-cfg="ghostty">Ghostty</button>
+        <button class="config-tab" data-cfg="kitty">Kitty</button>
+        <button class="config-tab" data-cfg="alacritty">Alacritty</button>
+        <button class="config-tab" data-cfg="wezterm">WezTerm</button>
+        <button class="config-tab" data-cfg="neovim">Neovim</button>
+      </div>
+      <div class="config-code-wrap">
+        <button class="copy-cfg-btn" id="copy-cfg-btn" type="button" title="Copy snippet to clipboard">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+          <span id="copy-cfg-text">Copy</span>
+        </button>
+        <pre class="config-code" id="config-code"></pre>
+      </div>
+    </div>
+  </div>
 
   <hr>
 

@@ -1,36 +1,69 @@
-// Kintsugi Dark Flared Prism theme
-const kintsugiTheme = `
+// Multi-Theme Prism definitions
+const themesCSS = `
 code[class*="language-"], pre[class*="language-"] {
-  color: #BCAC8F; background: none; text-shadow: none;
-  font-family: inherit; font-size: inherit;
+  font-family: inherit; font-size: inherit; background: none; text-shadow: none;
 }
 pre[class*="language-"]::-moz-selection, pre[class*="language-"] ::-moz-selection,
-code[class*="language-"]::-moz-selection, code[class*="language-"] ::-moz-selection {
-  text-shadow: none; background: #6c7a8a30;
-}
+code[class*="language-"]::-moz-selection, code[class*="language-"] ::-moz-selection,
 pre[class*="language-"]::selection, pre[class*="language-"] ::selection,
 code[class*="language-"]::selection, code[class*="language-"] ::selection {
   text-shadow: none; background: #6c7a8a30;
 }
-.token.comment, .token.prolog, .token.doctype, .token.cdata { color: #5f5f5f; }
-.token.punctuation { color: #7f7b66; }
-.token.property, .token.tag, .token.boolean, .token.number,
-.token.constant, .token.symbol, .token.deleted { color: #DB9833; }
-.token.selector, .token.attr-name, .token.string, .token.char,
-.token.builtin, .token.inserted { color: #cc7f66; }
-.token.operator, .token.entity, .token.url,
-.language-css .token.string, .style .token.string { color: #E08542; }
-.token.atrule, .token.attr-value, .token.keyword { color: #D66848; font-weight: bold; }
-.token.function, .token.class-name { color: #798283; }
-.token.regex, .token.important, .token.variable { color: #DBAD49; }
-.token.important, .token.bold { font-weight: bold; }
-.token.italic { font-style: italic; }
-.token.entity { cursor: help; }
+
+/* 1. Kintsugi Dark */
+.theme-kintsugi .token.comment, .theme-kintsugi .token.prolog, .theme-kintsugi .token.doctype, .theme-kintsugi .token.cdata { color: #5f5f5f; }
+.theme-kintsugi .token.punctuation { color: #7f7b66; }
+.theme-kintsugi .token.property, .theme-kintsugi .token.tag, .theme-kintsugi .token.boolean, .theme-kintsugi .token.number, .theme-kintsugi .token.constant, .theme-kintsugi .token.symbol, .theme-kintsugi .token.deleted { color: #DB9833; }
+.theme-kintsugi .token.selector, .theme-kintsugi .token.attr-name, .theme-kintsugi .token.string, .theme-kintsugi .token.char, .theme-kintsugi .token.builtin, .theme-kintsugi .token.inserted { color: #cc7f66; }
+.theme-kintsugi .token.operator, .theme-kintsugi .token.entity, .theme-kintsugi .token.url, .theme-kintsugi .language-css .token.string, .theme-kintsugi .style .token.string { color: #E08542; }
+.theme-kintsugi .token.atrule, .theme-kintsugi .token.attr-value, .theme-kintsugi .token.keyword { color: #D66848; font-weight: bold; }
+.theme-kintsugi .token.function, .theme-kintsugi .token.class-name { color: #798283; }
+.theme-kintsugi .token.regex, .theme-kintsugi .token.important, .theme-kintsugi .token.variable { color: #DBAD49; }
+
+/* 2. Tokyo Night */
+.theme-tokyonight .token.comment, .theme-tokyonight .token.prolog { color: #565f89; }
+.theme-tokyonight .token.punctuation { color: #89ddff; }
+.theme-tokyonight .token.property, .theme-tokyonight .token.boolean, .theme-tokyonight .token.number, .theme-tokyonight .token.constant { color: #ff9e64; }
+.theme-tokyonight .token.string, .theme-tokyonight .token.char, .theme-tokyonight .token.builtin { color: #9ece6a; }
+.theme-tokyonight .token.operator { color: #89ddff; }
+.theme-tokyonight .token.keyword, .theme-tokyonight .token.atrule { color: #bb9af7; font-weight: bold; }
+.theme-tokyonight .token.function, .theme-tokyonight .token.class-name { color: #7aa2f7; }
+.theme-tokyonight .token.variable, .theme-tokyonight .token.regex { color: #e0af68; }
+
+/* 3. Kanagawa Dragon */
+.theme-kanagawa .token.comment { color: #737c73; }
+.theme-kanagawa .token.punctuation { color: #9e9b93; }
+.theme-kanagawa .token.number, .theme-kanagawa .token.boolean, .theme-kanagawa .token.constant { color: #e46876; }
+.theme-kanagawa .token.string, .theme-kanagawa .token.char { color: #87a987; }
+.theme-kanagawa .token.operator { color: #c4b28a; }
+.theme-kanagawa .token.keyword { color: #8ba4b0; font-weight: bold; }
+.theme-kanagawa .token.function, .theme-kanagawa .token.class-name { color: #a292a3; }
+.theme-kanagawa .token.variable { color: #e6c384; }
+
+/* 4. Catppuccin Mocha */
+.theme-catppuccin .token.comment { color: #6c7086; }
+.theme-catppuccin .token.punctuation { color: #94e2d5; }
+.theme-catppuccin .token.number, .theme-catppuccin .token.boolean, .theme-catppuccin .token.constant { color: #fab387; }
+.theme-catppuccin .token.string, .theme-catppuccin .token.char { color: #a6e3a1; }
+.theme-catppuccin .token.operator { color: #89dceb; }
+.theme-catppuccin .token.keyword { color: #cba6f7; font-weight: bold; }
+.theme-catppuccin .token.function, .theme-catppuccin .token.class-name { color: #89b4fa; }
+.theme-catppuccin .token.variable { color: #f9e2af; }
+
+/* 5. Solarized Light */
+.theme-solarized-light .token.comment { color: #93a1a1; }
+.theme-solarized-light .token.punctuation { color: #586e75; }
+.theme-solarized-light .token.number, .theme-solarized-light .token.boolean, .theme-solarized-light .token.constant { color: #d33682; }
+.theme-solarized-light .token.string, .theme-solarized-light .token.char { color: #2aa198; }
+.theme-solarized-light .token.operator { color: #859900; }
+.theme-solarized-light .token.keyword { color: #b58900; font-weight: bold; }
+.theme-solarized-light .token.function, .theme-solarized-light .token.class-name { color: #268bd2; }
+.theme-solarized-light .token.variable { color: #cb4b16; }
 `.trim();
 
 (function() {
   const s = document.createElement('style');
-  s.textContent = kintsugiTheme;
+  s.textContent = themesCSS;
   document.head.appendChild(s);
   document.getElementById('prism-theme')?.remove();
 })();
@@ -505,6 +538,130 @@ Prism.plugins.autoloader.loadLanguages(
     updateEditor();
   }
 );
+
+// ── Playground Interactive Controls ───────────────────────────────────
+
+const tryEditorBox = document.getElementById('try-editor-box');
+const sizeSlider = document.getElementById('try-size-slider');
+const sizeVal = document.getElementById('try-size-val');
+const weightSel = document.getElementById('try-weight-sel');
+const themeSel = document.getElementById('try-theme-sel');
+const ligaturesBtn = document.getElementById('try-ligatures-btn');
+
+if (sizeSlider && sizeVal) {
+  sizeSlider.addEventListener('input', () => {
+    const val = sizeSlider.value;
+    sizeVal.textContent = `${val}px`;
+    tryInput.style.fontSize = `${val}px`;
+    tryHighlight.style.fontSize = `${val}px`;
+    tryGutter.style.fontSize = `${val}px`;
+  });
+}
+
+if (weightSel) {
+  weightSel.addEventListener('change', () => {
+    const w = weightSel.value;
+    tryInput.style.fontWeight = w;
+    tryHighlight.style.fontWeight = w;
+  });
+}
+
+if (themeSel && tryEditorBox) {
+  themeSel.addEventListener('change', () => {
+    tryEditorBox.classList.remove('theme-kintsugi', 'theme-tokyonight', 'theme-kanagawa', 'theme-catppuccin', 'theme-solarized-light');
+    tryEditorBox.classList.add(themeSel.value);
+  });
+}
+
+if (ligaturesBtn) {
+  let ligaturesOn = true;
+  ligaturesBtn.addEventListener('click', () => {
+    ligaturesOn = !ligaturesOn;
+    ligaturesBtn.classList.toggle('active', ligaturesOn);
+    const val = ligaturesOn ? 'normal' : 'none';
+    tryInput.style.fontVariantLigatures = val;
+    tryHighlight.style.fontVariantLigatures = val;
+  });
+}
+
+// ── 1-Click Editor Setup Tabs ─────────────────────────────────────────
+
+const configSnippets = {
+  vscode: `// VS Code / Cursor: settings.json
+{
+  "editor.fontFamily": "'Ioskeley Mono', monospace",
+  "editor.fontLigatures": true,
+  "editor.fontWeight": "400",
+  "editor.fontSize": 14.5,
+  "editor.lineHeight": 1.55
+}`,
+  zed: `// Zed: settings.json
+{
+  "buffer_font_family": "Ioskeley Mono",
+  "buffer_font_size": 15,
+  "buffer_line_height": "comfortable"
+}`,
+  ghostty: `# Ghostty: config
+font-family = Ioskeley Mono
+font-size = 14`,
+  kitty: `# Kitty: kitty.conf
+font_family      Ioskeley Mono Term
+bold_font        auto
+italic_font      auto
+bold_italic_font auto
+font_size        14.0`,
+  alacritty: `# Alacritty: alacritty.toml
+[font.normal]
+family = "Ioskeley Mono"
+style = "Regular"`,
+  wezterm: `-- WezTerm: wezterm.lua
+local wezterm = require 'wezterm'
+local config = wezterm.config_builder()
+config.font = wezterm.font('Ioskeley Mono')
+config.font_size = 14.0
+return config`,
+  neovim: `-- Neovim GUI (Neovide / Goneovim)
+vim.opt.guifont = "IoskeleyMono Nerd Font:h14"`
+};
+
+(function initConfigTabs() {
+  const tabs = document.querySelectorAll('.config-tab');
+  const codeEl = document.getElementById('config-code');
+  const copyBtn = document.getElementById('copy-cfg-btn');
+  const copyText = document.getElementById('copy-cfg-text');
+  let currentKey = 'vscode';
+
+  if (!codeEl) return;
+
+  function renderConfig(key) {
+    currentKey = key;
+    codeEl.textContent = configSnippets[key] || '';
+  }
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      renderConfig(tab.dataset.cfg);
+    });
+  });
+
+  if (copyBtn) {
+    copyBtn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(configSnippets[currentKey]);
+        copyBtn.classList.add('copied');
+        if (copyText) copyText.textContent = '✓ Copied';
+        setTimeout(() => {
+          copyBtn.classList.remove('copied');
+          if (copyText) copyText.textContent = 'Copy';
+        }, 2000);
+      } catch (_) {}
+    });
+  }
+
+  renderConfig('vscode');
+})();
 
 // ── Download counts ──────────────────────────────────────────────────
 
