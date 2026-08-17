@@ -1,11 +1,91 @@
+/* Kintsugi Dark Flared. Neutral (--s-*) and warm (--w-*) surface ramps,
+   darkest to lightest, so the light palette below can just invert them. */
 :root {
   --accent: #b8943a;
+  --accent-hover: #a07d2a;
   --bg: #0c0c0c;
   --bg-2: #070707;
   --text: #BCAC8F;
   --text-2: #7f7b66;
   --border: #2a2a28;
+  --border-2: #333;
+
+  --s-0: #050505;
+  --s-1: #080808;
+  --s-2: #111111;
+  --s-3: #151515;
+  --s-4: #181818;
+  --s-5: #1e1e1e;
+
+  --w-1: #0e0c08;
+  --w-2: #18150d;
+  --w-3: #1a160d;
+  --w-4: #201b12;
+  --w-5: #2e2518;
+  --w-6: #3d2e10;
+  --w-7: #5a4418;
+  --w-8: #6b5128;
+
+  --syn-cmt: #5f5f5f;
+  --syn-key: #DB9833;
+  --syn-str: #cc7f66;
+  --syn-num: #E08542;
+  --syn-bool: #D66848;
+  --syn-punc: #7f7b66;
+  --syn-fn: #798283;
+
+  --shadow: rgba(0, 0, 0, 0.6);
+  /* Translucent so the sticky bar blurs what's behind it. */
+  --header-bg: rgba(12, 12, 12, 0.94);
+  /* Floats over the comparison art, which now switches with the theme. */
+  --overlay: rgba(10, 10, 10, 0.85);
+  --overlay-strong: rgba(18, 15, 10, 0.95);
+  --backdrop: rgba(4, 4, 4, 0.94);
+
   --m: "Ioskeley Mono", "IBM Plex Mono", "Cascadia Code", "JetBrains Mono", monospace;
+}
+
+/* Kintsugi Light Flared. Ramps invert: each step stays one shade further
+   from the page background, so existing rules keep their intent. */
+[data-theme="light"] {
+  --accent: #9a7820;
+  --accent-hover: #87691c;
+  --bg: #f8f4ea;
+  --bg-2: #f2ede4;
+  --text: #3a3828;
+  --text-2: #726e65;
+  --border: #ddd4c0;
+  --border-2: #c9bfa6;
+
+  --s-0: #fdfbf5;
+  --s-1: #f5f1e6;
+  --s-2: #efe9dc;
+  --s-3: #e9e2d2;
+  --s-4: #e3dbc8;
+  --s-5: #ddd4bd;
+
+  --w-1: #f6f1e3;
+  --w-2: #f1ead8;
+  --w-3: #ece3cd;
+  --w-4: #e5dabe;
+  --w-5: #dccdaa;
+  --w-6: #c9b485;
+  --w-7: #ab9256;
+  --w-8: #8f7838;
+
+  --syn-cmt: #8f8b83;
+  --syn-key: #90671c;
+  --syn-str: #a85030;
+  --syn-num: #a45d1d;
+  --syn-bool: #b84020;
+  --syn-punc: #726e65;
+  --syn-fn: #506870;
+
+  --shadow: rgba(90, 78, 50, 0.18);
+  --header-bg: rgba(248, 244, 234, 0.94);
+  --overlay: rgba(248, 244, 234, 0.88);
+  --overlay-strong: rgba(242, 237, 228, 0.96);
+  --backdrop: rgba(236, 231, 220, 0.94);
 }
 
 /* Width font families — only Normal loaded by default */
@@ -96,16 +176,18 @@ body.switching { opacity: 0.85; }
   position: sticky;
   top: 0;
   z-index: 100;
-  background: rgba(12, 12, 12, 0.94);
+  background: var(--header-bg);
   backdrop-filter: blur(14px);
   padding: 0.75rem 0;
-  border-bottom: 1px solid rgba(42, 42, 40, 0.6);
+  border-bottom: 1px solid var(--border);
 }
 
 .header-brand-wrap {
   display: flex;
   align-items: center;
   gap: 0.85rem;
+  /* Full row so the toggle can sit against the right edge. */
+  flex: 1 1 100%;
 }
 
 .site-name {
@@ -117,11 +199,11 @@ body.switching { opacity: 0.85; }
 }
 
 /* Integrated Header Width Switcher */
+/* Square, like every other button here. */
 .header-width-ctrl {
   display: inline-flex;
-  background: #111111;
+  background: var(--s-2);
   border: 1px solid var(--border);
-  border-radius: 3px;
   overflow: hidden;
 }
 
@@ -141,18 +223,19 @@ body.switching { opacity: 0.85; }
 }
 
 .header-w-btn.active {
-  background: #1e190f;
+  background: var(--w-3);
   color: var(--accent);
   font-weight: 600;
 }
 
 .header-w-btn:hover:not(.active) {
-  background: #181818;
+  background: var(--s-4);
   color: var(--text);
 }
 
 nav {
   display: flex;
+  align-items: center;
   gap: 1.15rem;
   flex-wrap: wrap;
 }
@@ -184,49 +267,27 @@ nav a:hover { color: var(--accent); text-decoration: none; }
   line-height: 1.75;
 }
 
-/* CLI Quick Install Pill */
-.cli-quick-bar {
-  margin-bottom: 1.25rem;
-}
-.cli-pill {
+/* Light/dark toggle */
+.theme-toggle {
+  margin-left: auto;
   display: inline-flex;
   align-items: center;
-  gap: 0.6rem;
-  background: #101010;
+  justify-content: center;
+  background: var(--s-2);
   border: 1px solid var(--border);
-  padding: 0.35rem 0.75rem;
-  border-radius: 3px;
-  font-size: 0.75rem;
-  color: var(--text);
-  max-width: 100%;
-  overflow-x: auto;
-}
-.cli-label {
-  color: var(--accent);
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  font-weight: 600;
-}
-.cli-pill code {
-  color: var(--text);
-  font-family: var(--m);
-  font-size: 0.75rem;
-  background: none;
-  padding: 0;
-}
-.cli-copy-btn {
-  background: transparent;
-  border: none;
   color: var(--text-2);
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  padding: 0.2rem;
-  transition: color 0.15s;
+  padding: 0.25rem 0.4rem;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
 }
-.cli-copy-btn:hover { color: var(--accent); }
-.cli-copy-btn.copied { color: #28c840; }
+.theme-toggle:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+/* Show the icon for the mode you'd switch *to*. */
+.theme-toggle .icon-sun { display: none; }
+[data-theme="light"] .theme-toggle .icon-sun { display: block; }
+[data-theme="light"] .theme-toggle .icon-moon { display: none; }
 
 .header-actions {
   display: flex;
@@ -239,21 +300,21 @@ nav a:hover { color: var(--accent); text-decoration: none; }
 .dl-btn {
   display: inline-block;
   background: var(--accent);
-  color: #0c0c0c !important;
+  color: var(--bg) !important;
   font-size: 0.82rem;
   font-weight: 600;
   padding: 0.55em 1.3em;
   text-decoration: none !important;
   transition: background 0.15s;
 }
-.dl-btn:hover { background: #a07d2a; }
+.dl-btn:hover { background: var(--accent-hover); }
 
 .dl-btn--outline {
   background: transparent;
   color: var(--accent) !important;
   border: 1px solid var(--accent);
 }
-.dl-btn--outline:hover { background: #1a160d; }
+.dl-btn--outline:hover { background: var(--w-3); }
 
 .os-pill {
   display: inline-flex;
@@ -261,15 +322,15 @@ nav a:hover { color: var(--accent); text-decoration: none; }
   gap: 0.55em;
   font-size: 0.72rem;
   color: var(--accent);
-  border: 1px solid #3d2e10;
-  background: #110e06;
+  border: 1px solid var(--w-6);
+  background: var(--w-2);
   padding: 0.3em 0.9em;
   text-decoration: none !important;
   transition: border-color 0.15s;
 }
-.os-pill:hover { border-color: #5a4418; }
-.os-pill-sep { color: #3d2e10; }
-.os-pill-sub { color: #6b5128; }
+.os-pill:hover { border-color: var(--w-7); }
+.os-pill-sep { color: var(--w-6); }
+.os-pill-sub { color: var(--w-8); }
 
 .os-dot {
   width: 5px;
@@ -297,7 +358,7 @@ nav a:hover { color: var(--accent); text-decoration: none; }
   background: var(--bg-2);
   transition: background 0.15s;
 }
-.stat-card:hover { background: #121212; }
+.stat-card:hover { background: var(--s-2); }
 .stat-num {
   font-size: 1.8rem;
   font-weight: 700;
@@ -356,6 +417,16 @@ code {
   border: 1px solid var(--border);
 }
 
+/* The rule above is for inline code. In a <pre> the <code> still spans
+   multiple lines, so its border repeats under every one. */
+pre code {
+  border: none;
+  background: none;
+  padding: 0;
+  font-size: inherit;
+  color: inherit;
+}
+
 .try-editor code, .try-editor * code {
   font-family: inherit !important;
   color: inherit !important;
@@ -366,7 +437,7 @@ code {
 
 .install-steps code {
   color: var(--text);
-  background: #141414;
+  background: var(--s-3);
   padding: 0.05em 0.3em;
   border: none;
 }
@@ -382,7 +453,7 @@ strong { font-weight: 600; color: var(--text); }
 .comp-card {
   position: relative;
   border: 1px solid var(--border);
-  background: #080808;
+  background: var(--s-1);
   overflow: hidden;
   cursor: zoom-in;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
@@ -404,7 +475,7 @@ strong { font-weight: 600; color: var(--text); }
   position: absolute;
   bottom: 0.75rem;
   right: 0.75rem;
-  background: rgba(10, 10, 10, 0.85);
+  background: var(--overlay);
   backdrop-filter: blur(8px);
   border: 1px solid var(--border);
   color: var(--text-2);
@@ -425,7 +496,7 @@ strong { font-weight: 600; color: var(--text); }
   opacity: 1;
   color: var(--accent);
   border-color: var(--accent);
-  background: rgba(18, 15, 10, 0.95);
+  background: var(--overlay-strong);
 }
 .comp-card-action svg {
   flex-shrink: 0;
@@ -446,7 +517,7 @@ strong { font-weight: 600; color: var(--text); }
   transition: opacity 0.16s ease, transform 0.16s cubic-bezier(0.2, 0, 0.2, 1);
   z-index: 20;
   background-repeat: no-repeat;
-  background-color: #080808;
+  background-color: var(--s-1);
   display: none;
   overflow: hidden;
 }
@@ -495,7 +566,7 @@ strong { font-weight: 600; color: var(--text); }
 .lightbox-backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(4, 4, 4, 0.94);
+  background: var(--backdrop);
   backdrop-filter: blur(10px);
 }
 .lightbox-container {
@@ -505,7 +576,7 @@ strong { font-weight: 600; color: var(--text); }
   height: 92vh;
   display: flex;
   flex-direction: column;
-  background: #090909;
+  background: var(--s-1);
   border: 1px solid var(--border);
   box-shadow: 0 16px 56px rgba(0, 0, 0, 0.95);
   z-index: 1;
@@ -516,7 +587,7 @@ strong { font-weight: 600; color: var(--text); }
   align-items: center;
   justify-content: space-between;
   padding: 0.55rem 1rem;
-  background: #111111;
+  background: var(--s-2);
   border-bottom: 1px solid var(--border);
   gap: 1rem;
 }
@@ -539,7 +610,7 @@ strong { font-weight: 600; color: var(--text); }
 .lightbox-btn {
   font-family: var(--m);
   font-size: 0.72rem;
-  background: #161616;
+  background: var(--s-3);
   color: var(--text-2);
   border: 1px solid var(--border);
   padding: 0.32em 0.75em;
@@ -551,7 +622,7 @@ strong { font-weight: 600; color: var(--text); }
   transition: background 0.15s, color 0.15s, border-color 0.15s;
 }
 .lightbox-btn:hover {
-  background: #201b12;
+  background: var(--w-4);
   border-color: var(--accent);
   color: var(--accent);
 }
@@ -569,7 +640,7 @@ strong { font-weight: 600; color: var(--text); }
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  background: #050505;
+  background: var(--s-0);
   user-select: none;
 }
 .lightbox-viewport {
@@ -607,7 +678,7 @@ strong { font-weight: 600; color: var(--text); }
   top: 50%;
   transform: translateY(-50%);
   z-index: 2;
-  background: rgba(14, 14, 14, 0.85);
+  background: var(--overlay);
   border: 1px solid var(--border);
   color: var(--text-2);
   width: 2.4rem;
@@ -619,7 +690,7 @@ strong { font-weight: 600; color: var(--text); }
   transition: background 0.15s, color 0.15s, border-color 0.15s;
 }
 .lightbox-arrow:hover {
-  background: #1c180e;
+  background: var(--w-3);
   color: var(--accent);
   border-color: var(--accent);
 }
@@ -632,7 +703,7 @@ strong { font-weight: 600; color: var(--text); }
   padding: 0.35rem 1rem;
   font-size: 0.68rem;
   color: var(--text-2);
-  background: #0b0b0b;
+  background: var(--s-1);
   border-top: 1px solid var(--border);
   text-align: center;
   font-family: var(--m);
@@ -640,7 +711,7 @@ strong { font-weight: 600; color: var(--text); }
 
 /* Code display boxes */
 .preview-box {
-  background: #080808;
+  background: var(--s-1);
   padding: 1rem 1.25rem;
   border: 1px solid var(--border);
   font-size: 0.82rem;
@@ -661,7 +732,7 @@ strong { font-weight: 600; color: var(--text); }
 /* ── Split Diff Comparison Slider ──────────────────────────────────── */
 .split-diff-card {
   border: 1px solid var(--border);
-  background: #080808;
+  background: var(--s-1);
   margin-top: 1.25rem;
   overflow: hidden;
 }
@@ -691,7 +762,7 @@ strong { font-weight: 600; color: var(--text); }
   overflow: hidden;
   user-select: none;
   min-height: 240px;
-  background: #060606;
+  background: var(--s-0);
 }
 .split-diff-layer {
   position: absolute;
@@ -700,11 +771,11 @@ strong { font-weight: 600; color: var(--text); }
   overflow: hidden;
 }
 .split-diff-layer--after {
-  background: #060606;
+  background: var(--s-0);
   font-family: "Courier New", Courier, monospace;
 }
 .split-diff-layer--before {
-  background: #0c0c0b;
+  background: var(--w-1);
   font-family: var(--m);
   border-right: 1px solid var(--accent);
   width: 50%;
@@ -720,8 +791,11 @@ strong { font-weight: 600; color: var(--text); }
   color: var(--text);
   font-family: inherit;
 }
+/* Block, not inline-block: an inline badge takes its line height from the
+   layer's font, and the two layers use different fonts (1px offset). */
 .split-badge {
-  display: inline-block;
+  display: block;
+  width: fit-content;
   font-size: 0.65rem;
   padding: 0.15em 0.5em;
   margin-bottom: 0.6rem;
@@ -736,9 +810,64 @@ strong { font-weight: 600; color: var(--text); }
   border: 1px solid var(--accent);
 }
 .split-badge--right {
-  background: #141414;
+  background: var(--s-3);
   color: var(--text-2);
-  border: 1px solid #333;
+  border: 1px solid var(--border-2);
+}
+
+/* Comparison-font picker in the slider header */
+.split-diff-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.split-diff-controls label {
+  font-size: 0.68rem;
+  color: var(--text-2);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.split-diff-controls select {
+  background: var(--s-2);
+  color: var(--text);
+  border: 1px solid var(--border);
+  font-family: var(--m);
+  font-size: 0.7rem;
+  padding: 0.2rem 0.35rem;
+  border-radius: 2px;
+  cursor: pointer;
+}
+.split-diff-controls select:hover { border-color: var(--accent); }
+
+/* Dim while a web font loads so the swap doesn't look like a glitch. */
+.split-diff-layer--after.is-loading-font { opacity: 0.45; }
+.split-diff-layer--after { transition: opacity 0.18s ease; }
+
+/* The slider is outside the Try It theme scopes, so Prism's tokens land
+   here uncolored. Both halves share this, so only the typeface differs. */
+.split-diff-content .token.comment,
+.split-diff-content .token.prolog { color: var(--syn-cmt); font-style: italic; }
+.split-diff-content .token.punctuation { color: var(--syn-punc); }
+.split-diff-content .token.property,
+.split-diff-content .token.boolean,
+.split-diff-content .token.number,
+.split-diff-content .token.constant { color: var(--syn-key); }
+.split-diff-content .token.string,
+.split-diff-content .token.char,
+.split-diff-content .token.template-string { color: var(--syn-str); }
+.split-diff-content .token.operator { color: var(--syn-num); }
+.split-diff-content .token.keyword,
+.split-diff-content .token.atrule { color: var(--syn-bool); font-weight: 600; }
+.split-diff-content .token.function,
+.split-diff-content .token.class-name { color: var(--syn-fn); }
+/* Right-align the label so the clipped Ioskeley layer doesn't cover it.
+   width:auto keeps it inside the visible area; <pre> won't wrap anyway. */
+.split-diff-layer--after .split-diff-content {
+  width: auto;
+}
+.split-diff-layer--after .split-badge--right {
+  margin-left: auto;
 }
 .split-diff-handle {
   position: absolute;
@@ -765,7 +894,7 @@ strong { font-weight: 600; color: var(--text); }
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  background: #18150d;
+  background: var(--w-2);
   border: 2px solid var(--accent);
   box-shadow: 0 0 10px rgba(0,0,0,0.8), 0 0 8px rgba(184, 148, 58, 0.4);
   display: flex;
@@ -793,7 +922,12 @@ strong { font-weight: 600; color: var(--text); }
   display: flex;
   gap: 0;
   overflow-x: auto;
+  scrollbar-width: none;
+  width: 100%;
 }
+.try-header .try-lang-wrap::-webkit-scrollbar { height: 0; }
+/* Scroll rather than squash on narrow screens. */
+.try-header .try-lang-opt { flex: 0 0 auto; white-space: nowrap; }
 
 .try-header .try-lang-opt {
   font-family: var(--m);
@@ -809,19 +943,36 @@ strong { font-weight: 600; color: var(--text); }
 
 .try-header .try-lang-opt:last-child { border-right: none; }
 .try-header .try-lang-opt.active {
-  background: #1a160d;
+  background: var(--w-3);
   color: var(--accent);
 }
 .try-header .try-lang-opt:hover:not(.active) {
-  background: #151515;
+  background: var(--s-3);
 }
 
+/* Own row — sharing the header with 7 language tabs clipped the last one. */
+.try-samples-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.85rem;
+  background: var(--bg-2);
+  border-bottom: 1px solid var(--border);
+}
+.try-samples-label {
+  font-size: 0.68rem;
+  color: var(--text-2);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-family: var(--m);
+  user-select: none;
+  flex-shrink: 0;
+}
 .try-samples {
   display: flex;
   align-items: center;
   gap: 0.35rem;
-  padding: 0 0.75rem;
-  margin-left: auto;
+  flex-wrap: wrap;
   font-size: 0.72rem;
   color: var(--text-2);
 }
@@ -849,7 +1000,7 @@ strong { font-weight: 600; color: var(--text); }
   flex-wrap: wrap;
   gap: 0.45rem 0.9rem;
   padding: 0.45rem 0.85rem;
-  background: #111111;
+  background: var(--s-2);
   border-bottom: 1px solid var(--border);
   font-size: 0.72rem;
   color: var(--text-2);
@@ -872,7 +1023,7 @@ strong { font-weight: 600; color: var(--text); }
   appearance: none;
   width: 65px;
   height: 3px;
-  background: #252525;
+  background: var(--s-5);
   border-radius: 2px;
   outline: none;
   cursor: pointer;
@@ -893,7 +1044,7 @@ strong { font-weight: 600; color: var(--text); }
 .try-ctrl-group select {
   font-family: var(--m);
   font-size: 0.7rem;
-  background: #181818;
+  background: var(--s-4);
   color: var(--text);
   border: 1px solid var(--border);
   padding: 0.2em 0.45em;
@@ -904,7 +1055,7 @@ strong { font-weight: 600; color: var(--text); }
 .try-toggle-btn {
   font-family: var(--m);
   font-size: 0.7rem;
-  background: #161616;
+  background: var(--s-3);
   color: var(--text-2);
   border: 1px solid var(--border);
   padding: 0.22em 0.6em;
@@ -919,11 +1070,11 @@ strong { font-weight: 600; color: var(--text); }
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background: #444;
+  background: var(--border-2);
   transition: background 0.15s;
 }
 .try-toggle-btn.active {
-  background: #1a160d;
+  background: var(--w-3);
   border-color: var(--accent);
   color: var(--accent);
 }
@@ -934,6 +1085,9 @@ strong { font-weight: 600; color: var(--text); }
 /* Syntax Theme Containers */
 .try-editor.theme-kintsugi .try-highlight { background: #080808; color: #BCAC8F; }
 .try-editor.theme-kintsugi .try-gutter { background: #080808; color: #3d3d3d; }
+.try-editor.theme-kintsugi-light .try-highlight { background: #f8f4ea; color: #3a3828; }
+.try-editor.theme-kintsugi-light .try-gutter { background: #f2ede4; color: #b6b4ac; }
+.try-editor.theme-kintsugi-light .try-input { caret-color: #3a3828; }
 .try-editor.theme-kanagawa .try-highlight { background: #12120f; color: #c5c9c5; }
 .try-editor.theme-kanagawa .try-gutter { background: #0d0e0c; color: #625e5a; }
 .try-editor.theme-tokyonight .try-highlight { background: #1a1b26; color: #a9b1d6; }
@@ -986,23 +1140,32 @@ strong { font-weight: 600; color: var(--text); }
   overflow: hidden;
 }
 
-.try-highlight, .try-input {
+/* The textarea and the highlighted <pre> are stacked, so every property
+   that affects text metrics is set once here for both.
+   white-space is `pre`, not pre-wrap: a wrapped line would take two rows
+   while the gutter still prints one number for it. */
+/* Scoped to .try-editor on purpose. Prism copies the `language-*` class to
+   the wrapping <pre>, which then matches `pre[class*="language-"]` in the
+   injected theme CSS and resizes only the highlight layer. */
+.try-editor .try-highlight,
+.try-editor .try-input {
   margin: 0;
   padding: 0.85rem;
+  border: 0;
   font-family: var(--m);
   font-size: var(--try-fz);
   line-height: var(--try-lh);
+  font-variant-ligatures: inherit;
+  letter-spacing: normal;
   tab-size: 4;
-  white-space: pre-wrap;
-  word-wrap: break-word;
+  white-space: pre;
+  overflow-wrap: normal;
+  word-break: normal;
 }
 
 .try-highlight {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
   background: #080808;
   z-index: 0;
   overflow: hidden;
@@ -1011,19 +1174,20 @@ strong { font-weight: 600; color: var(--text); }
 
 .try-input {
   position: absolute;
-  top: 0;
-  left: 0;
+  inset: 0;
   width: 100%;
   height: 100%;
+  display: block;
+  resize: none;
   color: transparent;
   background: transparent;
   caret-color: var(--text);
-  border: none;
   outline: none;
   overflow: auto;
   z-index: 1;
-  scrollbar-gutter: stable;
 }
+/* Keep the selection visible over the colored text. */
+.try-input::selection { background: rgba(184, 148, 58, 0.28); }
 
 .try-status {
   display: flex;
@@ -1050,11 +1214,11 @@ strong { font-weight: 600; color: var(--text); }
   align-items: baseline;
   gap: 1rem;
   padding: 0.6rem 1rem;
-  background: #080808;
+  background: var(--s-1);
   transition: background 0.15s;
 }
 .waterfall-row:hover {
-  background: #111111;
+  background: var(--s-2);
 }
 .waterfall-meta {
   font-size: 0.68rem;
@@ -1084,7 +1248,7 @@ strong { font-weight: 600; color: var(--text); }
 }
 .dl-card {
   position: relative;
-  background: #090909;
+  background: var(--s-1);
   border: 1px solid var(--border);
   padding: 1.15rem;
   display: flex;
@@ -1093,16 +1257,15 @@ strong { font-weight: 600; color: var(--text); }
 }
 .dl-card:hover {
   border-color: var(--accent);
-  box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+  box-shadow: 0 4px 20px var(--shadow);
 }
 .dl-card--featured {
   border-color: rgba(184, 148, 58, 0.4);
-  background: #0e0c08;
+  background: var(--w-1);
 }
 .dl-card-badge {
-  position: absolute;
-  top: 0.75rem;
-  right: 0.75rem;
+  align-self: flex-start;
+  margin-bottom: 0.6rem;
   font-size: 0.62rem;
   padding: 0.2em 0.5em;
   border-radius: 2px;
@@ -1120,8 +1283,8 @@ strong { font-weight: 600; color: var(--text); }
 }
 .dl-card-badge--orange {
   background: rgba(224, 133, 66, 0.15);
-  color: #e08542;
-  border-color: #e08542;
+  color: var(--syn-num);
+  border-color: var(--syn-num);
 }
 .dl-card-title {
   font-size: 0.95rem;
@@ -1145,7 +1308,7 @@ strong { font-weight: 600; color: var(--text); }
 }
 .dl-tag {
   font-size: 0.65rem;
-  background: #141414;
+  background: var(--s-3);
   border: 1px solid var(--border);
   color: var(--text-2);
   padding: 0.1em 0.45em;
@@ -1163,7 +1326,7 @@ strong { font-weight: 600; color: var(--text); }
   border: 1px solid var(--border);
   overflow: hidden;
   margin-top: 0.75rem;
-  background: #080808;
+  background: var(--s-1);
 }
 .config-tabs-nav {
   display: flex;
@@ -1183,17 +1346,17 @@ strong { font-weight: 600; color: var(--text); }
   transition: background 0.15s, color 0.15s;
 }
 .config-tab.active {
-  background: #1a160d;
+  background: var(--w-3);
   color: var(--accent);
   font-weight: 600;
 }
 .config-tab:hover:not(.active) {
-  background: #151515;
+  background: var(--s-3);
   color: var(--text);
 }
 .config-code-wrap {
   position: relative;
-  background: #080808;
+  background: var(--s-1);
   padding: 1rem 1.25rem;
   min-height: 140px;
 }
@@ -1203,7 +1366,7 @@ strong { font-weight: 600; color: var(--text); }
   right: 0.65rem;
   font-family: var(--m);
   font-size: 0.68rem;
-  background: #161616;
+  background: var(--s-3);
   color: var(--text-2);
   border: 1px solid var(--border);
   padding: 0.25em 0.65em;
@@ -1215,7 +1378,7 @@ strong { font-weight: 600; color: var(--text); }
   transition: all 0.15s;
 }
 .copy-cfg-btn:hover {
-  background: #201b12;
+  background: var(--w-4);
   border-color: var(--accent);
   color: var(--accent);
 }
@@ -1240,18 +1403,18 @@ strong { font-weight: 600; color: var(--text); }
 }
 
 /* Kintsugi colors in config */
-.config-code .cfg-key { color: #DB9833; }
-.config-code .cfg-str { color: #cc7f66; }
-.config-code .cfg-num { color: #E08542; }
-.config-code .cfg-bool { color: #D66848; font-weight: 600; }
-.config-code .cfg-cmt { color: #5f5f5f; font-style: italic; }
-.config-code .cfg-punc { color: #7f7b66; }
-.config-code .cfg-kw { color: #D66848; font-weight: 600; }
+.config-code .cfg-key { color: var(--syn-key); }
+.config-code .cfg-str { color: var(--syn-str); }
+.config-code .cfg-num { color: var(--syn-num); }
+.config-code .cfg-bool { color: var(--syn-bool); font-weight: 600; }
+.config-code .cfg-cmt { color: var(--syn-cmt); font-style: italic; }
+.config-code .cfg-punc { color: var(--text-2); }
+.config-code .cfg-kw { color: var(--syn-bool); font-weight: 600; }
 
 /* Interactive Installation Tabs */
 .install-tabs-box {
   border: 1px solid var(--border);
-  background: #080808;
+  background: var(--s-1);
   overflow: hidden;
   margin-top: 0.75rem;
 }
@@ -1273,7 +1436,7 @@ strong { font-weight: 600; color: var(--text); }
   transition: all 0.15s;
 }
 .install-tab.active {
-  background: #1a160d;
+  background: var(--w-3);
   color: var(--accent);
   font-weight: 600;
 }
@@ -1285,7 +1448,7 @@ strong { font-weight: 600; color: var(--text); }
   display: block;
 }
 .inline-code-box {
-  background: #101010;
+  background: var(--s-2);
   border: 1px solid var(--border);
   padding: 0.5rem 0.75rem;
   margin-top: 0.4rem;
@@ -1297,7 +1460,7 @@ strong { font-weight: 600; color: var(--text); }
 /* Build from Source Card */
 .build-card {
   border: 1px solid var(--border);
-  background: #080808;
+  background: var(--s-1);
   overflow: hidden;
   margin-top: 0.75rem;
 }
@@ -1318,10 +1481,10 @@ strong { font-weight: 600; color: var(--text); }
   font-family: var(--m);
   overflow-x: auto;
 }
-.build-code .tok-comment { color: #5f5f5f; font-style: italic; }
+.build-code .tok-comment { color: var(--syn-cmt); font-style: italic; }
 .build-footer {
   padding: 0.45rem 0.85rem;
-  background: #0e0e0e;
+  background: var(--s-2);
   border-top: 1px solid var(--border);
   font-size: 0.7rem;
   color: var(--text-2);
@@ -1356,7 +1519,7 @@ strong { font-weight: 600; color: var(--text); }
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
-.dl-table tr:hover td { background: #111; }
+.dl-table tr:hover td { background: var(--s-2); }
 .dl-table td { color: var(--text-2); }
 .dl-cell {
   position: relative;
@@ -1397,7 +1560,7 @@ strong { font-weight: 600; color: var(--text); }
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
-.wt-table tr:hover td { background: #111; }
+.wt-table tr:hover td { background: var(--s-2); }
 .wt-table td { color: var(--text-2); }
 .wt-table .wt-demo { font-size: 1.1rem; color: var(--text); }
 
@@ -1409,7 +1572,7 @@ strong { font-weight: 600; color: var(--text); }
   padding: 0.65rem 1rem; cursor: pointer; user-select: none; list-style: none;
   font-size: 0.85rem; color: var(--text); transition: background 0.15s, border-color 0.15s;
 }
-.rel-list summary:hover { background: #151515; }
+.rel-list summary:hover { background: var(--s-3); }
 .rel-list summary::-webkit-details-marker { display: none; }
 .rel-list summary::before {
   content: '›'; font-size: 1rem; color: var(--text-2);
@@ -1417,7 +1580,7 @@ strong { font-weight: 600; color: var(--text); }
   flex-shrink: 0; display: inline-block; line-height: 1;
 }
 .rel-list details[open] > summary::before { transform: rotate(90deg); color: var(--accent); }
-.rel-notes { padding: 0.85rem 1rem 1rem 1.25rem; border-top: 1px solid var(--border); background: #090909; }
+.rel-notes { padding: 0.85rem 1rem 1rem 1.25rem; border-top: 1px solid var(--border); background: var(--s-1); }
 .rel-notes ul { padding-left: 1.1rem; margin: 0; }
 .rel-notes li { font-size: 0.82rem; color: var(--text-2); line-height: 1.65; margin-bottom: 0.3em; }
 .rel-notes li:last-child { margin-bottom: 0; }
@@ -1435,13 +1598,13 @@ strong { font-weight: 600; color: var(--text); }
   line-height: 1.55;
   transition: background 0.12s;
 }
-.install-steps li:hover { background: #111; }
+.install-steps li:hover { background: var(--s-2); }
 .install-steps li::before {
   content: counter(step);
   font-size: 0.72rem;
   color: var(--accent);
-  border: 1px solid #2e2518;
-  background: #1a160d;
+  border: 1px solid var(--w-5);
+  background: var(--w-3);
   width: 1.6em; height: 1.6em;
   display: flex; align-items: center; justify-content: center;
   position: absolute;
@@ -1462,7 +1625,7 @@ strong { font-weight: 600; color: var(--text); }
   background: var(--bg-2); color: var(--text);
   transition: background 0.12s;
 }
-.glyph-cell:hover { background: #181818; }
+.glyph-cell:hover { background: var(--s-4); }
 .glyph-section { margin-bottom: 1.5rem; }
 
 /* Terminal mockup */
@@ -1475,7 +1638,7 @@ strong { font-weight: 600; color: var(--text); }
   align-items: center;
   gap: 6px;
   padding: 0.5em 0.75em;
-  background: #151515;
+  background: var(--s-3);
   border-bottom: 1px solid var(--border);
 }
 .terminal-tabs {
@@ -1496,12 +1659,12 @@ strong { font-weight: 600; color: var(--text); }
 }
 .terminal-tab:hover {
   color: var(--text);
-  background: #1e1e1e;
+  background: var(--s-5);
 }
 .terminal-tab.active {
   color: var(--accent);
-  background: #080808;
-  border-color: var(--border) var(--border) #080808;
+  background: var(--s-1);
+  border-color: var(--border) var(--border) var(--s-1);
   margin-bottom: -1px;
 }
 .terminal-dot {
@@ -1520,7 +1683,7 @@ strong { font-weight: 600; color: var(--text); }
   text-align: center;
 }
 .terminal-body {
-  background: #080808;
+  background: var(--s-1);
   padding: 0.75rem 1rem;
   font-size: 0.78rem;
   line-height: 1.6;

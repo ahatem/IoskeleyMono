@@ -20,6 +20,16 @@ code[class*="language-"]::selection, code[class*="language-"] ::selection {
 .theme-kintsugi .token.function, .theme-kintsugi .token.class-name { color: #798283; }
 .theme-kintsugi .token.regex, .theme-kintsugi .token.important, .theme-kintsugi .token.variable { color: #DBAD49; }
 
+/* 1b. Kintsugi Light Flared */
+.theme-kintsugi-light .token.comment, .theme-kintsugi-light .token.prolog, .theme-kintsugi-light .token.doctype, .theme-kintsugi-light .token.cdata { color: #8f8b83; }
+.theme-kintsugi-light .token.punctuation { color: #726e65; }
+.theme-kintsugi-light .token.property, .theme-kintsugi-light .token.tag, .theme-kintsugi-light .token.boolean, .theme-kintsugi-light .token.number, .theme-kintsugi-light .token.constant, .theme-kintsugi-light .token.symbol, .theme-kintsugi-light .token.deleted { color: #90671c; }
+.theme-kintsugi-light .token.selector, .theme-kintsugi-light .token.attr-name, .theme-kintsugi-light .token.string, .theme-kintsugi-light .token.char, .theme-kintsugi-light .token.builtin, .theme-kintsugi-light .token.inserted { color: #a85030; }
+.theme-kintsugi-light .token.operator, .theme-kintsugi-light .token.entity, .theme-kintsugi-light .token.url, .theme-kintsugi-light .language-css .token.string, .theme-kintsugi-light .style .token.string { color: #a45d1d; }
+.theme-kintsugi-light .token.atrule, .theme-kintsugi-light .token.attr-value, .theme-kintsugi-light .token.keyword { color: #b84020; font-weight: bold; }
+.theme-kintsugi-light .token.function, .theme-kintsugi-light .token.class-name { color: #506870; }
+.theme-kintsugi-light .token.regex, .theme-kintsugi-light .token.important, .theme-kintsugi-light .token.variable { color: #87691c; }
+
 /* 2. Tokyo Night */
 .theme-tokyonight .token.comment, .theme-tokyonight .token.prolog { color: #565f89; }
 .theme-tokyonight .token.punctuation { color: #89ddff; }
@@ -543,42 +553,71 @@ function renderSamples() {
 function loadSample(index) {
   const samples = trySamplesData[tryLang];
   if (!samples || !samples[index]) return;
-  tryInput.textContent = samples[index].code;
+  tryInput.value = samples[index].code;
   updateEditor();
+  syncScroll();
+}
+
+// Load languages once, not on every keystroke, so re-highlighting stays sync.
+const loadedLangs = new Set();
+function ensureLang(lang, done) {
+  if (loadedLangs.has(lang) || Prism.languages[lang]) { loadedLangs.add(lang); done(); return; }
+  Prism.plugins.autoloader.loadLanguages([lang], () => { loadedLangs.add(lang); done(); });
+}
+
+function renderGutter(lineCount) {
+  // Typing inside a line shouldn't touch the gutter.
+  if (tryGutter.childElementCount === lineCount) return;
+  let s = '';
+  for (let i = 1; i <= lineCount; i++) s += i + '\n';
+  tryGutter.textContent = s;
 }
 
 function updateEditor() {
-  const text = tryInput.innerText;
-  const lines = text.split('\n');
-  tryGutter.textContent = lines.map((_, i) => i + 1).join('\n');
-  tryHighlight.textContent = text || ' ';
+  const text = tryInput.value;
+  renderGutter(text.split('\n').length);
+  // Trailing newline needs a placeholder or the layer ends up a row short.
+  tryHighlight.textContent = text.endsWith('\n') ? text + ' ' : text;
   tryHighlight.className = `language-${tryLang}`;
-  Prism.plugins.autoloader.loadLanguages([tryLang], () => {
-    Prism.highlightElement(tryHighlight);
-  });
+  ensureLang(tryLang, () => Prism.highlightElement(tryHighlight));
 }
 
-tryInput.addEventListener('scroll', () => {
-  tryHighlight.scrollTop = tryInput.scrollTop;
-  tryHighlight.scrollLeft = tryInput.scrollLeft;
+function syncScroll() {
+  const wrap = tryHighlight.parentElement;   // the <pre class="try-highlight">
+  wrap.scrollTop = tryInput.scrollTop;
+  wrap.scrollLeft = tryInput.scrollLeft;
   tryGutter.scrollTop = tryInput.scrollTop;
-});
 
-tryInput.addEventListener('input', updateEditor);
+  // A scrollbar shrinks the textarea's viewport but not the highlight layer,
+  // so match it or the colored text bleeds under the scrollbar.
+  const h = tryInput.clientHeight, w = tryInput.clientWidth;
+  if (h && wrap.style.height !== h + 'px') wrap.style.height = h + 'px';
+  if (w && wrap.style.width !== w + 'px') wrap.style.width = w + 'px';
+}
+
+tryInput.addEventListener('scroll', syncScroll, { passive: true });
+tryInput.addEventListener('input', () => { updateEditor(); syncScroll(); });
 
 tryInput.addEventListener('keydown', (e) => {
-  if (e.key === 'Tab') {
-    e.preventDefault();
-    document.execCommand('insertText', false, '\t');
-    updateEditor();
-  }
-});
-
-tryInput.addEventListener('paste', (e) => {
+  if (e.key !== 'Tab') return;
   e.preventDefault();
-  const text = e.clipboardData.getData('text/plain');
-  document.execCommand('insertText', false, text);
+  const { selectionStart: a, selectionEnd: b, value } = tryInput;
+
+  if (a === b && !e.shiftKey) {
+    // setRangeText keeps native undo working; execCommand doesn't.
+    tryInput.setRangeText('\t', a, b, 'end');
+  } else {
+    // Indent or outdent every line the selection touches.
+    const start = value.lastIndexOf('\n', a - 1) + 1;
+    const end = value.indexOf('\n', b) === -1 ? value.length : value.indexOf('\n', b);
+    const block = value.slice(start, end);
+    const shifted = e.shiftKey
+      ? block.replace(/^(\t| {1,4})/gm, '')
+      : block.replace(/^/gm, '\t');
+    tryInput.setRangeText(shifted, start, end, 'select');
+  }
   updateEditor();
+  syncScroll();
 });
 
 tryLangBtns.forEach(btn => {
@@ -600,7 +639,7 @@ trySamples.addEventListener('click', (e) => {
 
 // Init — load first sample, pre-highlight
 renderSamples();
-tryInput.textContent = trySamplesData.js[0].code;
+tryInput.value = trySamplesData.js[0].code;
 tryStatusLang.textContent = 'JavaScript';
 Prism.plugins.autoloader.loadLanguages(
   ['javascript', 'python', 'rust', 'cpp', 'haskell', 'java', 'markup'],
@@ -639,8 +678,8 @@ if (weightSel) {
 }
 
 const ALL_THEMES = [
-  'theme-kintsugi', 'theme-kanagawa', 'theme-tokyonight', 'theme-catppuccin',
-  'theme-gruvbox', 'theme-nord', 'theme-dracula', 'theme-onedark',
+  'theme-kintsugi', 'theme-kintsugi-light', 'theme-kanagawa', 'theme-tokyonight',
+  'theme-catppuccin', 'theme-gruvbox', 'theme-nord', 'theme-dracula', 'theme-onedark',
   'theme-solarized-dark', 'theme-solarized-light', 'theme-github-dark', 'theme-monokai'
 ];
 
@@ -713,7 +752,10 @@ vim.opt.guifont = "IoskeleyMono Nerd Font:h14"`
 
   function renderConfig(key) {
     currentKey = key;
-    codeEl.textContent = configSnippets[key] || '';
+    const raw = configSnippets[key] || '';
+    // Highlighter is registered further down, so the first render is plain.
+    if (window.__cfgHighlight) codeEl.innerHTML = window.__cfgHighlight(raw);
+    else codeEl.textContent = raw;
   }
 
   tabs.forEach(tab => {
@@ -843,10 +885,12 @@ vim.opt.guifont = "IoskeleyMono Nerd Font:h14"`
   let currentIndex = 0;
   let isZoomed = false;
 
+  // Hold the <img>, not its src — the art swaps on theme change and a cached
+  // src would reopen the old one.
   const galleryItems = cards.map(card => {
     const img = card.querySelector('img');
     return {
-      src: img ? img.getAttribute('src') : '',
+      img,
       alt: img ? img.getAttribute('alt') : '',
       title: card.dataset.title || (img ? img.getAttribute('alt') : 'Comparison Specimen'),
     };
@@ -858,10 +902,11 @@ vim.opt.guifont = "IoskeleyMono Nerd Font:h14"`
     currentIndex = index;
 
     const item = galleryItems[currentIndex];
-    imgEl.src = item.src;
+    const src = item.img ? item.img.getAttribute('src') : '';
+    imgEl.src = src;
     imgEl.alt = item.alt;
     titleEl.textContent = item.title;
-    if (rawLink) rawLink.href = item.src;
+    if (rawLink) rawLink.href = src;
 
     setZoom(false);
   }
@@ -991,7 +1036,7 @@ vim.opt.guifont = "IoskeleyMono Nerd Font:h14"`
 // ── Header Width Switcher Sync ────────────────────────────────────────
 
 (function initHeaderWidth() {
-  const headerBtns = document.querySelectorAll('.header-width-btn');
+  const headerBtns = document.querySelectorAll('.header-w-btn');
   const tryWidthSel = document.getElementById('try-width-sel');
 
   function applyWidthClass(w) {
@@ -1003,18 +1048,14 @@ vim.opt.guifont = "IoskeleyMono Nerd Font:h14"`
 
   function syncAll(w) {
     // sync header buttons
-    headerBtns.forEach(b => b.classList.toggle('active', b.dataset.w === w));
-    // sync existing segment buttons
-    document.querySelectorAll('#width-switcher .seg-opt').forEach(b => {
-      b.classList.toggle('active', b.dataset.width === w);
-    });
+    headerBtns.forEach(b => b.classList.toggle('active', b.dataset.width === w));
     // sync Try It dropdown
     if (tryWidthSel) tryWidthSel.value = w;
     applyWidthClass(w);
   }
 
   headerBtns.forEach(btn => {
-    btn.addEventListener('click', () => syncAll(btn.dataset.w));
+    btn.addEventListener('click', () => syncAll(btn.dataset.width));
   });
 
   if (tryWidthSel) {
@@ -1026,25 +1067,118 @@ vim.opt.guifont = "IoskeleyMono Nerd Font:h14"`
   if (saved) syncAll(saved);
 })();
 
-// ── CLI Quick Install Copy ────────────────────────────────────────────
+// ── Light / dark toggle ───────────────────────────────────────────────
 
-(function initCLICopy() {
-  const btn = document.querySelector('.cli-copy-btn');
-  const code = document.querySelector('.cli-cmd');
-  if (!btn || !code) return;
+(function initThemeToggle() {
+  const btn = document.getElementById('theme-toggle');
+  if (!btn) return;
+  const root = document.documentElement;
 
-  btn.addEventListener('click', async () => {
-    try {
-      await navigator.clipboard.writeText(code.textContent.trim());
-      const prev = btn.textContent;
-      btn.textContent = '✓ Copied';
-      btn.style.color = '#28c840';
-      setTimeout(() => {
-        btn.textContent = prev;
-        btn.style.color = '';
-      }, 2000);
-    } catch (_) {}
+  // Baked art can't inherit CSS vars, so swap the file. data-* keeps the
+  // light renders lazy for anyone who never leaves dark mode.
+  function syncArtwork() {
+    const light = root.getAttribute('data-theme') === 'light';
+    document.querySelectorAll('img[data-light]').forEach(img => {
+      const next = light ? img.dataset.light : img.dataset.dark;
+      if (next && img.getAttribute('src') !== next) img.setAttribute('src', next);
+    });
+
+    // Only follow the site between the two Kintsugi variants. If they've
+    // picked Dracula to preview, leave it alone.
+    const box = document.getElementById('try-editor-box');
+    const sel = document.getElementById('try-theme-sel');
+    if (!box || !sel) return;
+    const want = light ? 'theme-kintsugi-light' : 'theme-kintsugi';
+    const other = light ? 'theme-kintsugi' : 'theme-kintsugi-light';
+    if (box.classList.contains(other)) {
+      box.classList.remove(other);
+      box.classList.add(want);
+      sel.value = want;
+    }
+  }
+  syncArtwork();
+
+  btn.addEventListener('click', () => {
+    const light = root.getAttribute('data-theme') === 'light';
+    if (light) root.removeAttribute('data-theme');
+    else root.setAttribute('data-theme', 'light');
+    try { localStorage.setItem('ioskeley-theme', light ? 'dark' : 'light'); } catch (_) {}
+    syncArtwork();
   });
+
+  // Follow the OS until they pick a side.
+  const mq = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)');
+  if (mq && mq.addEventListener) {
+    mq.addEventListener('change', e => {
+      let saved = null;
+      try { saved = localStorage.getItem('ioskeley-theme'); } catch (_) {}
+      if (saved) return;
+      if (e.matches) root.setAttribute('data-theme', 'light');
+      else root.removeAttribute('data-theme');
+      syncArtwork();
+    });
+  }
+})();
+
+// ── Comparison font picker (lazy-loaded web fonts) ────────────────────
+
+(function initSplitFontPicker() {
+  const sel = document.getElementById('split-font-sel');
+  const layer = document.querySelector('.split-diff-layer--after');
+  const badge = document.getElementById('split-badge-right');
+  if (!sel || !layer || !badge) return;
+
+  // Fetched on first pick, so the page costs nothing if this is never used.
+  const loaded = new Set();
+
+  function loadWebFont(spec, family) {
+    if (loaded.has(spec)) return Promise.resolve();
+    loaded.add(spec);
+
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = `https://fonts.googleapis.com/css2?family=${spec}&display=swap`;
+    document.head.appendChild(link);
+
+    // Resolve once the face is usable, not just when the CSS lands.
+    return new Promise(resolve => {
+      link.addEventListener('load', () => {
+        if (document.fonts && document.fonts.load) {
+          document.fonts.load(`400 1em "${family}"`).then(resolve, resolve);
+        } else resolve();
+      });
+      link.addEventListener('error', resolve);
+    });
+  }
+
+  async function apply() {
+    const opt = sel.selectedOptions[0];
+    const value = sel.value;
+    const spec = opt.dataset.webfont;
+    badge.textContent = opt.textContent.trim();
+
+    if (spec) {
+      layer.classList.add('is-loading-font');
+      await loadWebFont(spec, value);
+      layer.classList.remove('is-loading-font');
+      // Quoted, with a fallback for the load window.
+      layer.style.fontFamily = `"${value}", monospace`;
+    } else {
+      layer.style.fontFamily = value;
+    }
+  }
+
+  sel.addEventListener('change', apply);
+  apply();
+})();
+
+// ── Syntax highlight the comparison slider ────────────────────────────
+
+(function highlightSplitDiff() {
+  const blocks = document.querySelectorAll('.split-diff-content code.language-js');
+  if (!blocks.length || typeof Prism === 'undefined') return;
+  // Identical markup both sides, so the colors line up across the divider.
+  blocks.forEach(b => Prism.highlightElement(b));
 })();
 
 // ── Installation Tabs ─────────────────────────────────────────────────
@@ -1072,84 +1206,57 @@ vim.opt.guifont = "IoskeleyMono Nerd Font:h14"`
 // Color the config code blocks (not Prism, uses custom span classes)
 
 (function highlightConfigs() {
-  const snippets = {
-    vscode: [
-      { key: 'editor.fontFamily',   val: '"\'Ioskeley Mono\', monospace"' },
-      { key: 'editor.fontLigatures', val: 'true' },
-      { key: 'editor.fontWeight',   val: '"400"' },
-      { key: 'editor.fontSize',     val: 14.5 },
-      { key: 'editor.lineHeight',   val: 1.55 },
-    ],
-    zed: [
-      { key: 'buffer_font_family', val: '"Ioskeley Mono"' },
-      { key: 'buffer_font_size',   val: 15 },
-      { key: 'buffer_line_height', val: '"comfortable"' },
-    ],
-    ghostty: null,  // raw text, color handled via cfg-kw spans
-    kitty:   null,
-    alacritty: null,
-    wezterm: null,
-    neovim:  null,
-  };
-
-  // Use a regex-based approach on the raw text to apply spans
+  // Single pass, so emitted markup never gets re-scanned. Chained .replace()
+  // breaks here: once the colon is wrapped in a span the string and number
+  // patterns stop matching, and class="..." reads as a string.
   function highlight(raw) {
-    // Escape HTML entities first
-    let s = raw
+    const esc = t => t
       .replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;');
 
-    // JSON keys: "key":
-    s = s.replace(/"([^"]+)"(\s*:)/g, '<span class="cfg-key">"$1"</span><span class="cfg-punc">$2</span>');
-    // Strings after colon: "value"
-    s = s.replace(/:\s*"([^"]*)"/g, (m, v) => `: <span class="cfg-str">"${v}"</span>`);
-    // booleans
-    s = s.replace(/\b(true|false)\b/g, '<span class="cfg-bool">$1</span>');
-    // numbers (standalone)
-    s = s.replace(/:\s*(\d+\.?\d*)\b/g, (m, n) => `: <span class="cfg-num">${n}</span>`);
-    // Comment lines (// or #)
-    s = s.replace(/(\/\/[^\n]*|#[^\n]*)/g, '<span class="cfg-cmt">$1</span>');
-    // TOML/Lua keys (word = )
-    s = s.replace(/^(\s*)([\w.]+)(\s*=)/gm, '$1<span class="cfg-key">$2</span><span class="cfg-punc">$3</span>');
-    // Lua require / local / return
-    s = s.replace(/\b(require|local|return)\b/g, '<span class="cfg-kw">$1</span>');
+    const token = new RegExp([
+      '(\\/\\/[^\\n]*|#[^\\n]*)',              // 1 comment
+      '("(?:[^"\\\\]|\\\\.)*")(\\s*:)?',       // 2 string, 3 trailing colon => JSON key
+      '\\b(true|false)\\b',                    // 4 boolean
+      '\\b(require|local|return)\\b',          // 5 keyword
+      '\\b(\\d+(?:\\.\\d+)?)\\b',              // 6 number
+      '^([ \\t]*)([A-Za-z_][\\w.]*)(?=\\s*=)'  // 7 indent, 8 TOML/Lua key
+    ].join('|'), 'gm');
 
-    return s;
+    let out = '', last = 0, m;
+    while ((m = token.exec(raw)) !== null) {
+      out += esc(raw.slice(last, m.index));
+      last = m.index + m[0].length;
+
+      if (m[1]) {
+        out += `<span class="cfg-cmt">${esc(m[1])}</span>`;
+      } else if (m[2]) {
+        // A string followed by ":" is a key; otherwise it's a value.
+        out += m[3]
+          ? `<span class="cfg-key">${esc(m[2])}</span><span class="cfg-punc">${esc(m[3])}</span>`
+          : `<span class="cfg-str">${esc(m[2])}</span>`;
+      } else if (m[4]) {
+        out += `<span class="cfg-bool">${m[4]}</span>`;
+      } else if (m[5]) {
+        out += `<span class="cfg-kw">${m[5]}</span>`;
+      } else if (m[6]) {
+        out += `<span class="cfg-num">${m[6]}</span>`;
+      } else if (m[8]) {
+        out += esc(m[7]) + `<span class="cfg-key">${esc(m[8])}</span>`;
+      }
+    }
+    out += esc(raw.slice(last));
+    return out;
   }
 
   const codeEl = document.getElementById('config-code');
   if (!codeEl) return;
 
-  // Store originals keyed by config tab
-  const rawMap = {};
-  const tabs = document.querySelectorAll('.config-tab');
-  tabs.forEach(tab => {
-    const key = tab.dataset.cfg;
-    if (key && window._configSnippets && window._configSnippets[key]) {
-      rawMap[key] = window._configSnippets[key];
-    }
-  });
+  // renderConfig calls this directly. The old version hooked tab clicks and
+  // re-highlighted in rAF, which raced it and never fired in a background tab.
+  window.__cfgHighlight = highlight;
 
-  // Expose snippets to this scope (main.js configSnippets defined above)
-  // Override renderConfig to also apply highlights
-  const origRender = window._renderConfig;
-  if (origRender) return; // already patched
-
-  // Patch renderConfig at source
-  tabs.forEach(tab => {
-    tab.addEventListener('click', () => {
-      // Slight delay so main renderConfig runs first
-      requestAnimationFrame(() => {
-        const raw = codeEl.textContent;
-        codeEl.innerHTML = highlight(raw);
-      });
-    });
-  });
-
-  // Apply on initial load
-  requestAnimationFrame(() => {
-    const raw = codeEl.textContent;
-    codeEl.innerHTML = highlight(raw);
-  });
+  // renderConfig already painted the default as plain text; redo it.
+  codeEl.innerHTML = highlight(codeEl.textContent);
 })();
