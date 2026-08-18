@@ -35,9 +35,12 @@ jobs:
           fetch-depth: 1
 
       - name: Install system dependencies
+        # Guards against the apt stall that hung the v2.1.0 tag push for 2h:
+        # a 17s step ran to the job's six-hour ceiling with no output progress.
+        timeout-minutes: 12
         run: |
-          sudo apt-get update
-          sudo apt-get install -y ttfautohint python3 fontforge
+          for i in 1 2 3; do sudo apt-get update && break; sleep 5; done
+          for i in 1 2 3; do sudo apt-get install -y ttfautohint python3 fontforge && break; sleep 5; done
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
