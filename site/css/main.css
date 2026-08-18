@@ -112,21 +112,8 @@
 @font-face { font-family: "Ioskeley Mono SC"; src: url("../fonts/IoskeleyMono-SemiCondensedSemiBoldItalic.woff2") format("woff2"); font-weight: 600; font-style: italic; font-display: swap; }
 @font-face { font-family: "Ioskeley Mono SC"; src: url("../fonts/IoskeleyMono-SemiCondensedBoldItalic.woff2") format("woff2"); font-weight: 700; font-style: italic; font-display: swap; }
 
-/* Condensed */
-@font-face { font-family: "Ioskeley Mono C"; src: url("../fonts/IoskeleyMono-CondensedExtraLight.woff2") format("woff2"); font-weight: 200; font-style: normal; font-display: swap; }
-@font-face { font-family: "Ioskeley Mono C"; src: url("../fonts/IoskeleyMono-CondensedLight.woff2") format("woff2"); font-weight: 300; font-style: normal; font-display: swap; }
-@font-face { font-family: "Ioskeley Mono C"; src: url("../fonts/IoskeleyMono-Condensed.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
-@font-face { font-family: "Ioskeley Mono C"; src: url("../fonts/IoskeleyMono-CondensedMedium.woff2") format("woff2"); font-weight: 500; font-style: normal; font-display: swap; }
-@font-face { font-family: "Ioskeley Mono C"; src: url("../fonts/IoskeleyMono-CondensedSemiBold.woff2") format("woff2"); font-weight: 600; font-style: normal; font-display: swap; }
-@font-face { font-family: "Ioskeley Mono C"; src: url("../fonts/IoskeleyMono-CondensedBold.woff2") format("woff2"); font-weight: 700; font-style: normal; font-display: swap; }
-@font-face { font-family: "Ioskeley Mono C"; src: url("../fonts/IoskeleyMono-CondensedItalic.woff2") format("woff2"); font-weight: 400; font-style: italic; font-display: swap; }
-@font-face { font-family: "Ioskeley Mono C"; src: url("../fonts/IoskeleyMono-CondensedMediumItalic.woff2") format("woff2"); font-weight: 500; font-style: italic; font-display: swap; }
-@font-face { font-family: "Ioskeley Mono C"; src: url("../fonts/IoskeleyMono-CondensedSemiBoldItalic.woff2") format("woff2"); font-weight: 600; font-style: italic; font-display: swap; }
-@font-face { font-family: "Ioskeley Mono C"; src: url("../fonts/IoskeleyMono-CondensedBoldItalic.woff2") format("woff2"); font-weight: 700; font-style: italic; font-display: swap; }
-
 /* Width classes */
 html.sc { --m: "Ioskeley Mono SC", "IBM Plex Mono", "Cascadia Code", "JetBrains Mono", monospace; }
-html.condensed { --m: "Ioskeley Mono C", "IBM Plex Mono", "Cascadia Code", "JetBrains Mono", monospace; }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html {

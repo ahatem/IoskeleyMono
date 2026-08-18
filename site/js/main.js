@@ -162,9 +162,8 @@ const WIDTH_KEY = 'ioskeley-width';
 })();
 
 function applyWidth(width) {
-  document.documentElement.classList.remove('sc', 'condensed');
+  document.documentElement.classList.remove('sc');
   if (width === 'sc') document.documentElement.classList.add('sc');
-  if (width === 'cond') document.documentElement.classList.add('condensed');
 }
 
 widthOpts.forEach(btn => {
@@ -1040,9 +1039,8 @@ vim.opt.guifont = "IoskeleyMono Nerd Font:h14"`
   const tryWidthSel = document.getElementById('try-width-sel');
 
   function applyWidthClass(w) {
-    document.documentElement.classList.remove('sc', 'condensed');
+    document.documentElement.classList.remove('sc');
     if (w === 'sc') document.documentElement.classList.add('sc');
-    if (w === 'cond') document.documentElement.classList.add('condensed');
     localStorage.setItem('ioskeley-width', w);
   }
 

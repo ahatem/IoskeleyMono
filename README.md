@@ -26,7 +26,7 @@
 ## ⚡ Highlights
 
 - **📐 Metric & Geometric Parity**: Custom line height, letter spacing, and character bounds tuned to Berkeley Mono's compact density.
-- **🎨 10 Weights & 3 Widths**: Full weight spectrum (Thin `100` → Black `900`) across Normal, SemiCondensed, and Condensed, each with matching true italics (60 styles total).
+- **🎨 10 Weights & 2 Widths**: Full weight spectrum (Thin `100` → Black `900`) across Normal and SemiCondensed, each with matching true italics (40 styles total).
 - **🔤 Distinctive Glyph Engineering**: Dotted `0`, single-storey `g`, flat-arc parentheses `()`, open-contour `6` and `9`, two-circle `8`, raised underscore, and square punctuation.
 - **💻 Tailored Variants**: Out-of-the-box support for Nerd Font icons, strict terminal grid alignment (`Term`), and ligature-free environments (`NL`).
 - **🌐 Web Ready**: Pre-packaged WOFF2 web fonts with optimized `@font-face` definitions.
@@ -61,26 +61,25 @@ Grab pre-built packages from the [Releases page](https://github.com/ahatem/Ioske
 | Package | Use Case | Ligatures | Nerd Icons |
 |---|---|:---:|:---:|
 | **`IoskeleyMono.zip`** *(Recommended)* | VS Code, JetBrains, Zed, Sublime Text, Cursor | ✅ | — |
-| **`IoskeleyMono-NerdFont.zip`** | Neovim, Starship, modern terminals with icon support | ✅ | ✅ |
-| **`IoskeleyMono-Term.zip`** | Strict terminal grids (Kitty, Ghostty, WezTerm) | Grid | — |
-| **`IoskeleyMono-Term-NerdFont.zip`** | Strict terminal grids + Nerd Font icons | Grid | ✅ |
+| **`IoskeleyMono-NerdFont.zip`** | Editors that show Nerd Font icons in file trees and status bars | ✅ | ✅ |
+| **`IoskeleyMono-Term.zip`** *(terminals)* | Kitty, Ghostty, WezTerm, Alacritty | ✅ | — |
+| **`IoskeleyMono-Term-NerdFont.zip`** *(terminals + icons)* | Kitty, Ghostty, WezTerm with Neovim, Starship, zsh | ✅ | ✅ |
 | **`IoskeleyMono-NL.zip`** | Environments with forced ligatures (e.g. Xcode) | ❌ | — |
 | **`IoskeleyMono-NL-NerdFont.zip`** | No ligatures + Nerd Font icons | ❌ | ✅ |
 | **`IoskeleyMono-Web.zip`** | Web applications and CSS `@font-face` (WOFF2) | ✅ | — |
 
+> **In a terminal, take a `Term` build.** They redraw arrows and box-drawing to sit inside the cell, and they're the ones detected as monospace by fontconfig and macOS Font Book.
+
 <details>
 <summary><strong>📁 Package Internal Structure (Widths & Hinting)</strong></summary>
 
-Every TTF package contains all 3 widths, organized by screen rendering target:
+Every TTF package contains both widths, organized by screen rendering target:
 
 ```
 Normal/
   Hinted/    ← ClearType / standard-DPI screens (Windows)
   Unhinted/  ← High-DPI / Retina screens (macOS, Linux HiDPI)
 SemiCondensed/
-  Hinted/
-  Unhinted/
-Condensed/
   Hinted/
   Unhinted/
 ```
@@ -92,6 +91,15 @@ Condensed/
 ## 🚀 Quick Setup & Editor Configuration
 
 ### Installation
+
+**macOS (Homebrew)** — thanks to [@zhimoe](https://github.com/zhimoe), [@ForsakenHarmony](https://github.com/ForsakenHarmony) and [@frovere](https://github.com/frovere), Ioskeley is in the official casks:
+
+```bash
+brew install --cask font-ioskeley-mono
+```
+
+Or install manually:
+
 - **macOS**: Unzip → Select all `.ttf` files in your chosen folder → Double click & click **Install Font** (or drag into Font Book).
 - **Windows**: Unzip → Select all `.ttf` files → Right click → **Install for all users**.
 - **Linux**: Unzip → Copy `.ttf` files to `~/.local/share/fonts/` (or `~/.fonts/`) → Run `fc-cache -fv`.
@@ -140,12 +148,45 @@ italic_font      auto
 bold_italic_font auto
 font_size        14.0
 ```
+*(With the Nerd Font package, use `IoskeleyMonoTerm Nerd Font Mono`.)*
+
+---
+
+## 🔡 Font Features
+
+Ioskeley ships several OpenType features you can switch on per-app. The most
+asked-for is `zero`, which swaps the dotted zero for a slashed one.
+
+| Feature | Effect |
+|---|:---|
+| `zero` | Slashed zero instead of dotted |
+| `calt` | Programming ligatures (on by default) |
+| `dlig` | Discretionary ligatures |
+| `onum` | Old-style figures |
+| `frac` | Fractions |
+
+```jsonc
+// VS Code / Cursor
+"editor.fontLigatures": "'calt', 'zero'"
+```
+```ini
+# Ghostty
+font-feature = zero
+```
+```conf
+# Kitty
+font_features IoskeleyMono +zero
+```
+```css
+/* CSS */
+font-feature-settings: "zero";
+```
 
 ---
 
 ## 📊 Weight Spectrum
 
-Ioskeley Mono provides a full continuous weight spectrum across all 3 widths:
+Ioskeley Mono provides a full continuous weight spectrum across both widths:
 
 | Weight Name | CSS `font-weight` | Upright | Italic |
 |---|---|:---:|:---:|
@@ -177,9 +218,9 @@ cp IoskeleyMono/private-build-plans.toml Iosevka/
 # 3. Install dependencies and compile
 cd Iosevka
 npm install
-npm run build -- contents::IoskeleyMono contents::IoskeleyMonoTerm
+npm run build -- contents::IoskeleyMono contents::IoskeleyMonoTerm contents::IoskeleyMonoNL contents::IoskeleyMonoWeb
 ```
-Compiled TTF binaries will be output to `Iosevka/dist/IoskeleyMono/` and `Iosevka/dist/IoskeleyMonoTerm/`.
+Compiled binaries land in `Iosevka/dist/<PlanName>/`. The workflow pins Iosevka to a known-good tag; check [`build-font.yml`](.github/workflows/build-font.yml) for the current one.
 
 ---
 

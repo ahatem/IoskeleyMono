@@ -44,7 +44,6 @@
         <div class="header-width-ctrl" id="header-width-switcher" title="Select default font width for page">
           <button class="header-w-btn active" data-width="normal">Normal</button>
           <button class="header-w-btn" data-width="sc">Semi-Cond</button>
-          <button class="header-w-btn" data-width="cond">Cond</button>
         </div>
         <button class="theme-toggle" id="theme-toggle" type="button" title="Toggle light / dark" aria-label="Toggle light or dark theme">
           <svg class="icon-moon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
@@ -68,7 +67,7 @@
     <p class="tagline">
       A free, open-source monospace font crafted to match Berkeley Mono's aesthetic.
       Built by configuring <a href="https://github.com/be5invis/Iosevka" target="_blank" rel="noopener">Iosevka</a>.
-      Three widths, ten weights, italic variants, and Nerd Font support.
+      Two widths, ten weights, italic variants, and Nerd Font support.
       <strong>Iosevka + Berkeley = Ioskeley</strong>.
     </p>
 
@@ -94,7 +93,7 @@
       <span class="stat-label">Weights</span>
     </div>
     <div class="stat-card">
-      <span class="stat-num">3</span>
+      <span class="stat-num">2</span>
       <span class="stat-label">Widths</span>
     </div>
     <div class="stat-card">
@@ -254,7 +253,6 @@ export const render = (q: Map&lt;string, number&gt;) => {
         <select id="try-width-sel">
           <option value="normal" selected>Normal</option>
           <option value="sc">Semi-Condensed</option>
-          <option value="cond">Condensed</option>
         </select>
       </div>
       <div class="try-ctrl-group">
@@ -542,9 +540,6 @@ Normal/
   Hinted/     ← ClearType / standard-DPI screens (Windows)
   Unhinted/   ← High-DPI / Retina screens (macOS, Linux HiDPI)
 SemiCondensed/
-  Hinted/
-  Unhinted/
-Condensed/
   Hinted/
   Unhinted/
       </div>

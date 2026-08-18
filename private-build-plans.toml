@@ -159,16 +159,14 @@ css = 900
 
 # ============================================================
 # WIDTHS
-# Matching Berkeley Mono's width axis (wdth 80–100):
-#   80 = Condensed     → shape 480  (600 × 0.80)
 #   90 = SemiCondensed → shape 540  (600 × 0.90)
 #   100 = Normal       → shape 600
+#
+# Condensed (480) was dropped in v2.1.0 — it sat narrower than
+# Iosevka's own Normal (500) and read as squashed. If it comes
+# back, widen the steps to 600 / 555 / 510 rather than reusing
+# the old value.
 # ============================================================
-
-[buildPlans.IoskeleyMono.widths.Condensed]
-shape = 495
-menu = 3
-css = "condensed"
 
 [buildPlans.IoskeleyMono.widths.SemiCondensed]
 shape = 540
