@@ -27,6 +27,10 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: be5invis/Iosevka
+          # Pinned: v34.4.0 was current when v2.0.0 built cleanly on 2026-04-26.
+          # Unpinned this tracked upstream main, so every release built against
+          # whatever had landed that day.
+          ref: v34.4.0
           path: iosevka-src
           fetch-depth: 1
 
@@ -45,7 +49,7 @@ jobs:
           cp private-build-plans.toml iosevka-src/
           cd iosevka-src
           npm install
-          npm run build -- contents::IoskeleyMono contents::IoskeleyMonoTerm contents::IoskeleyMonoNL
+          npm run build -- contents::IoskeleyMono contents::IoskeleyMonoTerm contents::IoskeleyMonoNL contents::IoskeleyMonoWeb
 
       - name: Verify build output
         run: |
@@ -59,6 +63,10 @@ jobs:
           fi
           if [ ! -d "iosevka-src/dist/IoskeleyMonoNL/TTF" ]; then
             echo "IoskeleyMonoNL build output not found!"
+            exit 1
+          fi
+          if [ ! -d "iosevka-src/dist/IoskeleyMonoWeb/WOFF2" ]; then
+            echo "IoskeleyMonoWeb build output not found!"
             exit 1
           fi
 
@@ -84,46 +92,64 @@ jobs:
           PATCHER="nerd-fonts-patcher/font-patcher"
 
           for font in "$DIST"/IoskeleyMono-SemiCondensed*.ttf; do
-            fontforge -script "$PATCHER" "$font" --complete --careful --outputdir patched-fonts/SemiCondensed
+            fontforge -script "$PATCHER" "$font" --complete --careful --mono --outputdir patched-fonts/SemiCondensed
           done
 
           for font in "$DIST"/IoskeleyMono-Condensed*.ttf; do
             [[ "$font" == *SemiCondensed* ]] && continue
-            fontforge -script "$PATCHER" "$font" --complete --careful --outputdir patched-fonts/Condensed
+            fontforge -script "$PATCHER" "$font" --complete --careful --mono --outputdir patched-fonts/Condensed
           done
 
           for font in "$DIST"/IoskeleyMono-*.ttf; do
             [[ "$font" == *Condensed* ]] && continue
-            fontforge -script "$PATCHER" "$font" --complete --careful --outputdir patched-fonts/Normal
+            fontforge -script "$PATCHER" "$font" --complete --careful --mono --outputdir patched-fonts/Normal
           done
 
           for font in "$DIST_TERM"/IoskeleyMonoTerm-SemiCondensed*.ttf; do
-            fontforge -script "$PATCHER" "$font" --complete --careful --outputdir patched-fonts-term/SemiCondensed
+            fontforge -script "$PATCHER" "$font" --complete --careful --mono --outputdir patched-fonts-term/SemiCondensed
           done
 
           for font in "$DIST_TERM"/IoskeleyMonoTerm-Condensed*.ttf; do
             [[ "$font" == *SemiCondensed* ]] && continue
-            fontforge -script "$PATCHER" "$font" --complete --careful --outputdir patched-fonts-term/Condensed
+            fontforge -script "$PATCHER" "$font" --complete --careful --mono --outputdir patched-fonts-term/Condensed
           done
 
           for font in "$DIST_TERM"/IoskeleyMonoTerm-*.ttf; do
             [[ "$font" == *Condensed* ]] && continue
-            fontforge -script "$PATCHER" "$font" --complete --careful --outputdir patched-fonts-term/Normal
+            fontforge -script "$PATCHER" "$font" --complete --careful --mono --outputdir patched-fonts-term/Normal
           done
 
           for font in "$DIST_NL"/IoskeleyMonoNL-SemiCondensed*.ttf; do
-            fontforge -script "$PATCHER" "$font" --complete --careful --outputdir patched-fonts-nl/SemiCondensed
+            fontforge -script "$PATCHER" "$font" --complete --careful --mono --outputdir patched-fonts-nl/SemiCondensed
           done
 
           for font in "$DIST_NL"/IoskeleyMonoNL-Condensed*.ttf; do
             [[ "$font" == *SemiCondensed* ]] && continue
-            fontforge -script "$PATCHER" "$font" --complete --careful --outputdir patched-fonts-nl/Condensed
+            fontforge -script "$PATCHER" "$font" --complete --careful --mono --outputdir patched-fonts-nl/Condensed
           done
 
           for font in "$DIST_NL"/IoskeleyMonoNL-*.ttf; do
             [[ "$font" == *Condensed* ]] && continue
-            fontforge -script "$PATCHER" "$font" --complete --careful --outputdir patched-fonts-nl/Normal
+            fontforge -script "$PATCHER" "$font" --complete --careful --mono --outputdir patched-fonts-nl/Normal
           done
+
+      - name: Restore fixed-pitch flag on patched fonts
+        run: |
+          pip install --quiet fonttools
+          python - <<'EOF'
+          from pathlib import Path
+          from fontTools.ttLib import TTFont
+
+          fixed = 0
+          for d in ("patched-fonts", "patched-fonts-term", "patched-fonts-nl"):
+              for f in sorted(Path(d).rglob("*.ttf")):
+                  font = TTFont(f)
+                  if "post" in font and font["post"].isFixedPitch != 1:
+                      font["post"].isFixedPitch = 1
+                      font.save(f)
+                      fixed += 1
+          print(f"restored isFixedPitch on {fixed} fonts")
+          EOF
 
       - name: Package release archives
         run: |
@@ -199,8 +225,14 @@ jobs:
 
       - name: Package Web archive
         run: |
-          cd iosevka-src/dist/IoskeleyMono
-          zip -r ../../../IoskeleyMono-Web.zip WOFF2 WOFF2-Unhinted
+          # Built from the subsetted plan. Hinting is ignored by browsers, so
+          # the unhinted set is not shipped either.
+          cd iosevka-src/dist/IoskeleyMonoWeb
+          zip -r ../../../IoskeleyMono-Web.zip WOFF2
+
+          echo "web woff2 sizes:"
+          ls -lh WOFF2 | head -5
+          du -sh WOFF2
 
       - name: Set release version
         id: vars
@@ -226,15 +258,25 @@ jobs:
 
             ### Downloads
 
-            | Situation | Download |
+            **Using a terminal?** Take one of the `Term` builds. They redraw arrows
+            and box-drawing to sit inside the cell, and they are the ones detected
+            as monospace by fontconfig and Font Book.
+
+            | I want it in | Download |
             |---|---|
-            | Editor / IDE | `IoskeleyMono.zip` |
-            | Terminal with icons | `IoskeleyMono-NerdFont.zip` |
-            | Terminal rendering issues | `IoskeleyMono-Term.zip` |
-            | Terminal icons + rendering issues | `IoskeleyMono-Term-NerdFont.zip` |
-            | App that can't disable ligatures | `IoskeleyMono-NL.zip` |
-            | Same + Nerd Font icons | `IoskeleyMono-NL-NerdFont.zip` |
-            | Web | `IoskeleyMono-Web.zip` |
+            | An editor — VS Code, JetBrains, Zed | `IoskeleyMono.zip` |
+            | An editor, with Nerd Font icons | `IoskeleyMono-NerdFont.zip` |
+            | A terminal — kitty, Ghostty, WezTerm | `IoskeleyMono-Term.zip` |
+            | A terminal, with Nerd Font icons | `IoskeleyMono-Term-NerdFont.zip` |
+            | An app that can't turn ligatures off | `IoskeleyMono-NL.zip` |
+            | Same, with Nerd Font icons | `IoskeleyMono-NL-NerdFont.zip` |
+            | A website | `IoskeleyMono-Web.zip` |
+
+            Each desktop zip has `Hinted/` and `Unhinted/` per width — Hinted for
+            standard displays, Unhinted for Retina and HiDPI.
+
+            Nerd Font builds are now patched single-width, so they install as
+            `Ioskeley Mono Nerd Font Mono`.
 
             Not sure which to pick? [See the README](https://github.com/ahatem/IoskeleyMono#which-file-do-i-need).
           files: |

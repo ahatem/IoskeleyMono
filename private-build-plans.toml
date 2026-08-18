@@ -3,7 +3,7 @@ family = "Ioskeley Mono"
 spacing = "normal"
 serifs = "sans"
 noCvSs = true
-exportGlyphNames = false
+exportGlyphNames = true
 
 [buildPlans.IoskeleyMono.variants.design]
 one = "no-base"
@@ -280,7 +280,7 @@ family = "Ioskeley Mono Term"
 spacing = "term"
 serifs = "sans"
 noCvSs = true
-exportGlyphNames = false
+exportGlyphNames = true
 
 weights.inherits = "buildPlans.IoskeleyMono"
 widths.inherits  = "buildPlans.IoskeleyMono"
@@ -290,6 +290,66 @@ slopes.inherits  = "buildPlans.IoskeleyMono"
 inherits = "buildPlans.IoskeleyMono"
 
 [buildPlans.IoskeleyMonoTerm.metricOverride]
+xHeight = 520
+cap = 690
+ascender = 740
+sb = 85
+
+accentWidth = 182
+accentClearance = 76
+accentHeight = 162
+accentStackOffset = 208
+
+leading = 1250
+parenSize = 860
+dotSize = 'blend(weight, [100, 110], [400, 125], [900, 150])'
+periodSize = 140
+
+essRatio = 1.03
+essRatioUpper = 1.03
+essRatioLower = 1.03
+essRatioQuestion = 1.03
+archDepth = 152
+smallArchDepth = 157
+# ============================================================
+# WEB VARIANT
+# Same design, trimmed character set. The full build carries
+# Greek, Cyrillic, braille, CJK and rare math, which pushes each
+# WOFF2 past 500 KB — fine for a desktop install, not for every
+# page load. Ranges below cover Latin, punctuation, currency,
+# arrows, math operators and the box/block glyphs.
+# ============================================================
+
+[buildPlans.IoskeleyMonoWeb]
+family = "Ioskeley Mono"
+spacing = "normal"
+serifs = "sans"
+noCvSs = true
+exportGlyphNames = false
+
+weights.inherits = "buildPlans.IoskeleyMono"
+widths.inherits  = "buildPlans.IoskeleyMono"
+slopes.inherits  = "buildPlans.IoskeleyMono"
+
+[buildPlans.IoskeleyMonoWeb.variants]
+inherits = "buildPlans.IoskeleyMono"
+
+[buildPlans.IoskeleyMonoWeb.subset.include]
+ranges = [
+  [32, 126],      # Basic Latin
+  [160, 255],     # Latin-1 Supplement
+  [256, 383],     # Latin Extended-A
+  [768, 879],     # Combining Diacritical Marks
+  [8192, 8303],   # General Punctuation
+  [8352, 8383],   # Currency Symbols
+  [8592, 8703],   # Arrows
+  [8704, 8959],   # Mathematical Operators
+  [9472, 9599],   # Box Drawing
+  [9600, 9631],   # Block Elements
+  [9632, 9727],   # Geometric Shapes
+]
+
+[buildPlans.IoskeleyMonoWeb.metricOverride]
 xHeight = 520
 cap = 690
 ascender = 740
