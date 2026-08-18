@@ -260,7 +260,7 @@ jobs:
             Nerd Font builds are now patched single-width, so they install as
             `Ioskeley Mono Nerd Font Mono`.
 
-            Not sure which to pick? [See the README](https://github.com/ahatem/IoskeleyMono#which-file-do-i-need).
+            Not sure which to pick? [See the README](https://github.com/ahatem/IoskeleyMono#downloads--variants).
           files: |
             IoskeleyMono.zip
             IoskeleyMono-NerdFont.zip
