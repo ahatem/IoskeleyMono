@@ -203,6 +203,13 @@ jobs:
           # Built from the subsetted plan. Hinting is ignored by browsers, so
           # the unhinted set is not shipped either.
           cd iosevka-src/dist/IoskeleyMonoWeb
+
+          # The plan name leaks into the filenames. Strip it so existing
+          # @font-face rules pointing at IoskeleyMono-*.woff2 keep working.
+          for f in WOFF2/IoskeleyMonoWeb-*.woff2; do
+            mv "$f" "${f/IoskeleyMonoWeb-/IoskeleyMono-}"
+          done
+
           zip -r ../../../IoskeleyMono-Web.zip WOFF2
 
           echo "web woff2 sizes:"
