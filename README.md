@@ -66,7 +66,14 @@ Grab pre-built packages from the [Releases page](https://github.com/ahatem/Ioske
 | **`IoskeleyMono-Term-NerdFont.zip`** *(terminals + icons)* | Kitty, Ghostty, WezTerm with Neovim, Starship, zsh | ✅ | ✅ |
 | **`IoskeleyMono-NL.zip`** | Environments with forced ligatures (e.g. Xcode) | ❌ | — |
 | **`IoskeleyMono-NL-NerdFont.zip`** | No ligatures + Nerd Font icons | ❌ | ✅ |
-| **`IoskeleyMono-Web.zip`** | Web applications and CSS `@font-face` (WOFF2) | ✅ | — |
+| **`IoskeleyMono-Web.zip`** | Web / CSS `@font-face` — small subset (Latin, punctuation, arrows, box drawing, ≈94 KB/face) | ✅ | — |
+| **`IoskeleyMono-Web-Full.zip`** | Web / CSS `@font-face` — full coverage (Greek, Cyrillic, long arrows, rare math) | ✅ | — |
+
+> **On the web, prefer `IoskeleyMono-Web.zip`.** The `-Full` zip is for sites
+> that display characters outside the subset — Greek and Cyrillic text, long
+> arrows, or the rarer math operators. Both zips use the same filenames
+> (`IoskeleyMono-*.woff2`), so swapping one for the other works without editing
+> a single `@font-face` rule.
 
 > **In a terminal, take a `Term` build.** They redraw arrows and box-drawing to sit inside the cell, and they're the ones detected as monospace by fontconfig and macOS Font Book.
 
