@@ -12,8 +12,12 @@
 </p>
 
 <p align="center">
-  <strong>A free, open-source monospace font engineered to deliver the aesthetic, geometry, and metric parity of <a href="https://berkeleygraphics.com/typefaces/berkeley-mono/">Berkeley Mono</a>.</strong><br>
-  Built by configuring <a href="https://github.com/be5invis/Iosevka">Iosevka</a> with custom glyph variants, metrics, and weight distributions.
+  <strong>A free, open-source monospace font built with Iosevka, inspired by the distinctive aesthetic of <a href="https://berkeleygraphics.com/typefaces/berkeley-mono/">Berkeley Mono</a>.</strong><br>
+  Created so that people who can’t currently afford a commercial license can still experience a similar compact, geometric feel while coding.
+</p>
+
+<p align="center">
+  <em>If you have the means, please consider supporting the original designer by purchasing <a href="https://berkeleygraphics.com/typefaces/berkeley-mono/">Berkeley Mono</a>. It is a carefully crafted commercial typeface and the income from it supports ongoing design work.</em>
 </p>
 
 <p align="center">
@@ -250,5 +254,9 @@ If Ioskeley Mono enhances your daily coding workflow or saves you font licensing
 ## 📜 License & Acknowledgments
 
 - **Ioskeley Mono** is released under the [SIL Open Font License 1.1](./LICENSE).
-- Built on top of the [Iosevka](https://github.com/be5invis/Iosevka) font generation engine by [Belleve Invis](https://github.com/be5invis) and contributors.
-- Design aesthetic inspired by [Berkeley Mono](https://berkeleygraphics.com/typefaces/berkeley-mono/) by Berkeley Graphics.
+- Built on top of the excellent [Iosevka](https://github.com/be5invis/Iosevka) font generation engine by [Belleve Invis](https://github.com/be5invis) and contributors. All credit for the original design system and build tools belongs to them.
+- The overall design direction of this configuration was inspired by **Berkeley Mono**, created by Neil Panchal / [Berkeley Graphics](https://berkeleygraphics.com/typefaces/berkeley-mono/).
+
+  Berkeley Mono is a professional commercial typeface. This project is an independent free interpretation using Iosevka — it is **not** an official version, is not affiliated with, and is not endorsed by Berkeley Graphics.
+
+  **If you enjoy the aesthetic and are in a position to do so, please buy the original.** Supporting independent type designers is how more beautiful fonts get made.
