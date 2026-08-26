@@ -25,6 +25,10 @@
   <a href="https://github.com/ahatem/IoskeleyMono/releases/latest"><strong>Download Latest Release →</strong></a>
 </p>
 
+<p align="center">
+  <sub>Ioskeley Mono is free to use. <a href="https://www.buymeacoffee.com/ahmedhatem">Support helps maintain</a> builds, variants, glyph fixes, packaging, and documentation.</sub>
+</p>
+
 ---
 
 ## ⚡ Highlights
@@ -245,7 +249,7 @@ Contributions, glyph refinement proposals, and build plan tweaks are welcome!
 
 ## ☕ Support
 
-If Ioskeley Mono enhances your daily coding workflow or saves you font licensing fees, consider supporting ongoing development:
+Ioskeley Mono is free to use. Support helps maintain the builds, variants, glyph fixes, packaging, and documentation.
 
 [![Buy Me a Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ahmedhatem-FFDD00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://www.buymeacoffee.com/ahmedhatem)
 
