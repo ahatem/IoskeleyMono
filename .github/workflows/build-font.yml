@@ -52,7 +52,7 @@ jobs:
           cp private-build-plans.toml iosevka-src/
           cd iosevka-src
           npm install
-          npm run build -- contents::IoskeleyMono contents::IoskeleyMonoTerm contents::IoskeleyMonoNL contents::IoskeleyMonoWeb
+          npm run build -- contents::IoskeleyMono contents::IoskeleyMonoTerm contents::IoskeleyMonoNL contents::IoskeleyMonoTermNL contents::IoskeleyMonoWeb
 
       - name: Verify build output
         run: |
@@ -66,6 +66,10 @@ jobs:
           fi
           if [ ! -d "iosevka-src/dist/IoskeleyMonoNL/TTF" ]; then
             echo "IoskeleyMonoNL build output not found!"
+            exit 1
+          fi
+          if [ ! -d "iosevka-src/dist/IoskeleyMonoTermNL/TTF" ]; then
+            echo "IoskeleyMonoTermNL build output not found!"
             exit 1
           fi
           if [ ! -d "iosevka-src/dist/IoskeleyMonoWeb/WOFF2" ]; then
@@ -88,9 +92,11 @@ jobs:
           mkdir -p patched-fonts/Normal patched-fonts/SemiCondensed
           mkdir -p patched-fonts-term/Normal patched-fonts-term/SemiCondensed
           mkdir -p patched-fonts-nl/Normal patched-fonts-nl/SemiCondensed
+          mkdir -p patched-fonts-termnl/Normal patched-fonts-termnl/SemiCondensed
           DIST="iosevka-src/dist/IoskeleyMono/TTF"
           DIST_TERM="iosevka-src/dist/IoskeleyMonoTerm/TTF"
           DIST_NL="iosevka-src/dist/IoskeleyMonoNL/TTF"
+          DIST_TERMNL="iosevka-src/dist/IoskeleyMonoTermNL/TTF"
           PATCHER="nerd-fonts-patcher/font-patcher"
 
           for font in "$DIST"/IoskeleyMono-SemiCondensed*.ttf; do
@@ -123,6 +129,16 @@ jobs:
             fontforge -script "$PATCHER" "$font" --complete --careful --mono --outputdir patched-fonts-nl/Normal
           done
 
+          for font in "$DIST_TERMNL"/IoskeleyMonoTermNL-SemiCondensed*.ttf; do
+            fontforge -script "$PATCHER" "$font" --complete --careful --mono --outputdir patched-fonts-termnl/SemiCondensed
+          done
+
+
+          for font in "$DIST_TERMNL"/IoskeleyMonoTermNL-*.ttf; do
+            [[ "$font" == *Condensed* ]] && continue
+            fontforge -script "$PATCHER" "$font" --complete --careful --mono --outputdir patched-fonts-termnl/Normal
+          done
+
       - name: Restore fixed-pitch flag on patched fonts
         run: |
           pip install --quiet fonttools
@@ -131,7 +147,7 @@ jobs:
           from fontTools.ttLib import TTFont
 
           fixed = 0
-          for d in ("patched-fonts", "patched-fonts-term", "patched-fonts-nl"):
+          for d in ("patched-fonts", "patched-fonts-term", "patched-fonts-nl", "patched-fonts-termnl"):
               for f in sorted(Path(d).rglob("*.ttf")):
                   font = TTFont(f)
                   if "post" in font and font["post"].isFixedPitch != 1:
@@ -201,6 +217,12 @@ jobs:
           cp patched-fonts-nl/SemiCondensed/*.ttf  pkg-nl-nf/SemiCondensed/
           cd pkg-nl-nf && zip -r ../IoskeleyMono-NL-NerdFont.zip . && cd ..
 
+          # ── IoskeleyMono-TermNL-NerdFont.zip — term spacing + no ligatures + Nerd Font ─
+          mkdir -p pkg-termnl-nf/Normal pkg-termnl-nf/SemiCondensed
+          cp patched-fonts-termnl/Normal/*.ttf         pkg-termnl-nf/Normal/
+          cp patched-fonts-termnl/SemiCondensed/*.ttf  pkg-termnl-nf/SemiCondensed/
+          cd pkg-termnl-nf && zip -r ../IoskeleyMono-TermNL-NerdFont.zip . && cd ..
+
       - name: Package Web archive
         run: |
           # Built from the subsetted plan. Hinting is ignored by browsers, so
@@ -269,6 +291,7 @@ jobs:
             | A terminal, with Nerd Font icons | `IoskeleyMono-Term-NerdFont.zip` |
             | An app that can't turn ligatures off | `IoskeleyMono-NL.zip` |
             | Same, with Nerd Font icons | `IoskeleyMono-NL-NerdFont.zip` |
+            | A terminal without a ligature toggle (Konsole), with icons | `IoskeleyMono-TermNL-NerdFont.zip` |
             | A website — small subset | `IoskeleyMono-Web.zip` |
             | A website — full coverage | `IoskeleyMono-Web-Full.zip` |
 
@@ -292,6 +315,7 @@ jobs:
             IoskeleyMono-Term-NerdFont.zip
             IoskeleyMono-NL.zip
             IoskeleyMono-NL-NerdFont.zip
+            IoskeleyMono-TermNL-NerdFont.zip
             IoskeleyMono-Web.zip
             IoskeleyMono-Web-Full.zip
         env:

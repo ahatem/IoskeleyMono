@@ -74,6 +74,7 @@ Grab pre-built packages from the [Releases page](https://github.com/ahatem/Ioske
 | **`IoskeleyMono-Term-NerdFont.zip`** *(terminals + icons)* | Kitty, Ghostty, WezTerm with Neovim, Starship, zsh | ✅ | ✅ |
 | **`IoskeleyMono-NL.zip`** | Environments with forced ligatures (e.g. Xcode) | ❌ | — |
 | **`IoskeleyMono-NL-NerdFont.zip`** | No ligatures + Nerd Font icons | ❌ | ✅ |
+| **`IoskeleyMono-TermNL-NerdFont.zip`** | Terminals with no ligature toggle (e.g. Konsole) + Nerd Font icons | ❌ | ✅ |
 | **`IoskeleyMono-Web.zip`** | Web / CSS `@font-face` — small subset (Latin, punctuation, arrows, box drawing, ≈94 KB/face) | ✅ | — |
 | **`IoskeleyMono-Web-Full.zip`** | Web / CSS `@font-face` — full coverage (Greek, Cyrillic, long arrows, rare math) | ✅ | — |
 
@@ -233,7 +234,7 @@ cp IoskeleyMono/private-build-plans.toml Iosevka/
 # 3. Install dependencies and compile
 cd Iosevka
 npm install
-npm run build -- contents::IoskeleyMono contents::IoskeleyMonoTerm contents::IoskeleyMonoNL contents::IoskeleyMonoWeb
+npm run build -- contents::IoskeleyMono contents::IoskeleyMonoTerm contents::IoskeleyMonoNL contents::IoskeleyMonoTermNL contents::IoskeleyMonoWeb
 ```
 Compiled binaries land in `Iosevka/dist/<PlanName>/`. The workflow pins Iosevka to a known-good tag; check [`build-font.yml`](.github/workflows/build-font.yml) for the current one.
 
