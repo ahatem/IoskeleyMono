@@ -13,7 +13,7 @@
 
 <p align="center">
   <strong>A compact, geometric programming typeface built with Iosevka.</strong><br>
-  Tuned for editors, terminals, and the web; inspired by the character of Berkeley Mono.
+  Tuned for editors, terminals, and the web. Inspired by the character of Berkeley Mono.
 </p>
 
 <p align="center">
@@ -62,12 +62,29 @@ Not sure which file to choose? Start with **[`IoskeleyMono.zip`](https://github.
 | **[`IoskeleyMono-Web.zip`](https://github.com/ahatem/IoskeleyMono/releases/latest/download/IoskeleyMono-Web.zip)** | Websites using Latin text, punctuation, arrows, math, or box drawing | Yes | No |
 | **[`IoskeleyMono-Web-Full.zip`](https://github.com/ahatem/IoskeleyMono/releases/latest/download/IoskeleyMono-Web-Full.zip)** | Websites that also need the complete desktop glyph set | Yes | No |
 
-The `Term` builds use terminal spacing so arrows and box-drawing glyphs stay inside their cells. The smaller web package is subsetted for page loads; choose `Web-Full` when you need coverage such as Greek, Cyrillic, long arrows, or less common mathematical symbols. Both web archives use the same filenames, so they can be swapped without changing existing `@font-face` rules.
+> [!TIP]
+> **Using a terminal?** Choose a `Term` package. Its spacing keeps arrows and box-drawing glyphs inside their cells.
+>
+> **Building a website?** Start with `IoskeleyMono-Web.zip`. Choose `Web-Full` only when you need Greek, Cyrillic, long arrows, or less common mathematical symbols. Both web archives use the same filenames, so switching between them does not require new `@font-face` rules.
+
+### Choose Your Width
+
+| Width | Relative width | Choose it when |
+|---|:---:|---|
+| **Normal** | 100% | You want the default balance of spacing and readability |
+| **SemiCondensed** | 90% | You want to fit more code on each line without changing the overall design |
+
+### Choose Your Rendering
+
+| Display | Folder |
+|---|---|
+| Windows or Linux on a standard-density display | **Hinted** |
+| macOS or any HiDPI display | **Unhinted** |
+
+Install one rendering set per width to avoid duplicate font entries. Nerd Font packages do not have separate hinted and unhinted copies.
 
 <details>
-<summary><strong>Which width and hinting folder should I install?</strong></summary>
-
-The standard, Term, and NL packages organize their TTF files by width and hinting:
+<summary><strong>See the package folder structure</strong></summary>
 
 ```text
 Normal/
@@ -77,15 +94,6 @@ SemiCondensed/
   Hinted/
   Unhinted/
 ```
-
-- **Normal** is the default width and the best place to start.
-- **SemiCondensed** fits more code on a line while keeping the same design language.
-- **Hinted** is intended for standard-density displays, especially on Windows.
-- **Unhinted** is usually the better choice for Retina and other HiDPI displays.
-
-Install one rendering set per width to avoid duplicate font entries.
-
-Nerd Font packages contain the same `Normal/` and `SemiCondensed/` width folders, but do not include separate hinted and unhinted copies.
 
 </details>
 
@@ -107,9 +115,9 @@ The design balances three ideas:
 - **Geometric clarity** — direct shapes, square details, and deliberately differentiated numerals.
 - **A complete working family** — the same visual system across two widths, ten weights, italics, terminals, and web use.
 
-### Design Reference: Berkeley Mono
+### Comparing the Details
 
-Berkeley Mono was the original design reference for Ioskeley Mono. These comparisons document the visual studies used while tuning character choices, proportions, spacing, and code density. They are not a claim that the two typefaces are identical.
+Berkeley Mono was the starting point for the feeling I wanted. These images show what I studied while shaping Ioskeley Mono and where the two fonts differ.
 
 #### Character Forms
 
@@ -129,16 +137,7 @@ A real-code specimen comparing line rhythm, spacing, and visual weight in an edi
 
 ![Real-code comparison between Ioskeley Mono and Berkeley Mono](assets/03-Ioskeley-vs-Berkeley-Real-Code.png)
 
-## Family
-
-### Widths
-
-| Width | Build-plan shape | Character |
-|---|---:|---|
-| **Normal** | `600` | The default, more open width |
-| **SemiCondensed** | `540` | 10% narrower for denser layouts |
-
-### Weights
+## Weights
 
 Every weight is included in both widths, with an upright and italic style.
 
@@ -157,13 +156,17 @@ Every weight is included in both widths, with an upright and italic style.
 
 ## Installation
 
-### macOS with Homebrew
+### Package Managers
 
-Ioskeley Mono is available as an official Homebrew cask:
+| System | Package | Install |
+|---|---|---|
+| macOS | [Homebrew](https://formulae.brew.sh/cask/font-ioskeley-mono) | `brew install --cask font-ioskeley-mono` |
+| Nix / NixOS | [nixpkgs](https://github.com/NixOS/nixpkgs/tree/master/pkgs/data/fonts/ioskeley-mono) | `nix profile install nixpkgs#ioskeley-mono.normal` |
+| Arch Linux | [AUR](https://aur.archlinux.org/packages/ttf-ioskeley-mono) | Package: `ttf-ioskeley-mono` |
+| Slackware | [SlackBuilds.org](https://slackbuilds.org/repository/15.0/system/IoskeleyMono/) | Package: `IoskeleyMono` |
 
-```bash
-brew install --cask font-ioskeley-mono
-```
+> [!NOTE]
+> Package repositories update on their own schedules and may not always carry the latest Ioskeley release. The [GitHub Releases page](https://github.com/ahatem/IoskeleyMono/releases/latest) is the source of truth for current builds and every available variant.
 
 Thanks to [@zhimoe](https://github.com/zhimoe), [@ForsakenHarmony](https://github.com/ForsakenHarmony), and [@frovere](https://github.com/frovere) for helping bring it to Homebrew.
 
@@ -242,7 +245,7 @@ Ioskeley Mono includes OpenType features that compatible applications can enable
 | Feature | Effect |
 |---|---|
 | `zero` | Uses a slashed zero instead of the default dotted zero |
-| `calt` | Enables contextual programming ligatures; on by default where supported |
+| `calt` | Enables contextual programming ligatures. On by default where supported |
 | `dlig` | Enables discretionary ligatures |
 | `onum` | Uses old-style figures |
 | `frac` | Formats fractions |
@@ -304,7 +307,9 @@ Ioskeley Mono is free and open source. Support does not have to mean money—the
 - **Report anything that feels off**, from a glyph or spacing issue to an installation problem.
 - **Contribute an improvement** to the build plan, documentation, packaging, or showcase.
 
-If Ioskeley Mono has become part of your daily setup and you would also like to support the time behind it, you can use [GitHub Sponsors](https://github.com/sponsors/ahatem) or [Buy Me a Coffee](https://www.buymeacoffee.com/ahmedhatem). Financial support is completely optional and does not unlock a separate version of the font; it simply makes it easier to spend more time testing builds, refining glyphs, packaging releases, and maintaining the showcase.
+If Ioskeley Mono has become part of your daily setup and you would also like to support the time behind it, you can use [GitHub Sponsors](https://github.com/sponsors/ahatem) or [Buy Me a Coffee](https://www.buymeacoffee.com/ahmedhatem).
+
+Financial support is completely optional. It does not unlock a separate version of the font. It simply makes it easier to spend more time testing builds, refining glyphs, packaging releases, and maintaining the showcase.
 
 ## License & Acknowledgments
 
@@ -312,6 +317,6 @@ Ioskeley Mono is released under the [SIL Open Font License 1.1](./LICENSE). You 
 
 The family is built with [Iosevka](https://github.com/be5invis/Iosevka), created by [Belleve Invis](https://github.com/be5invis) and its contributors. Iosevka provides the typeface construction system, glyph repertoire, and build tooling that made this project possible.
 
-The design direction was inspired by **Berkeley Mono**, created by Neil Panchal / [Berkeley Graphics](https://berkeleygraphics.com/typefaces/berkeley-mono/). Berkeley Mono is a commercial typeface. Ioskeley Mono is an independent Iosevka-based project; it is not affiliated with or endorsed by Berkeley Graphics.
+The design direction was inspired by **Berkeley Mono**, created by Neil Panchal / [Berkeley Graphics](https://berkeleygraphics.com/typefaces/berkeley-mono/). Berkeley Mono is a commercial typeface. Ioskeley Mono is an independent Iosevka-based project. It is not affiliated with or endorsed by Berkeley Graphics.
 
 If you enjoy the original design and are in a position to do so, please consider purchasing Berkeley Mono. Supporting independent type designers helps more thoughtful typefaces get made.
