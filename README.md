@@ -23,7 +23,7 @@
 </p>
 
 <p align="center">
-  <sub>Ioskeley Mono is free to use. <a href="https://www.buymeacoffee.com/ahmedhatem">Support helps maintain</a> the builds, variants, glyph fixes, showcase, and documentation.</sub>
+  <sub>Ioskeley Mono is free to use. Stars, shared setups, bug reports, and contributions all help the project grow.</sub>
 </p>
 
 <p align="center">
@@ -295,11 +295,16 @@ Bug reports, glyph refinement proposals, ligature suggestions, documentation fix
 - Use [GitHub Issues](https://github.com/ahatem/IoskeleyMono/issues) for reproducible problems and design suggestions.
 - Use a pull request when you already have a tested change.
 
-## Support
+## Help Ioskeley Grow
 
-Ioskeley Mono is free to use. Support helps cover the time spent maintaining builds, variants, glyph fixes, packaging, the showcase, and documentation.
+Ioskeley Mono is free and open source. Support does not have to mean money—the most useful things are often the simplest:
 
-[![Buy Me a Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ahmedhatem-FFDD00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://www.buymeacoffee.com/ahmedhatem)
+- **Star the repository** so more people can discover it.
+- **Share your setup** and show how the font looks in your editor or terminal.
+- **Report anything that feels off**, from a glyph or spacing issue to an installation problem.
+- **Contribute an improvement** to the build plan, documentation, packaging, or showcase.
+
+If Ioskeley Mono has become part of your daily setup and you would also like to support the time behind it, you can use [GitHub Sponsors](https://github.com/sponsors/ahatem) or [Buy Me a Coffee](https://www.buymeacoffee.com/ahmedhatem). Financial support is completely optional and does not unlock a separate version of the font; it simply makes it easier to spend more time testing builds, refining glyphs, packaging releases, and maintaining the showcase.
 
 ## License & Acknowledgments
 
