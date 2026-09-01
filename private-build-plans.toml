@@ -162,7 +162,7 @@ css = 900
 #   90 = SemiCondensed → shape 540  (600 × 0.90)
 #   100 = Normal       → shape 600
 #
-# Condensed (480) was dropped in v2.1.0 — it sat narrower than
+# Condensed (480) was dropped in v2.1.0 because it sat narrower than
 # Iosevka's own Normal (500) and read as squashed. If it comes
 # back, widen the steps to 600 / 555 / 510 rather than reusing
 # the old value.
@@ -224,7 +224,7 @@ smallArchDepth = 157
 # ============================================================
 # NL VARIANT (No Ligatures)
 # Identical to IoskeleyMono except ligature substitutions are
-# disabled — for apps that cannot toggle ligatures themselves
+# disabled for apps that cannot toggle ligatures themselves
 # (e.g. Xcode).
 # ============================================================
 
@@ -313,7 +313,7 @@ smallArchDepth = 157
 # WEB VARIANT
 # Same design, trimmed character set. The full build carries
 # Greek, Cyrillic, braille, CJK and rare math, which pushes each
-# WOFF2 past 500 KB — fine for a desktop install, not for every
+# WOFF2 past 500 KB. That is fine for a desktop install, not for every
 # page load. Ranges below cover Latin, punctuation, currency,
 # arrows, math operators and the box/block glyphs.
 # ============================================================

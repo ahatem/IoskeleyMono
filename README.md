@@ -1,7 +1,7 @@
 # Ioskeley Mono
 
 <p align="center">
-  <img src="assets/SocialPreview.png" alt="Ioskeley Mono — open-source programming typeface" width="100%">
+  <img src="assets/SocialPreview.png" alt="Ioskeley Mono, an open-source programming typeface" width="100%">
 </p>
 
 <p align="center">
@@ -41,9 +41,9 @@
 
 For a long time, Berkeley Mono was the font I dreamed of using one day. I loved its compact proportions, geometric shapes, and the character it gave to code. But I could not afford it at the time, so I kept searching for a free typeface that could give me a similar feeling.
 
-Eventually, I found [Iosevka](https://github.com/be5invis/Iosevka) and realized I could shape something of my own. I generated and tested more than a hundred builds—installing and uninstalling them, zooming in and out, comparing individual glyphs, adjusting spacing and proportions, and repeatedly trying the font in real editors. I kept refining it until it felt as close as I could make it to what I had imagined.
+Eventually, I found [Iosevka](https://github.com/be5invis/Iosevka) and realized I could shape something of my own. I generated and tested more than a hundred builds. I installed and uninstalled them, zoomed in and out, compared individual glyphs, adjusted spacing and proportions, and repeatedly tried the font in real editors. I kept refining it until it felt as close as I could make it to what I had imagined.
 
-Ioskeley Mono grew out of that process. I made it for anyone who admires this kind of carefully designed programming typeface but cannot justify the price of a commercial font—especially students, people beginning their careers, or anyone who simply wants a distinctive coding font without a high price standing in the way.
+Ioskeley Mono grew out of that process. I made it for anyone who admires this kind of carefully designed programming typeface but cannot justify the price of a commercial font. That includes students, people beginning their careers, and anyone who simply wants a distinctive coding font without a high price standing in the way.
 
 It is not Berkeley Mono, nor is it intended to replace the original. It is an independent typeface built with Iosevka, shaped by the qualities that inspired me, and shared freely so more people can enjoy that same kind of character in their own work.
 
@@ -111,9 +111,9 @@ Ioskeley Mono is not a stock Iosevka build. Its [build plan](./private-build-pla
 
 The design balances three ideas:
 
-- **Compact rhythm** — a dense but readable texture that keeps more code in view.
-- **Geometric clarity** — direct shapes, square details, and deliberately differentiated numerals.
-- **A complete working family** — the same visual system across two widths, ten weights, italics, terminals, and web use.
+- **Compact rhythm:** a dense but readable texture that keeps more code in view.
+- **Geometric clarity:** direct shapes, square details, and deliberately differentiated numerals.
+- **A complete working family:** the same visual system across two widths, ten weights, italics, terminals, and web use.
 
 ### Comparing the Details
 
@@ -300,7 +300,7 @@ Bug reports, glyph refinement proposals, ligature suggestions, documentation fix
 
 ## Help Ioskeley Grow
 
-Ioskeley Mono is free and open source. Support does not have to mean money—the most useful things are often the simplest:
+Ioskeley Mono is free and open source. Support does not have to mean money. The most useful things are often the simplest:
 
 - **Star the repository** so more people can discover it.
 - **Share your setup** and show how the font looks in your editor or terminal.

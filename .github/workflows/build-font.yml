@@ -146,7 +146,7 @@ jobs:
           DIST="iosevka-src/dist/IoskeleyMono"
           DIST_TERM="iosevka-src/dist/IoskeleyMonoTerm"
 
-          # ── IoskeleyMono.zip — all widths, TTF hinted + unhinted ──────────
+          # IoskeleyMono.zip: all widths, TTF hinted + unhinted
           mkdir -p pkg/Normal/Hinted      pkg/Normal/Unhinted
           mkdir -p pkg/SemiCondensed/Hinted pkg/SemiCondensed/Unhinted
 
@@ -158,13 +158,13 @@ jobs:
 
           cd pkg && zip -r ../IoskeleyMono.zip . && cd ..
 
-          # ── IoskeleyMono-NerdFont.zip — all widths, Nerd Font patched ─────
+          # IoskeleyMono-NerdFont.zip: all widths, Nerd Font patched
           mkdir -p pkg-nf/Normal pkg-nf/SemiCondensed
           cp patched-fonts/Normal/*.ttf         pkg-nf/Normal/
           cp patched-fonts/SemiCondensed/*.ttf  pkg-nf/SemiCondensed/
           cd pkg-nf && zip -r ../IoskeleyMono-NerdFont.zip . && cd ..
 
-          # ── IoskeleyMono-Term.zip — all widths, term spacing ──────────────
+          # IoskeleyMono-Term.zip: all widths, term spacing
           mkdir -p pkg-term/Normal/Hinted      pkg-term/Normal/Unhinted
           mkdir -p pkg-term/SemiCondensed/Hinted pkg-term/SemiCondensed/Unhinted
 
@@ -176,7 +176,7 @@ jobs:
 
           cd pkg-term && zip -r ../IoskeleyMono-Term.zip . && cd ..
 
-          # ── IoskeleyMono-NL.zip — all widths, no ligatures ────────────────
+          # IoskeleyMono-NL.zip: all widths, no ligatures
           DIST_NL="iosevka-src/dist/IoskeleyMonoNL"
           mkdir -p pkg-nl/Normal/Hinted      pkg-nl/Normal/Unhinted
           mkdir -p pkg-nl/SemiCondensed/Hinted pkg-nl/SemiCondensed/Unhinted
@@ -189,13 +189,13 @@ jobs:
 
           cd pkg-nl && zip -r ../IoskeleyMono-NL.zip . && cd ..
 
-          # ── IoskeleyMono-Term-NerdFont.zip — term spacing + Nerd Font ─────
+          # IoskeleyMono-Term-NerdFont.zip: term spacing + Nerd Font
           mkdir -p pkg-term-nf/Normal pkg-term-nf/SemiCondensed
           cp patched-fonts-term/Normal/*.ttf         pkg-term-nf/Normal/
           cp patched-fonts-term/SemiCondensed/*.ttf  pkg-term-nf/SemiCondensed/
           cd pkg-term-nf && zip -r ../IoskeleyMono-Term-NerdFont.zip . && cd ..
 
-          # ── IoskeleyMono-NL-NerdFont.zip — no ligatures + Nerd Font ───────
+          # IoskeleyMono-NL-NerdFont.zip: no ligatures + Nerd Font
           mkdir -p pkg-nl-nf/Normal pkg-nl-nf/SemiCondensed
           cp patched-fonts-nl/Normal/*.ttf         pkg-nl-nf/Normal/
           cp patched-fonts-nl/SemiCondensed/*.ttf  pkg-nl-nf/SemiCondensed/
@@ -224,7 +224,7 @@ jobs:
           # Full-coverage web build, packaged from the base plan's WOFF2
           # output. Same filenames as the subset web zip, but with Greek,
           # Cyrillic, long arrows, and rare math glyphs retained. No extra
-          # build plan — this is the plan IoskeleyMono already produces.
+          # build plan. This is the plan IoskeleyMono already produces.
           #
           # The plan name matches, so no renaming is needed here.
           cd iosevka-src/dist/IoskeleyMono
@@ -263,22 +263,22 @@ jobs:
 
             | I want it in | Download |
             |---|---|
-            | An editor — VS Code, JetBrains, Zed | `IoskeleyMono.zip` |
+            | An editor: VS Code, JetBrains, Zed | `IoskeleyMono.zip` |
             | An editor, with Nerd Font icons | `IoskeleyMono-NerdFont.zip` |
-            | A terminal — kitty, Ghostty, WezTerm | `IoskeleyMono-Term.zip` |
+            | A terminal: kitty, Ghostty, WezTerm | `IoskeleyMono-Term.zip` |
             | A terminal, with Nerd Font icons | `IoskeleyMono-Term-NerdFont.zip` |
             | An app that can't turn ligatures off | `IoskeleyMono-NL.zip` |
             | Same, with Nerd Font icons | `IoskeleyMono-NL-NerdFont.zip` |
-            | A website — small subset | `IoskeleyMono-Web.zip` |
-            | A website — full coverage | `IoskeleyMono-Web-Full.zip` |
+            | A website with a small subset | `IoskeleyMono-Web.zip` |
+            | A website with full coverage | `IoskeleyMono-Web-Full.zip` |
 
             `IoskeleyMono-Web.zip` is trimmed to Latin, punctuation, arrows,
-            math operators and box drawing (≈94 KB per face) — the right choice
+            math operators and box drawing (≈94 KB per face). It is the right choice
             for page loads. `IoskeleyMono-Web-Full.zip` carries the complete
             character set (Greek, Cyrillic, long arrows, rare math) at the cost
             of size, for sites that need those glyphs.
 
-            Each desktop zip has `Hinted/` and `Unhinted/` per width — Hinted for
+            Each desktop zip has `Hinted/` and `Unhinted/` per width. Use Hinted for
             standard displays, Unhinted for Retina and HiDPI.
 
             Nerd Font builds are now patched single-width, so they install as
