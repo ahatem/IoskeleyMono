@@ -150,34 +150,41 @@ code[class*="language-"]::selection, code[class*="language-"] ::selection {
 
 // ── Width switcher ────────────────────────────────────────────────────
 
-const widthOpts = document.querySelectorAll('#width-switcher .seg-opt');
+const widthOpts = document.querySelectorAll('#header-width-switcher .header-w-btn');
 const WIDTH_KEY = 'ioskeley-width';
-
-(function initWidth() {
-  const saved = localStorage.getItem(WIDTH_KEY);
-  if (saved) {
-    const btn = document.querySelector(`.seg-opt[data-width="${saved}"]`);
-    if (btn) btn.click();
-  }
-})();
 
 function applyWidth(width) {
   document.documentElement.classList.remove('sc');
   if (width === 'sc') document.documentElement.classList.add('sc');
 }
 
-widthOpts.forEach(btn => {
-  btn.addEventListener('click', () => {
-    widthOpts.forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    localStorage.setItem(WIDTH_KEY, btn.dataset.width);
-    document.body.classList.add('switching');
-    applyWidth(btn.dataset.width);
+function selectWidth(width, animate = false) {
+  widthOpts.forEach(btn => {
+    const active = btn.dataset.width === width;
+    btn.classList.toggle('active', active);
+    btn.setAttribute('aria-pressed', String(active));
+  });
+  if (animate) document.body.classList.add('switching');
+  applyWidth(width);
+  if (animate) {
     requestAnimationFrame(() => {
       requestAnimationFrame(() => document.body.classList.remove('switching'));
     });
+  }
+}
+
+widthOpts.forEach(btn => {
+  btn.addEventListener('click', () => {
+    try { localStorage.setItem(WIDTH_KEY, btn.dataset.width); } catch (_) {}
+    selectWidth(btn.dataset.width, true);
   });
 });
+
+(function initWidth() {
+  let saved = null;
+  try { saved = localStorage.getItem(WIDTH_KEY); } catch (_) {}
+  selectWidth(saved === 'sc' ? 'sc' : 'normal');
+})();
 
 // ── Try It editor ─────────────────────────────────────────────────────
 
@@ -780,34 +787,6 @@ vim.opt.guifont = "IoskeleyMono Nerd Font:h14"`
   }
 
   renderConfig('vscode');
-})();
-
-// ── Download counts ──────────────────────────────────────────────────
-
-(async function loadDownloads() {
-  try {
-    const res = await fetch('https://api.github.com/repos/ahatem/IoskeleyMono/releases/latest');
-    if (!res.ok) return;
-    const release = await res.json();
-    const assetMap = {};
-    release.assets.forEach(a => { assetMap[a.name] = a.download_count; });
-
-    const rows = document.querySelectorAll('.dl-cell[data-zip]');
-    let maxCount = 0;
-    const counts = [];
-    rows.forEach(el => {
-      const c = assetMap[el.dataset.zip] || 0;
-      counts.push(c);
-      if (c > maxCount) maxCount = c;
-    });
-    if (maxCount === 0) return;
-
-    rows.forEach((el, i) => {
-      const pct = (counts[i] / maxCount) * 100;
-      el.querySelector('.dl-fill').style.width = pct + '%';
-      el.querySelector('.dl-num').textContent = counts[i].toLocaleString();
-    });
-  } catch (_) {}
 })();
 
 // ── Hover Loupe Magnifier ─────────────────────────────────────────────

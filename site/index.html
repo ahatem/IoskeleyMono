@@ -4,20 +4,20 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="google-site-verification" content="D2xLgKAChfKbVjQlxidI2jr5HuREg-neBkuTSkYcwvA" />
-  <meta name="description" content="Ioskeley Mono — a free, open-source monospace font alternative to Berkeley Mono, built on Iosevka.">
+  <meta name="description" content="Ioskeley Mono is a compact, geometric programming typeface built with Iosevka for editors, terminals, and the web.">
   <meta name="author" content="Ahmed Hatem">
-  <title>Ioskeley Mono — Free Open Source Monospace Font</title>
-  <meta property="og:title" content="Ioskeley Mono — Free Open Source Monospace Font">
-  <meta property="og:description" content="A free, open-source monospace font alternative to Berkeley Mono, built on Iosevka.">
+  <title>Ioskeley Mono — Open-Source Programming Typeface</title>
+  <meta property="og:title" content="Ioskeley Mono — Open-Source Programming Typeface">
+  <meta property="og:description" content="A compact, geometric programming typeface built with Iosevka for editors, terminals, and the web.">
   <meta property="og:url" content="https://ahatem.github.io/IoskeleyMono/">
   <meta property="og:type" content="website">
-  <meta property="og:image" content="imgs/SocialPreview.png">
+  <meta property="og:image" content="https://ahatem.github.io/IoskeleyMono/imgs/SocialPreview.png">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Ioskeley Mono — Free Open Source Monospace Font">
-  <meta name="twitter:description" content="A free, open-source alternative to Berkeley Mono, built on Iosevka.">
-  <meta name="twitter:image" content="imgs/SocialPreview.png">
+  <meta name="twitter:title" content="Ioskeley Mono — Open-Source Programming Typeface">
+  <meta name="twitter:description" content="A compact, geometric programming typeface built with Iosevka for editors, terminals, and the web.">
+  <meta name="twitter:image" content="https://ahatem.github.io/IoskeleyMono/imgs/SocialPreview.png">
   <link rel="canonical" href="https://ahatem.github.io/IoskeleyMono/">
-  <link rel="shortcut icon" href="imgs/SocialPreview.png" type="image/png">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="css/main.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" id="prism-theme">
   <script>
@@ -41,9 +41,9 @@
       <div class="header-brand-wrap">
         <span class="site-name">Ioskeley Mono</span>
         <!-- Integrated Header Width Selector -->
-        <div class="header-width-ctrl" id="header-width-switcher" title="Select default font width for page">
-          <button class="header-w-btn active" data-width="normal">Normal</button>
-          <button class="header-w-btn" data-width="sc">Semi-Cond</button>
+        <div class="header-width-ctrl" id="header-width-switcher" aria-label="Preview font width">
+          <button class="header-w-btn active" type="button" data-width="normal" aria-pressed="true">Normal</button>
+          <button class="header-w-btn" type="button" data-width="sc" aria-pressed="false">Semi-Cond</button>
         </div>
         <button class="theme-toggle" id="theme-toggle" type="button" title="Toggle light / dark" aria-label="Toggle light or dark theme">
           <svg class="icon-moon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
@@ -51,24 +51,23 @@
         </button>
       </div>
       <nav>
-        <a href="#comparison">Comparison</a>
+        <a href="#story">Story</a>
+        <a href="#comparison">Details</a>
         <a href="#tryit">Try It</a>
-        <a href="#waterfall">Scale</a>
         <a href="#download">Download</a>
         <a href="#setup">Setup</a>
-        <a href="#weights">Weights</a>
-        <a href="#glyphs">Glyphs</a>
         <a href="#install">Install</a>
+        <a href="#support">Support</a>
         <a href="https://github.com/ahatem/IoskeleyMono" target="_blank" rel="noopener">GitHub</a>
       </nav>
     </div>
 
     <h1 class="hero-title">Ioskeley Mono</h1>
     <p class="tagline">
-      A free, open-source monospace font crafted to match Berkeley Mono's aesthetic.
-      Built by configuring <a href="https://github.com/be5invis/Iosevka" target="_blank" rel="noopener">Iosevka</a>.
-      Two widths, ten weights, italic variants, and Nerd Font support.
-      <strong>Iosevka + Berkeley = Ioskeley</strong>.
+      A compact, geometric programming typeface built with
+      <a href="https://github.com/be5invis/Iosevka" target="_blank" rel="noopener">Iosevka</a>.
+      Tuned for editors, terminals, and the web, with two widths, ten weights,
+      matching italics, and optional Nerd Font builds.
     </p>
 
     <div class="header-actions">
@@ -97,17 +96,44 @@
       <span class="stat-label">Widths</span>
     </div>
     <div class="stat-card">
-      <span class="stat-num">&infin;</span>
-      <span class="stat-label">Italic Variants</span>
+      <span class="stat-num">40</span>
+      <span class="stat-label">Static Styles</span>
     </div>
     <div class="stat-card">
-      <span class="stat-num">1000+</span>
-      <span class="stat-label">Glyphs</span>
+      <span class="stat-num">8</span>
+      <span class="stat-label">Release Packages</span>
     </div>
   </div>
 
+  <!-- Story -->
+  <section class="story-card" id="story">
+    <span class="section-kicker">Why it exists</span>
+    <h2>Made from the font I kept searching for</h2>
+    <p>
+      For a long time, Berkeley Mono was the font I dreamed of using. I loved its
+      compact proportions and the character it gave to code, but I could not afford
+      it at the time. I kept looking for a free typeface that could give me a similar feeling.
+    </p>
+    <p>
+      When I found Iosevka, I realized I could shape something of my own. More than a
+      hundred builds followed, with a lot of installing, uninstalling, zooming, comparing,
+      and testing in real editors until the details felt right.
+    </p>
+    <p>
+      Ioskeley Mono is the result. It is an independent Iosevka-based typeface, shared
+      freely for students, people starting their careers, and anyone who wants a
+      distinctive coding font without a high price standing in the way.
+    </p>
+  </section>
+
+  <hr>
+
   <!-- Comparison -->
-  <h2 id="comparison">Comparison with Berkeley Mono</h2>
+  <h2 id="comparison">Comparing the Details</h2>
+  <p class="section-intro">
+    Berkeley Mono was the starting point for the feeling I wanted. These studies show
+    the details I examined while shaping Ioskeley Mono and where the two typefaces differ.
+  </p>
   <div class="comp-gallery">
     <div class="comp-card" data-title="01 — Character Forms: Ioskeley Mono × Berkeley Mono">
       <img src="imgs/01-Ioskeley-vs-Berkeley-Character-Forms.png"
@@ -129,7 +155,7 @@
         <span>Expand</span>
       </div>
     </div>
-    <div class="comp-card" data-title="03 — Real Code: Same code. Same metrics. Different font.">
+    <div class="comp-card" data-title="03 — Real Code: Same code. Different rhythm.">
       <img src="imgs/03-Ioskeley-vs-Berkeley-Real-Code.png"
            data-dark="imgs/03-Ioskeley-vs-Berkeley-Real-Code.png"
            data-light="imgs/03-Ioskeley-vs-Berkeley-Real-Code-Light.png"
@@ -297,9 +323,9 @@ export const render = (q: Map&lt;string, number&gt;) => {
 
   <hr>
 
-  <!-- Optical Size Waterfall -->
-  <h2 id="waterfall">Optical Size Waterfall</h2>
-  <p>Engineered geometric rhythm and uncompromised hinting preserved across all display scales.</p>
+  <!-- Size waterfall -->
+  <h2 id="waterfall">Size &amp; Rhythm</h2>
+  <p>See how the family holds its character from display text down to compact terminal output.</p>
   <div class="waterfall-box">
     <div class="waterfall-row" style="--fz: 32px;">
       <span class="waterfall-meta">32px</span>
@@ -330,81 +356,102 @@ export const render = (q: Map&lt;string, number&gt;) => {
   <hr>
 
   <!-- Download -->
-  <h2 id="download">Download Packages</h2>
-  <p>Not sure which file? Start with <strong>IoskeleyMono.zip</strong>.</p>
+  <h2 id="download">Choose Your Build</h2>
+  <p>
+    Start with the standard package for an editor or the Term package for a terminal.
+    Add Nerd Font icons only when your setup needs them.
+  </p>
 
-  <!-- Highlight Cards Grid -->
+  <!-- Main package choices -->
   <div class="dl-cards-grid">
     <div class="dl-card dl-card--featured">
-      <div class="dl-card-badge">★ Recommended</div>
+      <div class="dl-card-badge">Editors</div>
       <h3 class="dl-card-title">IoskeleyMono.zip</h3>
-      <p class="dl-card-desc">Standard font package for code editors &amp; IDEs. Full ligatures and full 10-weight axis.</p>
+      <p class="dl-card-desc">The standard family with ligatures. The best starting point for code editors and IDEs.</p>
       <div class="dl-card-tags">
         <span class="dl-tag">VS Code</span>
         <span class="dl-tag">Zed</span>
         <span class="dl-tag">JetBrains</span>
-        <span class="dl-tag">Sublime</span>
       </div>
-      <a href="https://github.com/ahatem/IoskeleyMono/releases/download/v2.1.0/IoskeleyMono.zip" target="_blank" rel="noopener" class="dl-btn dl-card-btn">Download TTF →</a>
+      <a href="https://github.com/ahatem/IoskeleyMono/releases/latest/download/IoskeleyMono.zip" class="dl-btn dl-card-btn">Download standard →</a>
     </div>
 
     <div class="dl-card">
-      <div class="dl-card-badge dl-card-badge--cyan">Icons</div>
+      <div class="dl-card-badge">Editors + icons</div>
       <h3 class="dl-card-title">IoskeleyMono-NerdFont.zip</h3>
-      <p class="dl-card-desc">Patched with Nerd Font v3 symbols for developer shells, Starship prompts, and Neovim.</p>
+      <p class="dl-card-desc">The standard family patched with Nerd Font symbols for prompts and editor integrations.</p>
       <div class="dl-card-tags">
         <span class="dl-tag">Neovim</span>
         <span class="dl-tag">Starship</span>
-        <span class="dl-tag">zsh / fish</span>
+        <span class="dl-tag">Icons</span>
       </div>
-      <a href="https://github.com/ahatem/IoskeleyMono/releases/download/v2.1.0/IoskeleyMono-NerdFont.zip" target="_blank" rel="noopener" class="dl-btn dl-btn--outline dl-card-btn">Download Nerd Font →</a>
+      <a href="https://github.com/ahatem/IoskeleyMono/releases/latest/download/IoskeleyMono-NerdFont.zip" class="dl-btn dl-btn--outline dl-card-btn">Download with icons →</a>
     </div>
 
-    <div class="dl-card">
-      <div class="dl-card-badge dl-card-badge--orange">Terminal Grid</div>
+    <div class="dl-card dl-card--featured">
+      <div class="dl-card-badge">Terminals</div>
       <h3 class="dl-card-title">IoskeleyMono-Term.zip</h3>
-      <p class="dl-card-desc">Strict terminal spacing constraints for strict cell alignment in Kitty, Ghostty, and WezTerm.</p>
+      <p class="dl-card-desc">Terminal spacing keeps arrows and box-drawing glyphs inside their cells.</p>
       <div class="dl-card-tags">
         <span class="dl-tag">Kitty</span>
         <span class="dl-tag">Ghostty</span>
         <span class="dl-tag">WezTerm</span>
       </div>
-      <a href="https://github.com/ahatem/IoskeleyMono/releases/download/v2.1.0/IoskeleyMono-Term.zip" target="_blank" rel="noopener" class="dl-btn dl-btn--outline dl-card-btn">Download Term →</a>
+      <a href="https://github.com/ahatem/IoskeleyMono/releases/latest/download/IoskeleyMono-Term.zip" class="dl-btn dl-card-btn">Download Term →</a>
+    </div>
+
+    <div class="dl-card">
+      <div class="dl-card-badge">Terminals + icons</div>
+      <h3 class="dl-card-title">IoskeleyMono-Term-NerdFont.zip</h3>
+      <p class="dl-card-desc">The terminal family with Nerd Font symbols for prompts and terminal-based editors.</p>
+      <div class="dl-card-tags">
+        <span class="dl-tag">Starship</span>
+        <span class="dl-tag">Neovim</span>
+        <span class="dl-tag">Icons</span>
+      </div>
+      <a href="https://github.com/ahatem/IoskeleyMono/releases/latest/download/IoskeleyMono-Term-NerdFont.zip" class="dl-btn dl-btn--outline dl-card-btn">Download Term + icons →</a>
     </div>
   </div>
 
-  <!-- Full Table -->
-  <table class="dl-table" style="margin-top: 1.25rem;">
-    <thead>
-      <tr><th>File</th><th>Best for</th><th style="text-align:center">Downloads</th><th></th></tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>IoskeleyMono-NL.zip</td>
-        <td>Apps that can't disable ligatures — Xcode</td>
-        <td class="dl-cell" data-zip="IoskeleyMono-NL.zip"><span class="dl-num">—</span><span class="dl-fill"></span></td>
-        <td><a href="https://github.com/ahatem/IoskeleyMono/releases/download/v2.1.0/IoskeleyMono-NL.zip" target="_blank" rel="noopener">Download →</a></td>
-      </tr>
-      <tr>
-        <td>IoskeleyMono-NL-NerdFont.zip</td>
-        <td>Same, with Nerd Font icons</td>
-        <td class="dl-cell" data-zip="IoskeleyMono-NL-NerdFont.zip"><span class="dl-num">—</span><span class="dl-fill"></span></td>
-        <td><a href="https://github.com/ahatem/IoskeleyMono/releases/download/v2.1.0/IoskeleyMono-NL-NerdFont.zip" target="_blank" rel="noopener">Download →</a></td>
-      </tr>
-      <tr>
-        <td>IoskeleyMono-Web.zip</td>
-        <td>Web / CSS — small subset, WOFF2 for <kbd>@font-face</kbd></td>
-        <td class="dl-cell" data-zip="IoskeleyMono-Web.zip"><span class="dl-num">—</span><span class="dl-fill"></span></td>
-        <td><a href="https://github.com/ahatem/IoskeleyMono/releases/download/v2.1.0/IoskeleyMono-Web.zip" target="_blank" rel="noopener">Download →</a></td>
-      </tr>
-      <tr>
-        <td>IoskeleyMono-Web-Full.zip</td>
-        <td>Web / CSS — full coverage (Greek, Cyrillic, long arrows)</td>
-        <td class="dl-cell" data-zip="IoskeleyMono-Web-Full.zip"><span class="dl-num">—</span><span class="dl-fill"></span></td>
-        <td><a href="https://github.com/ahatem/IoskeleyMono/releases/download/v2.1.0/IoskeleyMono-Web-Full.zip" target="_blank" rel="noopener">Download →</a></td>
-      </tr>
-    </tbody>
-  </table>
+  <div class="variant-panel">
+    <div class="variant-panel-header">
+      <h3>Other builds</h3>
+      <a href="https://github.com/ahatem/IoskeleyMono/releases/latest">View the latest release →</a>
+    </div>
+    <div class="variant-list">
+      <div class="variant-row">
+        <div><strong>No Ligatures</strong><code>IoskeleyMono-NL.zip</code></div>
+        <p>For apps that cannot disable ligatures, including Xcode.</p>
+        <a href="https://github.com/ahatem/IoskeleyMono/releases/latest/download/IoskeleyMono-NL.zip">Download →</a>
+      </div>
+      <div class="variant-row">
+        <div><strong>No Ligatures + icons</strong><code>IoskeleyMono-NL-NerdFont.zip</code></div>
+        <p>The no-ligature family with Nerd Font symbols.</p>
+        <a href="https://github.com/ahatem/IoskeleyMono/releases/latest/download/IoskeleyMono-NL-NerdFont.zip">Download →</a>
+      </div>
+      <div class="variant-row">
+        <div><strong>Web</strong><code>IoskeleyMono-Web.zip</code></div>
+        <p>A smaller WOFF2 subset for Latin text and common programming symbols.</p>
+        <a href="https://github.com/ahatem/IoskeleyMono/releases/latest/download/IoskeleyMono-Web.zip">Download →</a>
+      </div>
+      <div class="variant-row">
+        <div><strong>Web Full</strong><code>IoskeleyMono-Web-Full.zip</code></div>
+        <p>Complete desktop coverage, including Greek, Cyrillic, long arrows, and less common math.</p>
+        <a href="https://github.com/ahatem/IoskeleyMono/releases/latest/download/IoskeleyMono-Web-Full.zip">Download →</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="package-guidance">
+    <div>
+      <span class="section-kicker">Width</span>
+      <p><strong>Normal</strong> is the default. <strong>SemiCondensed</strong> is 90% as wide and fits more code on each line.</p>
+    </div>
+    <div>
+      <span class="section-kicker">Rendering</span>
+      <p>Choose <strong>Hinted</strong> for Windows or standard-density Linux. Choose <strong>Unhinted</strong> for macOS or any HiDPI display.</p>
+    </div>
+  </div>
 
   <!-- Editor & Terminal Quick Setup with Kintsugi Palette -->
   <div style="margin-top: 2.25rem;">
@@ -464,7 +511,6 @@ The five boxing wizards jump quickly.
 Pack my box with five dozen liquor jugs.
 Sphinx of black quartz, judge my vow.
 How vexingly quick daft zebras jump!
-私のクローゼットには、青いスカートと白いブラウスしかない。
     </div>
   </div>
 
@@ -509,12 +555,38 @@ How vexingly quick daft zebras jump!
   <h2 id="install">Installation Guide</h2>
   <div class="install-tabs-box">
     <div class="install-tabs-nav">
-      <button class="install-tab active" data-os="macos">macOS</button>
-      <button class="install-tab" data-os="windows">Windows</button>
-      <button class="install-tab" data-os="linux">Linux</button>
-      <button class="install-tab" data-os="package-guide">Package Structure</button>
+      <button class="install-tab active" type="button" data-os="packages">Package managers</button>
+      <button class="install-tab" type="button" data-os="macos">macOS</button>
+      <button class="install-tab" type="button" data-os="windows">Windows</button>
+      <button class="install-tab" type="button" data-os="linux">Linux</button>
+      <button class="install-tab" type="button" data-os="package-guide">Choose files</button>
     </div>
-    <div class="install-tab-content active" data-os-content="macos">
+    <div class="install-tab-content active" data-os-content="packages">
+      <div class="package-manager-list">
+        <div class="package-manager-row">
+          <span>Homebrew</span>
+          <code>brew install --cask font-ioskeley-mono</code>
+          <a href="https://formulae.brew.sh/cask/font-ioskeley-mono" target="_blank" rel="noopener">Package →</a>
+        </div>
+        <div class="package-manager-row">
+          <span>Nix / NixOS</span>
+          <code>nix profile install nixpkgs#ioskeley-mono.normal</code>
+          <a href="https://github.com/NixOS/nixpkgs/tree/master/pkgs/data/fonts/ioskeley-mono" target="_blank" rel="noopener">Package →</a>
+        </div>
+        <div class="package-manager-row">
+          <span>Arch Linux</span>
+          <code>ttf-ioskeley-mono</code>
+          <a href="https://aur.archlinux.org/packages/ttf-ioskeley-mono" target="_blank" rel="noopener">AUR →</a>
+        </div>
+        <div class="package-manager-row">
+          <span>Slackware</span>
+          <code>IoskeleyMono</code>
+          <a href="https://slackbuilds.org/repository/15.0/system/IoskeleyMono/" target="_blank" rel="noopener">SlackBuild →</a>
+        </div>
+      </div>
+      <p class="package-note">Package repositories update on their own schedules. GitHub Releases is the source of truth for the newest builds and every variant.</p>
+    </div>
+    <div class="install-tab-content" data-os-content="macos">
       <ol class="install-steps">
         <li>Download and unzip <code>IoskeleyMono.zip</code></li>
         <li>Open <code>Normal/Unhinted/</code> (recommended for Retina / high-DPI Mac displays)</li>
@@ -541,7 +613,7 @@ cp Normal/Unhinted/*.ttf ~/.local/share/fonts/IoskeleyMono/</code></pre>
       </ol>
     </div>
     <div class="install-tab-content" data-os-content="package-guide">
-      <div class="preview-box" style="font-family:var(--m);font-size:0.78rem;line-height:1.6;">
+      <div class="preview-box package-tree">
 Normal/
   Hinted/     ← ClearType / standard-DPI screens (Windows)
   Unhinted/   ← High-DPI / Retina screens (macOS, Linux HiDPI)
@@ -549,7 +621,11 @@ SemiCondensed/
   Hinted/
   Unhinted/
       </div>
-      <p style="margin-top:0.5rem;font-size:0.8rem;">Every package includes all widths and hinted/unhinted variants. Installing all files in your chosen folder exposes the complete 10-weight axis automatically.</p>
+      <p class="package-note">
+        This folder structure applies to the standard, Term, and no-ligature archives.
+        Nerd Font archives contain the two width folders without separate rendering sets.
+        Web archives contain WOFF2 files.
+      </p>
     </div>
   </div>
 
@@ -557,14 +633,14 @@ SemiCondensed/
 
   <!-- Enhanced Build from Source -->
   <h2 id="build">Build from Source</h2>
-  <p>Ioskeley Mono builds are fully automated via GitHub Actions on tagged releases. To compile locally:</p>
+  <p>Tagged releases are built automatically. To reproduce the current source build locally:</p>
   <div class="build-card">
     <div class="build-header">
-      <span>Prerequisites: Node.js 18+, npm, Git</span>
+      <span>Prerequisites: Node.js 20, npm, Git</span>
     </div>
-    <pre class="build-code"><code><span class="tok-comment"># 1. Clone repository and upstream Iosevka</span>
+    <pre class="build-code"><code><span class="tok-comment"># 1. Clone the repository and the pinned Iosevka source</span>
 git clone https://github.com/ahatem/IoskeleyMono.git
-git clone --depth 1 https://github.com/be5invis/Iosevka.git
+git clone --depth 1 --branch v34.4.0 https://github.com/be5invis/Iosevka.git
 
 <span class="tok-comment"># 2. Copy the customized build plan</span>
 cp IoskeleyMono/private-build-plans.toml Iosevka/
@@ -572,24 +648,46 @@ cp IoskeleyMono/private-build-plans.toml Iosevka/
 <span class="tok-comment"># 3. Install build tools and compile fonts</span>
 cd Iosevka
 npm install
-npm run build -- contents::IoskeleyMono contents::IoskeleyMonoTerm</code></pre>
+npm run build -- contents::IoskeleyMono contents::IoskeleyMonoTerm contents::IoskeleyMonoNL contents::IoskeleyMonoWeb</code></pre>
     <div class="build-footer">
-      <span>Output binaries: <code>Iosevka/dist/IoskeleyMono/</code> and <code>Iosevka/dist/IoskeleyMonoTerm/</code></span>
+      <span>Output: <code>Iosevka/dist/&lt;PlanName&gt;/</code>. The release workflow creates hinted, Nerd Font, and packaged variants.</span>
     </div>
   </div>
+
+  <hr>
+
+  <section id="support" class="support-section">
+    <span class="section-kicker">Keep it growing</span>
+    <h2>Help Ioskeley Mono</h2>
+    <p>
+      Support does not have to mean money. Stars, shared setups, useful bug reports,
+      and thoughtful contributions are often the most valuable help.
+    </p>
+    <div class="support-links">
+      <a href="https://github.com/ahatem/IoskeleyMono" target="_blank" rel="noopener"><strong>Star</strong><span>Help more people find it</span></a>
+      <a href="https://github.com/ahatem/IoskeleyMono/issues" target="_blank" rel="noopener"><strong>Report</strong><span>Tell me when something feels off</span></a>
+      <a href="https://github.com/ahatem/IoskeleyMono/pulls" target="_blank" rel="noopener"><strong>Contribute</strong><span>Improve the font, packaging, or site</span></a>
+    </div>
+    <p class="support-note">
+      If the font has become part of your daily setup and you would also like to support
+      the time behind it, <a href="https://github.com/sponsors/ahatem" target="_blank" rel="noopener">GitHub Sponsors</a>
+      and <a href="https://www.buymeacoffee.com/ahmedhatem" target="_blank" rel="noopener">Buy Me a Coffee</a>
+      are available. It is completely optional and does not unlock a separate version of the font.
+    </p>
+  </section>
 
   <hr>
 
   <footer>
     <p>
       Ioskeley Mono is a custom configuration of <a href="https://github.com/be5invis/Iosevka" target="_blank" rel="noopener">Iosevka</a>
-      by <a href="https://github.com/be5invis" target="_blank" rel="noopener">Belleve Invis</a>.
-      Licensed under the <a href="LICENSE" target="_blank" rel="noopener">SIL Open Font License 1.1</a>.
+      by <a href="https://github.com/be5invis" target="_blank" rel="noopener">Belleve Invis</a> and its contributors.
+      It is licensed under the
+      <a href="https://github.com/ahatem/IoskeleyMono/blob/main/LICENSE" target="_blank" rel="noopener">SIL Open Font License 1.1</a>.
+      The design direction was inspired by
+      <a href="https://berkeleygraphics.com/typefaces/berkeley-mono/" target="_blank" rel="noopener">Berkeley Mono</a>.
     </p>
-    <p class="coffee-line">
-      If Ioskeley Mono saves you money on a font license,
-      <a href="https://www.buymeacoffee.com/ahmedhatem" target="_blank" rel="noopener">buy me a coffee</a>.
-    </p>
+    <p class="footer-credit">Created and maintained by <a href="https://github.com/ahatem" target="_blank" rel="noopener">Ahmed Hatem</a>.</p>
   </footer>
 
 </div>
