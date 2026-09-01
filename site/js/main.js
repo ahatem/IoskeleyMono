@@ -643,7 +643,7 @@ trySamples.addEventListener('click', (e) => {
   loadSample(parseInt(btn.dataset.sample));
 });
 
-// Init — load first sample, pre-highlight
+// Load the first sample and pre-highlight it.
 renderSamples();
 tryInput.value = trySamplesData.js[0].code;
 tryStatusLang.textContent = 'JavaScript';
@@ -667,7 +667,7 @@ if (sizeSlider && sizeVal && tryEditorBox) {
   sizeSlider.addEventListener('input', () => {
     const val = sizeSlider.value;
     sizeVal.textContent = `${val}px`;
-    // Drive ALL layers via CSS variables — no per-element style mutations
+    // Drive all layers through CSS variables with no per-element style mutations.
     // This prevents the highlight/input font-size desync (jaggedness bug)
     tryEditorBox.style.setProperty('--try-fz', `${val}px`);
     updateEditor();
@@ -863,7 +863,7 @@ vim.opt.guifont = "IoskeleyMono Nerd Font:h14"`
   let currentIndex = 0;
   let isZoomed = false;
 
-  // Hold the <img>, not its src — the art swaps on theme change and a cached
+  // Hold the <img>, not its src. The art swaps on theme change and a cached
   // src would reopen the old one.
   const galleryItems = cards.map(card => {
     const img = card.querySelector('img');

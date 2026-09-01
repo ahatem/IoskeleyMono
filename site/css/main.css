@@ -88,7 +88,7 @@
   --backdrop: rgba(236, 231, 220, 0.94);
 }
 
-/* Width font families — only Normal loaded by default */
+/* Width font families. Only Normal is loaded by default. */
 @font-face { font-family: "Ioskeley Mono"; src: url("../fonts/IoskeleyMono-Thin.woff2") format("woff2"); font-weight: 100; font-style: normal; font-display: swap; }
 @font-face { font-family: "Ioskeley Mono"; src: url("../fonts/IoskeleyMono-ThinItalic.woff2") format("woff2"); font-weight: 100; font-style: italic; font-display: swap; }
 @font-face { font-family: "Ioskeley Mono"; src: url("../fonts/IoskeleyMono-ExtraLight.woff2") format("woff2"); font-weight: 200; font-style: normal; font-display: swap; }
@@ -990,7 +990,7 @@ strong { font-weight: 600; color: var(--text); }
   background: var(--s-3);
 }
 
-/* Own row — sharing the header with 7 language tabs clipped the last one. */
+/* Use its own row because sharing the header with seven language tabs clipped the last one. */
 .try-samples-bar {
   display: flex;
   align-items: center;
