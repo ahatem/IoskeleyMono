@@ -161,6 +161,7 @@ Every weight is included in both widths, with an upright and italic style.
 | System | Package | Install |
 |---|---|---|
 | macOS | [Homebrew](https://formulae.brew.sh/cask/font-ioskeley-mono) | `brew install --cask font-ioskeley-mono` |
+| macOS | [Homebrew](https://formulae.brew.sh/cask/font-ioskeley-mono-term-nerd-font) (Term Nerd Font) | `brew install --cask font-ioskeley-mono-term-nerd-font` |
 | Nix / NixOS | [nixpkgs](https://github.com/NixOS/nixpkgs/tree/master/pkgs/data/fonts/ioskeley-mono) | `nix profile install nixpkgs#ioskeley-mono.normal` |
 | Arch Linux | [AUR](https://aur.archlinux.org/packages/ttf-ioskeley-mono) | Package: `ttf-ioskeley-mono` |
 | Slackware | [SlackBuilds.org](https://slackbuilds.org/repository/15.0/system/IoskeleyMono/) | Package: `IoskeleyMono` |
