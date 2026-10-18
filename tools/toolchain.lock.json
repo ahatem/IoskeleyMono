@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "iosevka": {"repository": "https://github.com/be5invis/Iosevka.git", "tag": "v34.4.0", "commit": "8eb49cd124eb96e3817dd660f720c8d2885d2864"},
+  "nerd_fonts": {"version": "3.5.0", "url": "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.5.0/FontPatcher.zip", "sha256": "bcc707177d95cfee99fcc50ac3ae01a844372a6a4b66c12b7d4423563951feef", "flags": ["--complete", "--careful", "--mono"]},
+  "node": "20.20.0",
+  "npm": "10.8.2",
+  "installed_npm_lock_sha256": "ad692cfcaff42afa3b6a0ef1be7d54e6d6060594acb7296d6acd0119ea25b278",
+  "python_minor": "3.14",
+  "ttfautohint": "1.8.4",
+  "fontforge": "20230101",
+  "environmental_inputs": ["OS and system-library package revisions", "CPU architecture", "ZIP implementation", "font timestamps", "npm registry availability"],
+  "note": "Source and patcher are exact pins. Runtime/tool versions are checked. OS/library revisions are recorded, not claimed fully pinned."
+}
