@@ -1,0 +1,8 @@
+{
+  "ligatures": ["!=", "==", "===", "=>", "->", "<=", ">=", "!==", "::", "..."],
+  "terminal": ["hello—world", ".../.config", "┌──┬──┐", "│  │  │", "└──┴──┘", "→⇒⟶"],
+  "ambiguity": ["0O 1Il|", "MWmw Hnx", "gypqj Åé Á"],
+  "combining": ["Á̇", "x́"],
+  "zero_width": ["A\u200bB", "A\u200dB"],
+  "note": "Programming substitutions are checked under calt/dlig. Combining composition is tested independently of NL's programming-ligature policy."
+}

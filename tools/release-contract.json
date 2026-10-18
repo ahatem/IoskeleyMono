@@ -1,0 +1,334 @@
+{
+  "schema": 1,
+  "metrics": {
+    "x_height": 520,
+    "cap_height": 690,
+    "typo": [965, -285, 0],
+    "win": [965, 285],
+    "hhea": [965, -220, 65],
+    "nerd_hhea": [965, -285, 0]
+  },
+  "version": {
+    "name_id_5_upstream": "34.4.0",
+    "name_id_5_product": "2.1.0"
+  },
+  "site_package": "IoskeleyMono-Web.zip",
+  "weights": {
+    "Thin": 100,
+    "ExtraLight": 200,
+    "Light": 300,
+    "SemiLight": 350,
+    "Regular": 400,
+    "Medium": 500,
+    "SemiBold": 600,
+    "Bold": 700,
+    "ExtraBold": 800,
+    "Black": 900
+  },
+  "widths": {
+    "Normal": {
+      "advance": 600,
+      "class": 5
+    },
+    "SemiCondensed": {
+      "advance": 540,
+      "class": 4
+    }
+  },
+  "slopes": [
+    "Upright",
+    "Italic"
+  ],
+  "plans": {
+    "IoskeleyMono": {
+      "family": "Ioskeley Mono",
+      "spacing": "normal",
+      "ligatures": true,
+      "glyph_names": true
+    },
+    "IoskeleyMonoTerm": {
+      "family": "Ioskeley Mono Term",
+      "spacing": "term",
+      "ligatures": true,
+      "glyph_names": true
+    },
+    "IoskeleyMonoNL": {
+      "family": "Ioskeley Mono NL",
+      "spacing": "normal",
+      "ligatures": false,
+      "glyph_names": false
+    },
+    "IoskeleyMonoWeb": {
+      "family": "Ioskeley Mono",
+      "spacing": "normal",
+      "ligatures": true,
+      "glyph_names": false
+    }
+  },
+  "packages": {
+    "IoskeleyMono.zip": {
+      "plan": "IoskeleyMono",
+      "kind": "desktop",
+      "count": 80
+    },
+    "IoskeleyMono-Term.zip": {
+      "plan": "IoskeleyMonoTerm",
+      "kind": "desktop",
+      "count": 80
+    },
+    "IoskeleyMono-NL.zip": {
+      "plan": "IoskeleyMonoNL",
+      "kind": "desktop",
+      "count": 80
+    },
+    "IoskeleyMono-NerdFont.zip": {
+      "plan": "IoskeleyMono",
+      "kind": "nerd",
+      "count": 40
+    },
+    "IoskeleyMono-Term-NerdFont.zip": {
+      "plan": "IoskeleyMonoTerm",
+      "kind": "nerd",
+      "count": 40
+    },
+    "IoskeleyMono-NL-NerdFont.zip": {
+      "plan": "IoskeleyMonoNL",
+      "kind": "nerd",
+      "count": 40
+    },
+    "IoskeleyMono-Web.zip": {
+      "plan": "IoskeleyMonoWeb",
+      "kind": "web",
+      "count": 40
+    },
+    "IoskeleyMono-Web-Full.zip": {
+      "plan": "IoskeleyMono",
+      "kind": "web",
+      "count": 40
+    }
+  },
+  "web_ranges": [
+    [
+      32,
+      126
+    ],
+    [
+      160,
+      255
+    ],
+    [
+      256,
+      383
+    ],
+    [
+      768,
+      879
+    ],
+    [
+      8192,
+      8303
+    ],
+    [
+      8352,
+      8383
+    ],
+    [
+      8592,
+      8703
+    ],
+    [
+      8704,
+      8959
+    ],
+    [
+      9472,
+      9599
+    ],
+    [
+      9600,
+      9631
+    ],
+    [
+      9632,
+      9727
+    ]
+  ],
+  "web_excluded_probes": [
+    945,
+    1040,
+    12354,
+    10230
+  ],
+  "nerd_probes": [
+    57520,
+    57522,
+    986130,
+    59153,
+    61715,
+    10092
+  ],
+  "required_tables": [
+    "head",
+    "hhea",
+    "maxp",
+    "OS/2",
+    "hmtx",
+    "cmap",
+    "loca",
+    "glyf",
+    "name",
+    "post",
+    "GSUB",
+    "GPOS",
+    "GDEF"
+  ],
+  "web_closure_exceptions": [
+    427,
+    430,
+    536,
+    537,
+    538,
+    539,
+    567,
+    587,
+    598,
+    619,
+    621,
+    627,
+    633,
+    635,
+    637,
+    638,
+    642,
+    645,
+    648,
+    656,
+    687,
+    693,
+    7532,
+    7533,
+    7534,
+    7535,
+    7536,
+    7537,
+    7538,
+    7539,
+    7540,
+    7541,
+    7542,
+    7552,
+    7553,
+    7554,
+    7555,
+    7556,
+    7557,
+    7558,
+    7559,
+    7560,
+    7561,
+    7562,
+    7563,
+    7564,
+    7565,
+    7566,
+    7567,
+    7568,
+    7569,
+    7570,
+    7571,
+    7572,
+    7573,
+    7574,
+    7575,
+    7576,
+    7577,
+    7578,
+    7593,
+    7594,
+    7599,
+    7603,
+    7605,
+    7612,
+    7683,
+    7691,
+    7715,
+    8304,
+    8308,
+    8309,
+    8310,
+    8311,
+    8312,
+    8313,
+    8320,
+    8321,
+    8322,
+    8323,
+    8324,
+    8325,
+    8326,
+    8327,
+    8328,
+    8329,
+    8402,
+    8408,
+    8427,
+    10568,
+    10972,
+    10990,
+    11056,
+    11362,
+    11364,
+    42894,
+    42900,
+    42901,
+    42938,
+    42939,
+    42940,
+    42941,
+    42942,
+    42943,
+    42948,
+    42949,
+    42950,
+    43833,
+    43870,
+    43878,
+    43879,
+    43880,
+    57528,
+    57530,
+    57532,
+    57534,
+    63618,
+    63619,
+    63633,
+    63634,
+    67464,
+    67467,
+    67469,
+    67485,
+    67487,
+    67495,
+    67496,
+    67501,
+    67503,
+    67513,
+    122629,
+    122632,
+    122633,
+    122634,
+    122642,
+    122643,
+    122644,
+    122645,
+    122646,
+    122647,
+    122648,
+    122649,
+    122650,
+    122651,
+    122652,
+    122653
+  ],
+  "web_effective_coverage_sha256": "af2d0eba0e228a04fc497e94580fbd75079f16ed19611a50fad0f0799dac12bc"
+}

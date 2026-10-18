@@ -1,3 +1,8 @@
 .vscode
 assets/snippet.js
 assets/SocialPreview.psd
+
+# Local build outputs and Python caches
+/.ci-build/
+**/__pycache__/
+*.zip
