@@ -1,46 +1,56 @@
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="assets/SocialPreview-Light.png">
-    <img src="assets/SocialPreview.png" alt="Ioskeley Mono — monochrome type specimen" width="100%">
+    <source media="(prefers-color-scheme: dark)" srcset="assets/SocialPreview.png">
+    <img src="assets/SocialPreview-Light.png" alt="Ioskeley Mono type specimen: a code sample beside a large single-storey g measured against its cap, x-height and baseline metrics" width="100%">
   </picture>
 </p>
 
-# Ioskeley Mono
+<h1 align="center">Ioskeley Mono</h1>
 
 <p align="center">
-  <strong>An open programming typeface built on Iosevka.</strong><br>
-  Compact, geometric, and tuned for editors and terminals.<br>
-  <em>Technical character without visual noise.</em>
+  An open programming typeface built on Iosevka.<br>
+  Compact, geometric, and tuned for editors and terminals.
 </p>
 
 <p align="center">
-  <a href="https://github.com/ahatem/IoskeleyMono/releases/latest"><img src="https://img.shields.io/github/v/release/ahatem/IoskeleyMono?style=flat-square&label=latest%20release&color=555" alt="Latest release"></a>
-  <a href="https://github.com/ahatem/IoskeleyMono/releases"><img src="https://img.shields.io/github/downloads/ahatem/IoskeleyMono/total?style=flat-square&label=downloads&color=555" alt="Total downloads"></a>
-  <a href="./LICENSE"><img src="https://img.shields.io/badge/license-SIL%20OFL%201.1-555?style=flat-square" alt="SIL Open Font License 1.1"></a>
+  <a href="https://github.com/ahatem/IoskeleyMono/releases/latest"><img src="https://img.shields.io/github/v/release/ahatem/IoskeleyMono?style=flat-square&label=release&labelColor=101010&color=343330" alt="Latest release"></a>
+  <a href="https://github.com/ahatem/IoskeleyMono/releases"><img src="https://img.shields.io/github/downloads/ahatem/IoskeleyMono/total?style=flat-square&label=downloads&labelColor=101010&color=343330" alt="Total downloads"></a>
+  <a href="./LICENSE"><img src="https://img.shields.io/badge/license-OFL%201.1-343330?style=flat-square&labelColor=101010" alt="License: SIL Open Font License 1.1"></a>
+  <a href="https://github.com/sponsors/ahatem"><img src="https://img.shields.io/badge/support-Sponsors-343330?style=flat-square&labelColor=101010&logo=githubsponsors&logoColor=B04A43" alt="Support on GitHub Sponsors"></a>
 </p>
 
 <p align="center">
-  <a href="https://github.com/ahatem/IoskeleyMono/releases/latest"><strong>Download</strong></a>
-  &nbsp;·&nbsp;
   <a href="https://ahatem.github.io/IoskeleyMono/"><strong>Live Showcase</strong></a>
+  &nbsp;·&nbsp;
+  <a href="#downloads"><strong>Download</strong></a>
+  &nbsp;·&nbsp;
+  <a href="#installation">Install</a>
+  &nbsp;·&nbsp;
+  <a href="#why-i-built-ioskeley-mono">Story</a>
 </p>
+
+<br>
+
+Ioskeley Mono is a free, open-source programming typeface: ten weights, two
+widths, upright and italic, in three families for editors, terminals, and apps
+that cannot turn ligatures off. It is built for long days of reading code, with
+technical character and no visual noise.
 
 <p align="center">
-  <a href="#why-i-built-ioskeley-mono">Story</a> ·
-  <a href="#at-a-glance">At a glance</a> ·
-  <a href="#choose-a-family">Families</a> ·
-  <a href="#downloads">Downloads</a> ·
-  <a href="#installation">Install</a> ·
-  <a href="#build-from-source">Build</a>
+  <a href="https://ahatem.github.io/IoskeleyMono/#workbench">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="assets/readme/Workbench.png">
+      <img src="assets/readme/Workbench-Light.png" alt="An editor workbench set entirely in Ioskeley Mono: file explorer, two TypeScript editor groups, an integrated terminal running tests, and a status bar" width="100%">
+    </picture>
+  </a>
 </p>
 
-> **Read this before you download.** The links below currently serve **v2.1.0**,
-> the latest published release. This README documents the **2.2.0** product, and
-> the two are not identical: the **NF / NFM split described under
-> [Nerd Font or Nerd Font Mono?](#nerd-font-or-nerd-font-mono) ships in 2.2.0
-> only**. If you download today, the Nerd Font archives will not contain both
-> variants. Everything else — families, widths, weights, web packages — is
-> unchanged. See [Release timing](#downloads).
+<p align="center"><sub>
+  Explorer, editors, terminal and status bar: one typeface at three sizes.
+  The <a href="https://ahatem.github.io/IoskeleyMono/">Live Showcase</a> follows a
+  full working day in Ioskeley (editor, terminal, review, logs, queries and docs)
+  and has a live specimen you can type into.
+</sub></p>
 
 ## Why I Built Ioskeley Mono
 
@@ -60,58 +70,30 @@ Ioskeley is now its own open typeface, not a clone or a specification match.
 Berkeley Mono remains part of its history, while Iosevka is the foundation that
 made the experiment possible.
 
-## At a Glance
+## Choose Your Ioskeley
 
-- **40 static styles per family:** ten weights, two widths, upright and italic.
-- **Three families:** Standard and Term include programming ligatures; NL does
-  not.
-- **Purposeful forms:** single-storey `g`, dotted zero, open `6` and `9`, and
-  clearly differentiated programming punctuation.
-- **Three Nerd Font archives:** from 2.2.0 each includes both NF and NFM
-  variants. The current v2.1.0 archives contain neither split — see the note
-  above.
-- **Two web packages:** a compact subset and Web Full.
-- **Open source:** licensed under the SIL Open Font License 1.1.
-
-## Design
-
-Ioskeley is built from Iosevka, but it is not a stock Iosevka preset. Its
-[build plan](./private-build-plans.toml) defines its glyph forms, widths, slopes,
-spacing, and vertical metrics.
-
-The design aims for **technical character without visual noise**: compact forms
-that do not feel crushed, distinctive details that reward a closer look, and a
-quiet rhythm for everyday use. The visual identity follows the same idea. It is
-monochromatic and typography-first; hierarchy comes from the typeface, spacing,
-weight, and luminance rather than a branding hue. See the concise
-[visual identity reference](./docs/VISUAL_IDENTITY.md).
-
-## Choose a Family
+Every family has the same 40 styles: ten weights from Thin to Black, Normal and
+SemiCondensed widths, upright and italic.
 
 | Family | Ligatures | Best for |
 |---|:---:|---|
-| **Standard** — `Ioskeley Mono` | Yes | General editor use. |
-| **Term** — `Ioskeley Mono Term` | Yes | Terminals; arrows and box-drawing forms are tuned for terminal rhythm. |
-| **NL** — `Ioskeley Mono NL` | No | Apps where ligatures cannot be disabled, or when you prefer none. |
+| **Standard** · `Ioskeley Mono` | Yes | General editor use. |
+| **Term** · `Ioskeley Mono Term` | Yes | Terminals; arrows and box drawing tuned to the cell. |
+| **NL** · `Ioskeley Mono NL` | No | Apps that cannot disable ligatures, or when you prefer none. |
 
-Standard and Term include programming ligatures. NL is the no-programming-
-ligature family; it retains ordinary character shaping.
+Two widths, both in every desktop and Nerd Font archive:
 
-### Choose a Width
+- **Normal** (600 units): the standard balance of spacing and readability.
+- **SemiCondensed** (540 units, 90% of Normal): more characters on a line.
 
-| Width | Advance | Choose it when |
-|---|---:|---|
-| **Normal** | 600 units | You want the standard balance of spacing and readability. |
-| **SemiCondensed** | 540 units | You want more characters on a line; this is 90% of Normal. |
-
-Both widths are included in desktop and Nerd Font packages.
+NL keeps ordinary character shaping; it only drops the programming ligatures.
 
 ### Nerd Font or Nerd Font Mono?
 
-> **Applies to 2.2.0.** The currently published v2.1.0 Nerd Font archives do not
-> contain this split. If you are on v2.1.0, ignore this section until 2.2.0 ships.
+> **From 2.2.0.** The published v2.1.0 Nerd Font archives do not contain this
+> split. If you download today, skip this section until 2.2.0 is released.
 
-Every 2.2.0 Nerd Font archive contains both patched variants:
+From 2.2.0, every Nerd Font archive contains both patched variants:
 
 - **Nerd Font (NF):** ordinary Nerd Fonts geometry with larger icons. A good
   starting point for most setups that want icons; some icons may extend beyond
@@ -120,34 +102,45 @@ Every 2.2.0 Nerd Font archive contains both patched variants:
   pickers that require true monospace behavior.
 
 Neither is universally better. Choose the geometry your application expects.
-The Standard, Term, and NL Nerd Font archives each contain NF and NFM from
-2.2.0 onward.
+
+<p align="center">
+  <a href="https://ahatem.github.io/IoskeleyMono/#terminal">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="assets/readme/Terminal.png">
+      <img src="assets/readme/Terminal-Light.png" alt="A three-pane tmux session in Ioskeley Mono: git status and log graph, a box-drawn package table, command help, and a progress report with aligned figures" width="100%">
+    </picture>
+  </a>
+</p>
+
+<p align="center"><sub>
+  Box drawing meets at a line height of exactly 1.25, where the font's own
+  metrics put it. Shown in the Standard web build; Term tunes arrows and box
+  drawing to the terminal cell.
+</sub></p>
 
 ## Downloads
 
-The archives contain the styles for their family and, where applicable, both
-widths. Nerd Font archives include both NF and NFM as described above, once
-2.2.0 is published.
-
 | Use | Archive |
 |---|---|
-| Standard — editor / general use | [`IoskeleyMono.zip`](https://github.com/ahatem/IoskeleyMono/releases/latest/download/IoskeleyMono.zip) |
-| Standard — with Nerd Font variants | [`IoskeleyMono-NerdFont.zip`](https://github.com/ahatem/IoskeleyMono/releases/latest/download/IoskeleyMono-NerdFont.zip) |
-| Term — terminal use | [`IoskeleyMono-Term.zip`](https://github.com/ahatem/IoskeleyMono/releases/latest/download/IoskeleyMono-Term.zip) |
-| Term — with Nerd Font variants | [`IoskeleyMono-Term-NerdFont.zip`](https://github.com/ahatem/IoskeleyMono/releases/latest/download/IoskeleyMono-Term-NerdFont.zip) |
-| NL — no programming ligatures | [`IoskeleyMono-NL.zip`](https://github.com/ahatem/IoskeleyMono/releases/latest/download/IoskeleyMono-NL.zip) |
-| NL — with Nerd Font variants | [`IoskeleyMono-NL-NerdFont.zip`](https://github.com/ahatem/IoskeleyMono/releases/latest/download/IoskeleyMono-NL-NerdFont.zip) |
-| Web — smaller WOFF2 subset | [`IoskeleyMono-Web.zip`](https://github.com/ahatem/IoskeleyMono/releases/latest/download/IoskeleyMono-Web.zip) |
-| Web Full — desktop glyph repertoire | [`IoskeleyMono-Web-Full.zip`](https://github.com/ahatem/IoskeleyMono/releases/latest/download/IoskeleyMono-Web-Full.zip) |
+| Standard · editor and general use | [`IoskeleyMono.zip`](https://github.com/ahatem/IoskeleyMono/releases/latest/download/IoskeleyMono.zip) |
+| Standard · with Nerd Font icons | [`IoskeleyMono-NerdFont.zip`](https://github.com/ahatem/IoskeleyMono/releases/latest/download/IoskeleyMono-NerdFont.zip) |
+| Term · terminal use | [`IoskeleyMono-Term.zip`](https://github.com/ahatem/IoskeleyMono/releases/latest/download/IoskeleyMono-Term.zip) |
+| Term · with Nerd Font icons | [`IoskeleyMono-Term-NerdFont.zip`](https://github.com/ahatem/IoskeleyMono/releases/latest/download/IoskeleyMono-Term-NerdFont.zip) |
+| NL · no programming ligatures | [`IoskeleyMono-NL.zip`](https://github.com/ahatem/IoskeleyMono/releases/latest/download/IoskeleyMono-NL.zip) |
+| NL · with Nerd Font icons | [`IoskeleyMono-NL-NerdFont.zip`](https://github.com/ahatem/IoskeleyMono/releases/latest/download/IoskeleyMono-NL-NerdFont.zip) |
+| Web · smaller WOFF2 subset | [`IoskeleyMono-Web.zip`](https://github.com/ahatem/IoskeleyMono/releases/latest/download/IoskeleyMono-Web.zip) |
+| Web Full · desktop glyph repertoire | [`IoskeleyMono-Web-Full.zip`](https://github.com/ahatem/IoskeleyMono/releases/latest/download/IoskeleyMono-Web-Full.zip) |
 
-**Release timing:** this README documents the 2.2.0 product. The latest published
-release is still v2.1.0, whose Nerd Font archives predate the NF/NFM split
-described here. If you download before 2.2.0 is published, you will not receive
-both of those variants. The links use GitHub's `/releases/latest/download/`
-route: they serve published files now and will resolve to the 2.2.0 archives
-after release. No unreleased 2.2.0 asset URLs are used.
+> **Release timing.** These links always serve the latest published release,
+> currently **v2.1.0**. Its Nerd Font archives predate the NF / NFM split
+> described above; everything else (families, widths, weights, web packages) is
+> the same. The links will resolve to the 2.2.0 archives once 2.2.0 is
+> published. No unreleased asset URLs are used.
 
-### Web Fonts
+<details>
+<summary><strong>Web fonts</strong></summary>
+
+<br>
 
 `IoskeleyMono-Web.zip` is a smaller WOFF2 subset for common Latin text,
 punctuation, arrows, math, and box drawing. Use `IoskeleyMono-Web-Full.zip` when
@@ -167,6 +160,8 @@ them does not require different `@font-face` rules.
 
 Add the other weight/style faces your site uses. The web packages contain WOFF2
 files only; browser hinting is not included.
+
+</details>
 
 ## Installation
 
@@ -199,14 +194,13 @@ Thanks to [@zhimoe](https://github.com/zhimoe),
 
 Restart open applications so they refresh their font lists.
 
-## Editor and Terminal Setup
+### Editors and Terminals
 
-Use the family name matching the package you installed. The principal families
-are `Ioskeley Mono`, `Ioskeley Mono Term`, and `Ioskeley Mono NL`. Patched
-families use the corresponding `Nerd Font` or `Nerd Font Mono` suffix; select the
-full installed family name in your font picker.
+Use the family name matching the package you installed: `Ioskeley Mono`,
+`Ioskeley Mono Term`, or `Ioskeley Mono NL`. Patched families add a `Nerd Font`
+or `Nerd Font Mono` suffix; select the full installed name in your font picker.
 
-### VS Code / Cursor
+**VS Code / Cursor**
 
 ```json
 {
@@ -221,16 +215,14 @@ full installed family name in your font picker.
 For an app that cannot disable programming ligatures, install NL and use
 `Ioskeley Mono NL`. For patched icons, select the NF or NFM family you installed.
 
-### Terminals
-
-Use the Term family for terminal-oriented spacing. For example, in Ghostty:
+**Ghostty**
 
 ```ini
 font-family = Ioskeley Mono Term
 font-size = 14
 ```
 
-In Kitty:
+**Kitty**
 
 ```conf
 font_family      Ioskeley Mono Term
@@ -240,9 +232,24 @@ bold_italic_font auto
 font_size        14.0
 ```
 
-### OpenType Features
+## Type Details
 
-Where an application exposes these OpenType features:
+Ioskeley is built from Iosevka, but it is not a stock Iosevka preset. Its
+[build plan](./private-build-plans.toml) defines its glyph forms, widths, slopes,
+spacing, and vertical metrics. The forms are chosen to be read, not noticed: a
+single-storey `g`, dotted zero, open `6` and `9`, and programming punctuation that
+stays distinct at small sizes.
+
+| Metric | Value |
+|---|---|
+| Units per em | 1000 |
+| Cap height | 690 |
+| x-height | 520 |
+| Advance | 600 Normal · 540 SemiCondensed |
+| Italic angle | 11.8° |
+| Weights | Thin 100 · ExtraLight 200 · Light 300 · SemiLight 350 · Regular 400 · Medium 500 · SemiBold 600 · Bold 700 · ExtraBold 800 · Black 900 |
+
+Where an application exposes OpenType features:
 
 | Feature | Effect |
 |---|---|
@@ -251,61 +258,51 @@ Where an application exposes these OpenType features:
 | `dlig` | Discretionary ligatures, when supported by the shaping application. |
 | `onum`, `frac` | Upstream old-style figures and fraction features, when supported. |
 
-For example, VS Code can enable the slashed-zero feature with its ligatures:
+For example, VS Code can enable the slashed zero alongside its ligatures:
 
 ```jsonc
 "editor.fontLigatures": "'calt', 'zero'"
 ```
 
-## Weights and Styles
+The project's visual language follows the typeface: monochrome and
+typography-first, with one sparing accent. See the
+[visual identity reference](./docs/VISUAL_IDENTITY.md).
 
-Every family includes ten static weights in upright and italic styles. Each
-weight is present in both Normal and SemiCondensed widths.
-
-| Weight | CSS `font-weight` |
-|---|---:|
-| Thin | `100` |
-| ExtraLight | `200` |
-| Light | `300` |
-| SemiLight | `350` |
-| Regular | `400` |
-| Medium | `500` |
-| SemiBold | `600` |
-| Bold | `700` |
-| ExtraBold | `800` |
-| Black | `900` |
-
-## Origins & Design Evolution
+## Origins
 
 Berkeley Mono / TX-02 inspired the first experiment, but it is a reference in
-Ioskeley's history—not its specification. Iosevka made the exploration
+Ioskeley's history, not its specification. Iosevka made the exploration
 possible; repeated tuning shaped a distinct set of proportions and forms.
-Ioskeley's current visual identity stands on its own.
 
 <details>
-<summary><strong>View the historical character, overlay, and code studies</strong></summary>
+<summary><strong>Historical character, overlay, and code studies</strong></summary>
+
+<br>
 
 These studies document the project's origins. They are not claims of visual
 equivalence and do not define the current design direction. TX-02 is a commercial
 typeface; its files are not included or distributed here.
 
-### 01 · Character Forms
+**01 · Character forms**
 
-![Origins study of Ioskeley Mono and TX-02 character forms](assets/Origins-01-Character-Forms.png)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/Origins-01-Character-Forms.png">
+  <img src="assets/Origins-01-Character-Forms-Light.png" alt="Origins study of Ioskeley Mono and TX-02 character forms" width="100%">
+</picture>
 
-![Light origins study of Ioskeley Mono and TX-02 character forms](assets/Origins-01-Character-Forms-Light.png)
+**02 · Overlay study**
 
-### 02 · Overlay Study
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/Origins-02-Overlay-Study.png">
+  <img src="assets/Origins-02-Overlay-Study-Light.png" alt="Monochrome overlay study of shared and differing glyph forms" width="100%">
+</picture>
 
-![Monochrome overlay study of shared and differing glyph forms](assets/Origins-02-Overlay-Study.png)
+**03 · Code texture**
 
-![Light monochrome overlay study of shared and differing glyph forms](assets/Origins-02-Overlay-Study-Light.png)
-
-### 03 · Code Texture
-
-![Origins study of the same code set in Ioskeley Mono and TX-02](assets/Origins-03-Code-Texture.png)
-
-![Light origins study of code texture in Ioskeley Mono and TX-02](assets/Origins-03-Code-Texture-Light.png)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/Origins-03-Code-Texture.png">
+  <img src="assets/Origins-03-Code-Texture-Light.png" alt="Origins study of the same code set in Ioskeley Mono and TX-02" width="100%">
+</picture>
 
 </details>
 
@@ -329,11 +326,16 @@ improvements are welcome.
 
 ## Support
 
-The most useful support is often practical: star the repository, share a setup,
-report a glyph or installation issue, or help improve the build plan and
-documentation. Financial support is optional and does not unlock a separate
-font version: [GitHub Sponsors](https://github.com/sponsors/ahatem) ·
-[Buy Me a Coffee](https://www.buymeacoffee.com/ahmedhatem).
+Ioskeley is free, and every style is in the open release; there is no paid
+edition and nothing held back.
+
+If it has become part of how you work, you can help keep it maintained through
+[GitHub Sponsors](https://github.com/sponsors/ahatem). Sponsorship goes into the
+quiet work behind each release: testing builds across editors, terminals and
+platforms, keeping the packages, showcase and documentation in order, and
+continuing to refine the forms.
+
+A star, a careful bug report, or a screenshot of your setup helps too.
 
 ## License and Acknowledgments
 

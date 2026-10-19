@@ -115,6 +115,6 @@ jobs:
             Nerd Font Mono (NFM) families. Choose NF for larger icons or NFM
             when strict single-cell Fontconfig classification is required.
 
-            Not sure which to pick? [See the README](https://github.com/ahatem/IoskeleyMono#downloads--variants).
+            Not sure which to pick? [See the README](https://github.com/ahatem/IoskeleyMono#choose-your-ioskeley).
           fail_on_unmatched_files: true
           files: release-archives/IoskeleyMono*.zip

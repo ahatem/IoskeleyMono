@@ -153,3 +153,14 @@ not depend on the browser viewport. Render at a true multiple of the layout size
 (2× is sufficient; 4× changes under 0.3% of output pixels). Let the generators
 assert these conditions on load and report the result, rather than relying on
 visual inspection.
+
+## README captures
+
+The in-use images under `assets/readme/` are crops of the live showcase, not
+specimen plates: the editor and terminal chrome belong to those scenes. Regenerate
+them from the site at the current commit with `artwork/readme-captures.mjs`, which
+renders at 2× with reduced motion (every scene in its final static state) and
+grey-scale antialiasing, and stops if any text in a crop lacks a loaded Ioskeley
+face. Each image has a `-Light` pair, selected in the README by
+`prefers-color-scheme`. These files stay out of `site/imgs/`; the Pages workflow
+copies only `assets/*.png`.
