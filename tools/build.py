@@ -4,17 +4,19 @@ from __future__ import annotations
 import argparse
 import hashlib
 import importlib.metadata
+import io
 import json
 import os
 from pathlib import Path
 import platform
+import re
 import shutil
 import subprocess
 import sys
 import urllib.request
 import zipfile
 import zlib
-from font_evidence import check_validation_runtime
+from font_evidence import check_validation_runtime, shorten_legacy_family
 
 ROOT = Path(__file__).resolve().parents[1]
 LOCK = json.loads((ROOT / "tools/toolchain.lock.json").read_text())
@@ -41,6 +43,91 @@ def nerd_flags_for_variant(variant):
     if variant not in variants:
         raise ValueError(f"Unknown Nerd Font variant: {variant}")
     return [*spec["flags"], *variants[variant]]
+
+
+def product_version_parts():
+    value = CONTRACT["version"]["product"]
+    match = re.fullmatch(r"(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)", value)
+    if not match:
+        raise RuntimeError(f"Invalid semantic product version in release contract: {value!r}")
+    major, minor, patch = map(int, match.groups())
+    if major >= 32768 or minor >= 65535 or patch >= 65535:
+        raise RuntimeError(f"Product version cannot be represented in OpenType metadata: {value}")
+    return value, major, minor, patch
+
+
+def product_font_revision():
+    """Use the semantic major/minor as a Fixed 16.16 decimal; patch stays textual."""
+    _, major, minor, _ = product_version_parts()
+    revision = float(f"{major}.{minor}")
+    if revision >= 32768:
+        raise RuntimeError("Product version exceeds the signed Fixed 16.16 fontRevision range")
+    return revision
+
+
+def set_name_records(name_table, name_id, value):
+    keys = {(r.platformID, r.platEncID, r.langID) for r in name_table.names if r.nameID == name_id}
+    if not keys:
+        keys = {(1, 0, 0), (3, 1, 0x0409)}
+    for platform_id, encoding_id, language_id in sorted(keys):
+        name_table.setName(value, name_id, platform_id, encoding_id, language_id)
+
+
+def finalize_font_metadata(path, *, nerd=False, repair_fixed_pitch=False):
+    """Apply Ioskeley's release version after upstream, hinting, or patcher edits."""
+    from fontTools.ttLib import TTFont
+
+    product, major, minor, _ = product_version_parts()
+    upstream = LOCK["iosevka"]["tag"].removeprefix("v")
+    autohint_token = f"ttfautohint (v{LOCK['ttfautohint']})"
+    nerd_token = f"Nerd Fonts {LOCK['nerd_fonts']['version']}"
+    expected_upstream = f"Iosevka {upstream}"
+    expected_nerd = nerd_token if nerd else None
+
+    with TTFont(path, recalcTimestamp=False) as font:
+        name_table = font["name"]
+        source_versions = [r.toUnicode() for r in name_table.names if r.nameID == 5]
+        source_text = "; ".join(source_versions)
+        if expected_upstream not in source_text and upstream not in source_text:
+            raise RuntimeError(f"{path}: source name ID 5 does not retain locked Iosevka {upstream}")
+
+        has_autohint = "ttfautohint" in source_text.lower()
+        autohint_tokens = set(re.findall(r"ttfautohint\s*\([^;)]*\)", source_text))
+        if has_autohint and autohint_tokens != {autohint_token}:
+            raise RuntimeError(f"{path}: unexpected ttfautohint provenance in name ID 5")
+        nerd_tokens = set(re.findall(r"Nerd Fonts [0-9]+(?:\.[0-9]+)*", source_text))
+        if nerd:
+            if nerd_tokens != {nerd_token}:
+                raise RuntimeError(f"{path}: Nerd Fonts provenance does not match the toolchain lock")
+        elif nerd_tokens:
+            raise RuntimeError(f"{path}: Nerd Fonts font was passed as an unpatched product font")
+
+        parts = [
+            f"Version {major}.{minor}",
+            f"Ioskeley Mono {product}",
+            expected_upstream,
+        ]
+        if has_autohint:
+            parts.append(autohint_token)
+        if expected_nerd:
+            parts.append(expected_nerd)
+        final_version = "; ".join(parts)
+
+        set_name_records(name_table, 5, final_version)
+        for record in list(name_table.names):
+            if record.nameID != 1:
+                continue
+            legacy_name = shorten_legacy_family(record.toUnicode())
+            if legacy_name != record.toUnicode():
+                name_table.setName(legacy_name, 1, record.platformID, record.platEncID, record.langID)
+
+        font["head"].fontRevision = product_font_revision()
+        if repair_fixed_pitch and "post" in font:
+            font["post"].isFixedPitch = 1
+
+        output = io.BytesIO()
+        font.save(output, reorderTables=False)
+    path.write_bytes(output.getvalue())
 
 
 def check_tools():
@@ -121,7 +208,6 @@ def compile_fonts(work, jobs):
 
 
 def patch_fonts(work, face_names_by_plan=None):
-    from fontTools.ttLib import TTFont
     check_tools()
     source = source_check(work)
     for plan in (p for p in CONTRACT["plans"] if p != "IoskeleyMonoWeb"):
@@ -147,11 +233,7 @@ def patch_fonts(work, face_names_by_plan=None):
                 run(["fontforge", "-script", work / "nerd-fonts-patcher/font-patcher", font,
                      *nerd_flags_for_variant(variant), "--outputdir", dest])
         for path in sorted((work / "patched" / plan).rglob("*.ttf")):
-            font = TTFont(path)
-            if "post" in font and font["post"].isFixedPitch != 1:
-                font["post"].isFixedPitch = 1
-                font.save(path)
-            font.close()
+            finalize_font_metadata(path, nerd=True, repair_fixed_pitch=True)
 
 
 def package_members(work, spec):
@@ -185,6 +267,9 @@ def package(work, package_names=None):
         target = work / name
         if target.exists():
             raise RuntimeError(f"Refusing to overwrite existing archive: {target}")
+        for path in sorted({path for path, _ in members}):
+            finalize_font_metadata(path, nerd=spec["kind"] == "nerd",
+                                   repair_fixed_pitch=spec["kind"] == "nerd")
         # Preserve current contents/paths. Ordering is explicit; source mtimes remain evidence.
         with zipfile.ZipFile(target, "w", zipfile.ZIP_DEFLATED) as archive:
             for path, member in sorted(members, key=lambda x: x[1]):

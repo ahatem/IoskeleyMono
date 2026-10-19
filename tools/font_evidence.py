@@ -1,4 +1,4 @@
-"""Read-only font inspection helpers shared by validation and build checks."""
+"""Shared font metadata and read-only inspection helpers."""
 from __future__ import annotations
 
 import hashlib
@@ -11,6 +11,30 @@ from fontTools.ttLib import TTFont
 
 ROOT = Path(__file__).resolve().parents[1]
 SAMPLES = [ord(c) for c in " HxMWmn0O1Il|gj_()—…→─"] + [0x301, 0x200B, 0xE0B0, 0xE0B2, 0xF0C12, 0xE711, 0xF113, 0x276C, 0x27F6]
+LEGACY_FAMILY_NAME_LIMIT = 31
+
+
+def shorten_legacy_family(name: str) -> str:
+    """Fit an overlong family ID 1 into FontForge's 31-character legacy limit.
+
+    The full product and NF/NFM family names remain in typographic IDs 16/17.
+    These substitutions only run as needed and preserve the plan, width, and
+    Nerd variant markers in the compatibility name.
+    """
+    if len(name) <= LEGACY_FAMILY_NAME_LIMIT:
+        return name
+    for long, short in (
+        (" Nerd Font Mono", " NFM"),
+        (" Nerd Font", " NF"),
+        (" SemiCondensed", " SC"),
+        ("IoskeleyMono", "Ioskeley"),
+    ):
+        if len(name) <= LEGACY_FAMILY_NAME_LIMIT:
+            break
+        name = name.replace(long, short)
+    if len(name) > LEGACY_FAMILY_NAME_LIMIT:
+        raise ValueError(f"Cannot shorten legacy family name to {LEGACY_FAMILY_NAME_LIMIT} characters: {name!r}")
+    return name
 
 
 def digest(data: bytes) -> str:

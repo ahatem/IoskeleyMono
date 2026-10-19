@@ -13,17 +13,64 @@ import tempfile
 import platform
 import importlib.metadata
 import unicodedata
+import re
 import zipfile
 from xml.sax.saxutils import escape
 
 from fontTools.ttLib import TTFont
 import uharfbuzz as hb
 
-from font_evidence import ROOT, digest, inspect_font, json_digest, check_validation_runtime
+from font_evidence import (ROOT, digest, inspect_font, json_digest, check_validation_runtime,
+                           shorten_legacy_family, LEGACY_FAMILY_NAME_LIMIT)
 
 CONTRACT = json.loads((ROOT / "tools/release-contract.json").read_text())
+LOCK = json.loads((ROOT / "tools/toolchain.lock.json").read_text())
 FONT_COUNT = sum(spec["count"] for spec in CONTRACT["packages"].values())
 CORPUS = json.loads((ROOT / "tests/specimens.json").read_text())
+
+
+def release_version_parts():
+    product = CONTRACT["version"]["product"]
+    match = re.fullmatch(r"(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)", product)
+    if not match:
+        raise RuntimeError(f"Invalid semantic product version in release contract: {product!r}")
+    major, minor, _ = map(int, match.groups())
+    return product, major, minor
+
+
+def check_name_record_consistency(font, checks):
+    records = font["name"].names
+    for name_id in (1, 2, 3, 4, 5, 6, 16, 17):
+        values = {record.toUnicode() for record in records if record.nameID == name_id}
+        if values:
+            checks(len(values) == 1, f"name ID {name_id} platform/language records disagree")
+
+    version_keys = {
+        (record.platformID, record.platEncID, record.langID)
+        for record in records if record.nameID == 5
+    }
+    checks((1, 0, 0) in version_keys, "name ID 5 is missing the Macintosh English record")
+    checks((3, 1, 0x0409) in version_keys, "name ID 5 is missing the Windows English record")
+
+
+def expected_typographic_subfamily(width, weight, italic, nerd):
+    labels = {
+        100: "Thin", 200: "Extralight", 300: "Light", 350: "SemiLight",
+        400: "", 500: "Medium", 600: "Semibold", 700: "Bold",
+        800: "Extrabold", 900: "Heavy",
+    }
+    pieces = []
+    if nerd and width != "Normal":
+        pieces.append("SemiCondensed")
+    if labels[weight]:
+        pieces.append(labels[weight])
+    if not nerd and width != "Normal":
+        pieces.append("Semi-Condensed")
+    if italic:
+        pieces.append("Italic")
+    if not pieces:
+        pieces.append("Regular")
+    return " ".join(pieces)
 
 
 class Results:
@@ -160,15 +207,22 @@ def check_font(data, key, plan, nerd, results, nerd_variant=None):
     strict_mono = bool(variant_contract and variant_contract["strict_mono"])
     checks(set(CONTRACT["required_tables"]) <= set(s["table_semantic_sha256"]), "missing required tables")
     names = s["names"]
-    for i in [1, 2, 4, 5, 6] + ([] if nerd else [16, 17]):
+    for i in [1, 2, 3, 4, 5, 6] + ([] if nerd else [16, 17]):
         checks(bool(names[str(i)]), f"missing name ID {i}")
     checks(bool(names["13"] or names["14"]), "missing embedded license evidence")
     checks(" " not in (names["6"] or ""), "PostScript name contains spaces")
+    checks((names["6"] or "").isascii() and len(names["6"] or "") <= 63,
+           "PostScript name is not ASCII or exceeds 63 characters")
+    checks(len(names["1"] or "") <= LEGACY_FAMILY_NAME_LIMIT,
+           f"legacy family name exceeds {LEGACY_FAMILY_NAME_LIMIT} characters")
+    checks(shorten_legacy_family(names["1"] or "") == names["1"],
+           "legacy family name is not in deterministic compatibility form")
+    checks(len(names["2"] or "") <= LEGACY_FAMILY_NAME_LIMIT,
+           f"legacy subfamily name exceeds {LEGACY_FAMILY_NAME_LIMIT} characters")
     family = plan + variant_contract["family_suffix"] if nerd else CONTRACT["plans"][plan]["family"]
     if names["16"] or not nerd:
         checks(names["16"] == family, f"unexpected typographic family {names['16']!r}; expected {family!r}")
     checks(bool(names["16"]) == bool(names["17"]), "incomplete typographic name pair")
-    checks((names["1"] or "").startswith(family), "legacy family ID 1 does not match package")
     checks((names["4"] or "").startswith(family), "full name ID 4 does not match package")
     checks(s["weight"] in CONTRACT["weights"].values(), "unexpected weight class")
     if nerd and (s["width"] != 5 or s["weight"] not in {400, 700}):
@@ -178,8 +232,52 @@ def check_font(data, key, plan, nerd, results, nerd_variant=None):
     width = widths[0] if widths else "Normal"
     cell = CONTRACT["widths"][width]["advance"]
     italic = bool(s["fs_selection"] & 1)
+    if nerd:
+        legacy_family = names["1"] or ""
+        plan_prefixes = {
+            "IoskeleyMono": ("IoskeleyMono", "Ioskeley"),
+            "IoskeleyMonoTerm": ("IoskeleyMonoTerm", "IoskeleyTerm"),
+            "IoskeleyMonoNL": ("IoskeleyMonoNL", "IoskeleyNL"),
+        }
+        prefixes = plan_prefixes.get(plan, ())
+        if plan == "IoskeleyMono":
+            matches_plan = any(legacy_family.startswith(prefix) for prefix in prefixes) and not legacy_family.startswith(
+                ("IoskeleyMonoTerm", "IoskeleyMonoNL", "IoskeleyTerm", "IoskeleyNL")
+            )
+        else:
+            matches_plan = any(legacy_family.startswith(prefix) for prefix in prefixes)
+        checks(matches_plan, "legacy family name lost its Standard/Term/NL identity")
+        if nerd_variant == "NFM":
+            checks(" Nerd Font Mono" in legacy_family or re.search(r"(?:^|\s)NFM(?:\s|$)", legacy_family) is not None,
+                   "legacy family name lost its NFM identity")
+        else:
+            checks(re.search(r"(?:^|\s)Nerd Font(?:\s|$)", legacy_family) is not None
+                   or re.search(r"(?:^|\s)NF(?:\s|$)", legacy_family) is not None,
+                   "legacy family name lost its NF identity")
+        if width == "SemiCondensed":
+            checks("SemiCondensed" in legacy_family or re.search(r"(?:^|\s)SC(?:\s|$)", legacy_family) is not None,
+                   "legacy family name lost its SemiCondensed identity")
+    else:
+        checks((names["1"] or "").startswith(family), "legacy family ID 1 does not match package")
+
     checks(italic == bool(s["mac_style"] & 2) == (s["italic_angle"] != 0), "inconsistent italic flags")
     checks(italic == ("Italic" in (names["17"] or names["2"] or "")), "italic naming linkage mismatch")
+    expected_legacy_subfamily = (
+        ("Bold" if s["weight"] == 700 else "Regular") if not italic else
+        ("Bold Italic" if s["weight"] == 700 else "Italic")
+    )
+    checks(names["2"] == expected_legacy_subfamily, "legacy subfamily weight/style name mismatch")
+    if names["17"]:
+        expected_subfamily = expected_typographic_subfamily(width, s["weight"], italic, nerd)
+        checks(names["17"] == expected_subfamily,
+               f"unexpected typographic subfamily {names['17']!r}; expected {expected_subfamily!r}")
+    else:
+        checks(nerd and width == "Normal" and s["weight"] in {400, 700},
+               "typographic subfamily is missing outside the legacy RIBBI group")
+        expected_subfamily = expected_typographic_subfamily(width, s["weight"], italic, nerd)
+    expected_full_name = family if expected_subfamily == "Regular" else f"{family} {expected_subfamily}"
+    checks(names["4"] == expected_full_name,
+           f"unexpected full name {names['4']!r}; expected {expected_full_name!r}")
     bold = expects_bold(s["weight"], nerd)
     checks(bool(s["fs_selection"] & 32) == bold, "bold linkage mismatch")
     checks(bool(s["mac_style"] & 1) == bold, "macStyle bold linkage mismatch")
@@ -190,13 +288,29 @@ def check_font(data, key, plan, nerd, results, nerd_variant=None):
     checks(s["typo_metrics"] == metrics["typo"], "typo metrics drifted")
     checks(s["win_metrics"] == metrics["win"], "Windows metrics drifted")
     checks(s["hhea_metrics"] == (metrics["nerd_hhea"] if nerd else metrics["hhea"]), "hhea metrics drifted")
-    version = CONTRACT["version"]
-    if version["name_id_5_product"] not in names["5"]:
-        if version["name_id_5_upstream"] in names["5"]:
-            results.warn(f"name ID 5 retains upstream Iosevka version {version['name_id_5_upstream']}")
-        else:
-            checks(False, "unexpected version metadata")
+    product, version_major, version_minor = release_version_parts()
+    upstream = LOCK["iosevka"]["tag"].removeprefix("v")
+    version_parts = (names["5"] or "").split("; ")
+    checks(len(version_parts) >= 3 and version_parts[0] == f"Version {version_major}.{version_minor}",
+           "name ID 5 must begin with the standards-compatible Ioskeley major.minor version")
+    checks(len(version_parts) >= 3 and version_parts[1] == f"Ioskeley Mono {product}",
+           "name ID 5 does not identify the Ioskeley product version")
+    checks(len(version_parts) >= 3 and version_parts[2] == f"Iosevka {upstream}",
+           "name ID 5 does not retain locked Iosevka provenance")
+    expected_suffix = []
+    if "Unhinted" not in key.replace("\\", "/"):
+        expected_suffix.append(f"ttfautohint (v{LOCK['ttfautohint']})")
+    if nerd:
+        expected_suffix.append(f"Nerd Fonts {LOCK['nerd_fonts']['version']}")
+    checks(version_parts[3:] == expected_suffix,
+           "name ID 5 provenance does not match the hinted/Nerd product pipeline")
     with TTFont(io.BytesIO(data), recalcTimestamp=False) as font:
+        check_name_record_consistency(font, checks)
+        expected_revision = float(f"{version_major}.{version_minor}")
+        actual_revision_bits = int(round(font["head"].fontRevision * 65536))
+        expected_revision_bits = int(round(expected_revision * 65536))
+        checks(actual_revision_bits == expected_revision_bits,
+               f"head.fontRevision is not the Ioskeley {version_major}.{version_minor} numeric revision")
         cm = font.getBestCmap()
         glyph_order = font.getGlyphOrder()
         # ASCII text must occupy one cell. Combining marks and intended wide symbols
@@ -352,6 +466,8 @@ def validate_run(work, report, package_names=None):
     coverage = {}
     signatures = {}
     ps_names = {}
+    unique_id_owners = {}
+    legacy_family_owners = {}
     for name in selected_names:
         spec = CONTRACT["packages"][name]
         path = work / name
@@ -397,6 +513,20 @@ def validate_run(work, report, package_names=None):
                         if spec["kind"] == "nerd":
                             results.check(len(info.filename.split("/")) == 2, f"{key}: Nerd package has unexpected directory nesting")
                         ev = results.fonts[key]
+                        names = ev["semantic"]["names"]
+                        base_plan = spec["plan"].replace("IoskeleyMonoWeb", "IoskeleyMono")
+                        unique_owner = (base_plan, variant, style)
+                        unique_id = names["3"]
+                        results.check(unique_id not in unique_id_owners or unique_id_owners[unique_id] == unique_owner,
+                                      f"{key}: name ID 3 collides with a different font face")
+                        unique_id_owners[unique_id] = unique_owner
+                        legacy_weight_group = "RIBBI" if weight in {400, 700} else weight
+                        legacy_owner = (base_plan, variant, width, legacy_weight_group)
+                        legacy_name = names["1"]
+                        results.check(legacy_name not in legacy_family_owners
+                                      or legacy_family_owners[legacy_name] == legacy_owner,
+                                      f"{key}: legacy family name collides across product families or widths")
+                        legacy_family_owners[legacy_name] = legacy_owner
                         if shutil.which("fc-scan") and spec["kind"] != "web":
                             with tempfile.TemporaryDirectory(prefix="ioskeley-fontconfig-") as folder:
                                 scan_path = Path(folder) / "font.ttf"
@@ -409,7 +539,7 @@ def validate_run(work, report, package_names=None):
                         ps = ev["semantic"]["names"]["6"]
                         results.check(ps not in package_ps or package_ps[ps] == style, f"{key}: PostScript collision")
                         package_ps[ps] = style
-                        owner = (spec["plan"].replace("IoskeleyMonoWeb", "IoskeleyMono"), variant, style)
+                        owner = (base_plan, variant, style)
                         results.check(ps not in ps_names or ps_names[ps] == owner, f"{key}: cross-package naming collision")
                         ps_names[ps] = owner
                         coverage[(name, variant, style)] = ev["coverage_sha256"]
@@ -450,8 +580,25 @@ def validate_site(report):
     expected = {Path(member).name for member in expected_members(spec)}
     paths = sorted((ROOT / "site/fonts").glob("*.woff2"))
     results.check({p.name for p in paths} == expected, "checked-in web face set changed")
+    ps_owners = {}
+    unique_id_owners = {}
+    legacy_family_owners = {}
     for path in paths:
-        check_font(path.read_bytes(), path.name, spec["plan"], spec["kind"] == "nerd", results)
+        style = check_font(path.read_bytes(), path.name, spec["plan"], spec["kind"] == "nerd", results)
+        width, _, _ = style
+        ev = results.fonts[path.name]["semantic"]["names"]
+        owner = ("IoskeleyMono", None, style)
+        results.check(ev["6"] not in ps_owners or ps_owners[ev["6"]] == owner,
+                      f"{path.name}: PostScript name collision")
+        ps_owners[ev["6"]] = owner
+        results.check(ev["3"] not in unique_id_owners or unique_id_owners[ev["3"]] == owner,
+                      f"{path.name}: name ID 3 collision")
+        unique_id_owners[ev["3"]] = owner
+        legacy_weight_group = "RIBBI" if style[1] in {400, 700} else style[1]
+        family_owner = ("IoskeleyMono", None, width, legacy_weight_group)
+        results.check(ev["1"] not in legacy_family_owners or legacy_family_owners[ev["1"]] == family_owner,
+                      f"{path.name}: legacy family name collision")
+        legacy_family_owners[ev["1"]] = family_owner
     return results.write(report)
 
 

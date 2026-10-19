@@ -9,8 +9,7 @@
     "nerd_hhea": [965, -285, 0]
   },
   "version": {
-    "name_id_5_upstream": "34.4.0",
-    "name_id_5_product": "2.1.0"
+    "product": "2.2.0"
   },
   "site_package": "IoskeleyMono-Web.zip",
   "weights": {

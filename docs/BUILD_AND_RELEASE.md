@@ -15,6 +15,16 @@ expectations: package membership, style matrix, metrics, version policy, and
 web repertoire limits. `tools/validate_fonts.py` is the validation mechanism.
 `tools/font_evidence.py` contains small shared font-inspection helpers.
 
+The release contract's single `version.product` value is authoritative. Final
+font metadata is stamped after upstream generation and, for Nerd outputs, after
+FontForge patching. Name ID 5 begins with the product's numeric major/minor and
+then carries the full Ioskeley semver and locked upstream provenance. The
+`head.fontRevision` is the Fixed 16.16 numeric major/minor; the semver patch is
+not encoded in that numeric field. Overlong Nerd legacy family ID 1 values use
+short compatibility aliases; modern family/subfamily IDs 16/17 retain the full
+names. FontForge can report the intermediate overlength during patching; the
+post-patch finalizer fixes ID 1 before the font is packaged.
+
 ## Prerequisites
 
 Use Linux, including WSL, for the complete pipeline. Install Git, curl, Python
@@ -55,9 +65,12 @@ $PYTHON tools/build.py validate --work-dir /var/tmp/ioskeley-build
 `prepare` clones the locked Iosevka tag, downloads the patcher, verifies the
 commit and SHA-256, checks the host tools, and writes `provenance.json`.
 `compile` installs upstream npm dependencies and builds all four plans.
-`patch` creates the Nerd Font variants. `package` creates the eight archives
-and refuses to overwrite existing files. `validate` runs the current-product
-archive checks. `all` runs the five operations in order.
+`patch` creates the Nerd Font variants, repairs `post.isFixedPitch`, and applies
+the final product metadata after FontForge's name/version changes. `package`
+re-applies the same idempotent metadata finalizer to every archive member before
+writing the eight archives, and refuses to overwrite existing files. `validate`
+runs the current-product archive checks. `all` runs the five operations in
+order.
 
 An interrupted build can be resumed with the individual operations. Do not
 reuse stale `dist`, patch, or package output when checking reproducibility.
@@ -89,8 +102,11 @@ directory unless `--report` is supplied; `site` defaults to a temporary file.
   missing or extra font paths, wrong counts, unsafe paths, and incomplete or
   duplicated style slots fail validation.
 - Fonts parse; required tables, embedded license notice, and names
-  1/2/4/5/6/16/17 are checked. Family, weight, width, italic/bold linkage, and
-  PostScript uniqueness are checked across the installation matrix.
+  1/2/3/4/5/6/16/17 are checked. ID 5 must identify the product version and
+  locked provenance consistently in Macintosh and Windows records; `head`
+  revision, legacy family length/grouping collisions, weight, width,
+  italic/bold linkage, and PostScript/name-ID-3 uniqueness are checked across
+  the installation matrix.
 - Fixed-pitch metadata, PANOSE proportion, design metrics, ASCII advances,
   nonspacing-mark advances, and encoded advance limits are checked.
 - NFM must use the Nerd Font Mono names, have one-cell encoded advances, report
@@ -114,8 +130,14 @@ directory unless `--report` is supplied; `site` defaults to a temporary file.
 
 ### Current product notes
 
-- Name ID 5 and the font revision still identify upstream Iosevka. Validation
-  emits one non-blocking warning for this condition.
+- Name ID 5 starts `Version 2.2; Ioskeley Mono 2.2.0; Iosevka 34.4.0` and
+  retains `ttfautohint (v1.8.4)` on hinted outputs plus `Nerd Fonts 3.5.0` on
+  NF/NFM outputs. Unhinted desktop fonts omit only the autohint token.
+- `head.fontRevision` stores numeric 2.2 (Fixed 16.16; reported as 2.200).
+  Iosevka 34.4.0 is retained as provenance, not used as the product revision.
+- Long NF/NFM legacy family ID 1 names are shortened only as needed to the
+  FontForge 31-character compatibility limit. IDs 16/17 keep the full NF/NFM
+  typographic family names; ID 4 and PostScript names remain face-specific.
 - Both NF and NFM are shipped for Standard, Term, and NL. NF uses ordinary
   Nerd Font geometry; NFM keeps the existing `--mono` behavior, including its
   strict advances and one-cell Term long-arrow advance.
@@ -135,10 +157,11 @@ $PYTHON -m unittest discover -s tests -v
 
 The tests use the checked-in web fonts and controlled in-memory mutations. They
 cover fixed pitch, ASCII advances, subset leakage, glyph names, NL ligature
-policy, NF/NFM flags, naming and geometry, strict NFM Fontconfig membership,
-package filename edge cases, bold linkage, empty comparison reports, corrupt
-archives, the absence of a publishing CLI operation, and intentional
-current-design changes. Tests do not alter font assets.
+policy, NF/NFM flags, product version/revision and platform-name records, legacy
+family aliases, package-time metadata stamping, naming and geometry, strict NFM
+Fontconfig membership, package filename edge cases, bold linkage, empty
+comparison reports, corrupt archives, the absence of a publishing CLI operation,
+and intentional current-design changes. Tests do not alter font assets.
 
 ## Packages
 

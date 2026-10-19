@@ -14,7 +14,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "tools"))
 import build as build_tool
 import validate_fonts as validation_tool
 from fontTools.ttLib import TTFont
-from font_evidence import ROOT
+from font_evidence import ROOT, shorten_legacy_family
 from validate_fonts import (Results, check_font, check_nerd_geometry, compare, expects_bold,
                             check_nerd_advance_profile, expected_members, nerd_variant_from_filename,
                             CONTRACT, validate_run)
@@ -38,10 +38,88 @@ class RegressionGuards(unittest.TestCase):
         check_font(data, "test", plan, False, results)
         return results
 
-    def test_current_web_behavior_is_accepted(self):
+    def test_current_web_behavior_has_authoritative_product_version(self):
         result = self.validate(self.data)
         self.assertEqual([], result.errors)
-        self.assertIn("name ID 5 retains upstream Iosevka version 34.4.0", result.warnings)
+        self.assertEqual(set(), result.warnings)
+
+    def test_upstream_name_id_5_is_rejected(self):
+        def edit(font):
+            upstream = build_tool.LOCK["iosevka"]["tag"].removeprefix("v")
+            for record in list(font["name"].names):
+                if record.nameID == 5:
+                    font["name"].setName(f"Version {upstream}", 5, record.platformID,
+                                        record.platEncID, record.langID)
+
+        result = self.validate(self.changed(edit))
+        self.assertTrue(any("name ID 5 does not identify the Ioskeley product version" in e
+                            for e in result.errors))
+
+    def test_name_id_5_platform_records_must_agree(self):
+        def edit(font):
+            product = CONTRACT["version"]["product"]
+            major, minor, _ = product.split(".")
+            upstream = build_tool.LOCK["iosevka"]["tag"].removeprefix("v")
+            version = f"Version {major}.{minor}; Ioskeley Mono {product}; Iosevka {upstream}"
+            font["name"].setName(version, 5, 3, 1, 0x0409)
+
+        result = self.validate(self.changed(edit))
+        self.assertTrue(any("name ID 5 platform/language records disagree" in e
+                            for e in result.errors))
+
+    def test_wrong_head_font_revision_is_rejected(self):
+        wrong_revision = build_tool.product_font_revision() + 10
+        result = self.validate(self.changed(lambda font: setattr(font["head"], "fontRevision", wrong_revision)))
+        self.assertTrue(any("head.fontRevision is not the Ioskeley" in e
+                            for e in result.errors))
+
+    def test_legacy_family_shortening_is_deterministic_and_bounded(self):
+        original = "IoskeleyMonoNL Nerd Font Mono SemiCondensed"
+        shortened = shorten_legacy_family(original)
+        self.assertEqual("IoskeleyMonoNL NFM SC", shortened)
+        self.assertLessEqual(len(shortened), 31)
+        self.assertEqual(shortened, shorten_legacy_family(shortened))
+
+    def test_package_finalizes_upstream_version_metadata(self):
+        with tempfile.TemporaryDirectory() as folder:
+            work = Path(folder)
+            source = work / "upstream.woff2"
+            font = TTFont(io.BytesIO(self.data))
+            upstream = build_tool.LOCK["iosevka"]["tag"].removeprefix("v")
+            autohint = build_tool.LOCK["ttfautohint"]
+            for record in list(font["name"].names):
+                if record.nameID == 5:
+                    font["name"].setName(f"Version {upstream}; ttfautohint (v{autohint})",
+                                        5, record.platformID, record.platEncID, record.langID)
+            font["head"].fontRevision = 34.04
+            font.save(source)
+            font.close()
+
+            contract = {
+                **build_tool.CONTRACT,
+                "packages": {"Test.zip": {"kind": "web", "count": 1}},
+            }
+            with patch.object(build_tool, "CONTRACT", contract), \
+                    patch.object(build_tool, "source_check"), \
+                    patch.object(build_tool, "package_members",
+                                 return_value=[(source, "WOFF2/IoskeleyMono-Regular.woff2")]), \
+                    redirect_stdout(io.StringIO()):
+                build_tool.package(work, ("Test.zip",))
+
+            with zipfile.ZipFile(work / "Test.zip") as archive:
+                result = TTFont(io.BytesIO(archive.read("WOFF2/IoskeleyMono-Regular.woff2")))
+                product = build_tool.CONTRACT["version"]["product"]
+                major, minor, _ = product.split(".")
+                upstream = build_tool.LOCK["iosevka"]["tag"].removeprefix("v")
+                expected = (f"Version {major}.{minor}; Ioskeley Mono {product}; "
+                            f"Iosevka {upstream}; ttfautohint (v{build_tool.LOCK['ttfautohint']})")
+                self.assertEqual(
+                    expected,
+                    result["name"].getDebugName(5),
+                )
+                self.assertEqual(int(round(build_tool.product_font_revision() * 65536)),
+                                 int(round(result["head"].fontRevision * 65536)))
+                result.close()
 
     def test_fixed_pitch_flag_regression_is_rejected(self):
         result = self.validate(self.changed(lambda f: setattr(f["post"], "isFixedPitch", 0)))
@@ -168,7 +246,10 @@ class RegressionGuards(unittest.TestCase):
 
             def record_font(data, key, plan, nerd, results, nerd_variant=None):
                 results.fonts[key] = {
-                    "semantic": {"names": {"6": "IoskeleyMono-Regular"}},
+                    "semantic": {"names": {
+                        "1": "Ioskeley Mono", "3": "mock unique font ID",
+                        "6": "IoskeleyMono-Regular",
+                    }},
                     "coverage_sha256": "test-coverage",
                     "programming_substitutions": [],
                 }
