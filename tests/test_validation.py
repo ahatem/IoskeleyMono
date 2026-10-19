@@ -390,16 +390,34 @@ class RegressionGuards(unittest.TestCase):
             self.assertIn(b"unused work directory", result.stderr)
             self.assertEqual("preserve", marker.read_text())
 
-    def test_manual_workflow_cannot_publish_or_upload(self):
+    def test_manual_workflow_preserves_rc_artifacts_without_publishing(self):
         workflow = yaml.load((ROOT / ".github/workflows/build-font.yml").read_text(), Loader=yaml.BaseLoader)
         self.assertIn("workflow_dispatch", workflow["on"])
         gate = "github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')"
         self.assertEqual(gate, workflow["jobs"]["publish"]["if"])
         self.assertEqual("read", workflow["permissions"]["contents"])
-        for step in workflow["jobs"]["build"]["steps"]:
+        steps = workflow["jobs"]["build"]["steps"]
+        uploads = [step for step in steps if "upload" in step.get("uses", "")]
+        self.assertEqual(2, len(uploads))
+        manual_uploads = [step for step in uploads
+                          if step.get("if") == "github.event_name == 'workflow_dispatch'"]
+        self.assertEqual(1, len(manual_uploads))
+        rc = manual_uploads[0]
+        self.assertEqual("actions/upload-artifact@v4", rc["uses"])
+        self.assertEqual("ioskeley-rc-${{ github.sha }}", rc["with"]["name"])
+        self.assertEqual([".ci-build/IoskeleyMono*.zip", ".ci-build/validation.json",
+                          ".ci-build/provenance.json"], rc["with"]["path"].splitlines())
+        self.assertEqual("7", rc["with"]["retention-days"])
+        self.assertEqual("error", rc["with"]["if-no-files-found"])
+        build = steps[steps.index(rc) - 1]
+        self.assertEqual("python tools/build.py all --work-dir .ci-build --jobs 2", build["run"])
+        self.assertNotIn("continue-on-error", build)
+        self.assertNotIn("if", build)
+        for step in steps:
             action = step.get("uses", "")
-            if "upload" in action:
+            if "upload" in action and step is not rc:
                 self.assertEqual(gate, step.get("if"))
+                self.assertEqual("release-archives", step["with"]["name"])
             self.assertNotIn("action-gh-release", action)
 
 
