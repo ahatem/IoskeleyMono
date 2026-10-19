@@ -1,8 +1,9 @@
 # Ioskeley visual identity
 
 Ioskeley is its own typeface identity: a monochrome, typography-led technical
-publication. **Grammar recedes; content remains.** The font—not a brand hue—is
-the identifying color. Preserve generous negative space, precise alignment,
+publication, with Proof Red as a single, strictly governed exception.
+**Grammar recedes; content remains.** The font—not a brand hue—is the
+identifying color. Preserve generous negative space, precise alignment,
 large/small type contrast, and only a few deliberate rules. Avoid UI panels,
 editor chrome, gradients, glows, decorative grids, and hue-based syntax.
 
@@ -18,6 +19,7 @@ editor chrome, gradients, glows, decorative grids, and hue-based syntax.
 | Operators | `#74726E` | `#77746E` |
 | Punctuation | `#686763` | `#8B8880` |
 | Comments | `#5F5D58` italic | `#98958D` italic |
+| Proof Red | `#B04A43` | `#913832` |
 | Rare emphasis | `#ECE9E2` | `#171614` |
 | Rule | `#343330` | `#D3D0C8` |
 | Guide | `#4A4843` | `#BDBAB2` |
@@ -25,7 +27,8 @@ editor chrome, gradients, glows, decorative grids, and hue-based syntax.
 
 Keep emphasis rare. Use primary/secondary for identifiers and meaningful values;
 use grammar tones for keywords, operators, and punctuation. In light mode grammar
-moves toward the paper. Do not add a branding hue by default.
+moves toward the paper. Proof Red is the only non-neutral colour in the system and
+is governed separately below; no other branding hue is permitted.
 
 Comments use the real italic face in both modes, never a synthesised oblique.
 Light-mode punctuation and comments sit closer to primary than in the previous
@@ -34,6 +37,54 @@ revision so that a 14–15 px italic comment stays readable on `#F2F0EA`.
 `Selection` is a reserved role: no production plate uses it yet, so the artwork
 generators do not define it. If a plate ever needs a selection state, use this
 token rather than inventing a new one.
+
+## Proof Red
+
+**Monochrome carries the information. Proof Red marks structure.**
+
+Proof Red is an exception, not a second palette. It exists because Ioskeley is a
+programming typeface, where delimiter and punctuation forms are part of the
+visual character. Keep it scarce enough that it keeps its meaning: if red appears
+everywhere, it marks nothing.
+
+### Where it may appear
+
+- Branded code specimens, on structural punctuation only.
+- One small technical proof or registration mark per specimen. The approved
+  Social Preview uses the baseline registration tick, drawn on the measurement
+  canvas; the cap and x-height ticks stay grammar grey so the highlight reads as a
+  deliberate reference to the baseline.
+- Selected-glyph indicators, and restrained active or interactive state on the
+  website where it carries real meaning (current specimen control, current
+  selection).
+
+### Where it may not appear
+
+Not a general styling device. Do not use it for headings, large borders, card
+backgrounds, paragraph emphasis, filled buttons, generic hover decoration,
+ornamental marks, or warnings and errors unless the red is semantically an error.
+A dense run of red punctuation, or red applied to commas, colons, or semicolons,
+stops reading as structure and becomes a syntax theme.
+
+### Structural punctuation set
+
+Accented: `{ } [ ] ( ) " " ' '`.
+
+Not accented by default: `,` `:` `;`, keywords, operators, identifiers, numbers,
+comments, string contents, and member-access periods.
+
+The punctuation itself takes the colour; the content it encloses keeps its normal
+monochrome role, so `"!="` shows a red delimiter around monochrome content. Proof
+Red is presentation applied in HTML/CSS. It is not a font feature and must never be
+described as the typeface colouring punctuation.
+
+### Branded specimens versus analytical plates
+
+Origins-01, Origins-02 and Origins-03 are analytical comparison evidence, not
+branded specimen artwork. They stay **monochrome**. Ioskeley punctuation must not
+be accented inside the Berkeley/TX-02 comparison plates, because a colour that
+carries no evidential meaning would become a variable in a study whose only
+purpose is typeface comparison.
 
 ## Typography and specimens
 

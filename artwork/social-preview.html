@@ -45,6 +45,10 @@
     .keyword { color: var(--keyword); font-weight: 700; }
     .operator { color: var(--operator); }
     .punctuation { color: var(--punctuation); }
+    /* Proof Red is an exception to the monochrome hierarchy, never a second
+       palette. Only structural punctuation takes it; the content a delimiter
+       encloses keeps its normal monochrome role. */
+    .punctuation.proof-red { color: var(--proof-red); }
     .comment { color: var(--comment); font-style: italic; }
     .measure { width: 405px; height: 465px; align-self: center; z-index: 0; }
     /* The measurement diagram is drawn to a canvas, not to SVG <text>. html2canvas
@@ -74,19 +78,19 @@
           <section class="copy">
             <h2 class="title">Ioskeley Mono</h2>
             <p class="tagline">An open programming typeface built on Iosevka.</p>
-            <pre class="code"><span class="keyword">const</span> <span class="identifier">glyphs</span> <span class="operator">=</span> <span class="punctuation">{</span>
-  <span class="identifier">forms</span><span class="punctuation">:</span> <span class="secondary">"g a Q @ $ · 0 O 1 I l"</span><span class="punctuation">,</span>
-  <span class="identifier">figures</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="identifier">0xFC82</span><span class="punctuation">,</span> <span class="identifier">100_000</span><span class="punctuation">,</span> <span class="identifier">0.0</span><span class="punctuation">]</span><span class="punctuation">,</span>
-  <span class="identifier">ops</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="secondary">"!="</span><span class="punctuation">,</span> <span class="secondary">"==="</span><span class="punctuation">,</span> <span class="secondary">"&lt;="</span><span class="punctuation">,</span> <span class="secondary">"=&gt;"</span><span class="punctuation">,</span> <span class="secondary">"-&gt;"</span><span class="punctuation">,</span> <span class="secondary">"::"</span><span class="punctuation">]</span><span class="punctuation">,</span>
-<span class="punctuation">}</span><span class="punctuation">;</span>
+            <pre class="code"><span class="keyword">const</span> <span class="identifier">glyphs</span> <span class="operator">=</span> <span class="punctuation proof-red">{</span>
+  <span class="identifier">forms</span><span class="punctuation">:</span> <span class="punctuation proof-red">"</span><span class="secondary">g a Q @ $ · 0 O 1 I l</span><span class="punctuation proof-red">"</span><span class="punctuation">,</span>
+  <span class="identifier">figures</span><span class="punctuation">:</span> <span class="punctuation proof-red">[</span><span class="identifier">0xFC82</span><span class="punctuation">,</span> <span class="identifier">100_000</span><span class="punctuation">,</span> <span class="identifier">0.0</span><span class="punctuation proof-red">]</span><span class="punctuation">,</span>
+  <span class="identifier">ops</span><span class="punctuation">:</span> <span class="punctuation proof-red">[</span><span class="punctuation proof-red">"</span><span class="secondary">!=</span><span class="punctuation proof-red">"</span><span class="punctuation">,</span> <span class="punctuation proof-red">"</span><span class="secondary">===</span><span class="punctuation proof-red">"</span><span class="punctuation">,</span> <span class="punctuation proof-red">"</span><span class="secondary">&lt;=</span><span class="punctuation proof-red">"</span><span class="punctuation">,</span> <span class="punctuation proof-red">"</span><span class="secondary">=&gt;</span><span class="punctuation proof-red">"</span><span class="punctuation">,</span> <span class="punctuation proof-red">"</span><span class="secondary">-&gt;</span><span class="punctuation proof-red">"</span><span class="punctuation">,</span> <span class="punctuation proof-red">"</span><span class="secondary">::</span><span class="punctuation proof-red">"</span><span class="punctuation proof-red">]</span><span class="punctuation">,</span>
+<span class="punctuation proof-red">}</span><span class="punctuation">;</span>
 
 <span class="comment">// Forms are quiet; shape does the talking.</span>
-<span class="keyword">export function</span> <span class="identifier">resolve</span><span class="punctuation">(</span>value<span class="punctuation">:</span> <span class="secondary">string</span><span class="punctuation">)</span> <span class="punctuation">{</span>
-  <span class="keyword">if</span> <span class="punctuation">(</span>value <span class="operator">!==</span> <span class="secondary">""</span> <span class="operator">&amp;&amp;</span> value<span class="punctuation">.</span>includes<span class="punctuation">(</span><span class="secondary">"=&gt;"</span><span class="punctuation">))</span> <span class="punctuation">{</span>
-    <span class="keyword">return</span> <span class="keyword">new</span> <span class="identifier">Map</span><span class="punctuation">([[</span><span class="secondary">"=&gt;"</span><span class="punctuation">,</span> <span class="identifier">1</span><span class="punctuation">]</span><span class="punctuation">,</span> <span class="punctuation">[</span><span class="secondary">"-&gt;"</span><span class="punctuation">,</span> <span class="identifier">2</span><span class="punctuation">]])</span><span class="punctuation">;</span>
-  <span class="punctuation">}</span>
-  <span class="keyword">return</span> <span class="keyword">new</span> <span class="identifier">Map</span><span class="punctuation">()</span><span class="punctuation">;</span>
-<span class="punctuation">}</span></pre>
+<span class="keyword">export function</span> <span class="identifier">resolve</span><span class="punctuation proof-red">(</span>value<span class="punctuation">:</span> <span class="secondary">string</span><span class="punctuation proof-red">)</span> <span class="punctuation proof-red">{</span>
+  <span class="keyword">if</span> <span class="punctuation proof-red">(</span>value <span class="operator">!==</span> <span class="punctuation proof-red">'</span><span class="punctuation proof-red">'</span> <span class="operator">&amp;&amp;</span> value<span class="punctuation">.</span>includes<span class="punctuation proof-red">(</span><span class="punctuation proof-red">"</span><span class="secondary">=&gt;</span><span class="punctuation proof-red">"</span><span class="punctuation proof-red">)</span><span class="punctuation proof-red">)</span> <span class="punctuation proof-red">{</span>
+    <span class="keyword">return</span> <span class="keyword">new</span> <span class="identifier">Map</span><span class="punctuation proof-red">(</span><span class="punctuation proof-red">[</span><span class="punctuation proof-red">[</span><span class="punctuation proof-red">"</span><span class="secondary">=&gt;</span><span class="punctuation proof-red">"</span><span class="punctuation">,</span> <span class="identifier">1</span><span class="punctuation proof-red">]</span><span class="punctuation">,</span> <span class="punctuation proof-red">[</span><span class="punctuation proof-red">"</span><span class="secondary">-&gt;</span><span class="punctuation proof-red">"</span><span class="punctuation">,</span> <span class="identifier">2</span><span class="punctuation proof-red">]</span><span class="punctuation proof-red">]</span><span class="punctuation proof-red">)</span><span class="punctuation">;</span>
+  <span class="punctuation proof-red">}</span>
+  <span class="keyword">return</span> <span class="keyword">new</span> <span class="identifier">Map</span><span class="punctuation proof-red">(</span><span class="punctuation proof-red">)</span><span class="punctuation">;</span>
+<span class="punctuation proof-red">}</span></pre>
           </section>
           <div class="measure" role="img" aria-label="Ioskeley single-storey g shown against the declared cap, x-height and baseline metrics">
             <canvas class="measure-canvas" width="810" height="930"></canvas>
@@ -103,12 +107,15 @@
 
   <script>
     /* `primary` carries body ink; `title` is the rare-emphasis tone used only by
-       the product title. `punctuation` is applied in the Origins code studies;
-       the `selection` role from the identity token table is not yet used by any
-       production plate, so it is not defined here. */
+       the product title. `proof-red` is reserved for structural punctuation and
+       the single baseline registration tick, and is deliberately absent from the
+       Origins comparison plates, which stay purely monochrome so that a typeface
+       comparison carries no unrelated colour variable. The `selection` role from
+       the identity token table is not used by any production plate, so it is not
+       defined here. */
     const palettes = {
-      dark: { name: "Dark", canvas: "#101010", primary: "#D8D5CE", secondary: "#B8B5AF", grammar: "#7E7C77", keyword: "#74726E", operator: "#74726E", punctuation: "#686763", comment: "#5F5D58", title: "#ECE9E2", rule: "#343330", guide: "#4A4843", file: "SocialPreview.png" },
-      light: { name: "Light", canvas: "#F2F0EA", primary: "#292826", secondary: "#4E4D49", grammar: "#807D77", keyword: "#68655F", operator: "#77746E", punctuation: "#8B8880", comment: "#98958D", title: "#171614", rule: "#D3D0C8", guide: "#BDBAB2", file: "SocialPreview-Light.png" }
+      dark: { name: "Dark", canvas: "#101010", primary: "#D8D5CE", secondary: "#B8B5AF", grammar: "#7E7C77", keyword: "#74726E", operator: "#74726E", punctuation: "#686763", comment: "#5F5D58", "proof-red": "#B04A43", title: "#ECE9E2", rule: "#343330", guide: "#4A4843", file: "SocialPreview.png" },
+      light: { name: "Light", canvas: "#F2F0EA", primary: "#292826", secondary: "#4E4D49", grammar: "#807D77", keyword: "#68655F", operator: "#77746E", punctuation: "#8B8880", comment: "#98958D", "proof-red": "#913832", title: "#171614", rule: "#D3D0C8", guide: "#BDBAB2", file: "SocialPreview-Light.png" }
     };
 
     const REQUIRED_FACES = [
@@ -187,8 +194,11 @@
         ctx.moveTo(MEASURE.lineX1, guide.y + .5); ctx.lineTo(MEASURE.lineX2, guide.y + .5);
         ctx.stroke();
       }
-      ctx.strokeStyle = ink('grammar');
+      // The baseline tick is the plate's one registration mark and takes Proof
+      // Red; the cap and x-height ticks stay grammar grey, so the highlight reads
+      // as a deliberate reference to the baseline rather than a general tint.
       for (const guide of guides) {
+        ctx.strokeStyle = guide.below ? ink('proof-red') : ink('grammar');
         ctx.beginPath();
         ctx.moveTo(MEASURE.tickX1, guide.y + .5); ctx.lineTo(MEASURE.tickX2, guide.y + .5);
         ctx.stroke();
