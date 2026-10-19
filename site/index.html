@@ -389,7 +389,7 @@ scanning dead-letter queue … 1,284 candidates
  ep_ledger_sync        388      0     96ms
  ep_crm_contacts       137     11    1.21s
 
- <span class="bar" data-bar="0.73" data-total="1284">[█████████████████████▉        ]  73%   937/1284</span>
+ <span class="bar" data-bar="0.73" data-total="1284">[<span class="bar__fill">█████████████████████</span>▉        ]  73%   937/1284</span>
  eta 00:00:41   rate 22.6/s   workers 4/4</pre>
         </div>
         <div class="tmux__status">
@@ -1043,19 +1043,31 @@ font_size   14.0</pre>
 
 <footer class="site-footer">
   <div class="wrap site-footer__grid">
-    <p class="site-footer__note">
-      Ioskeley Mono is released under the SIL Open Font License 1.1. It is built
-      with <a href="https://github.com/be5invis/Iosevka" rel="noopener">Iosevka</a>
-      by Belleve Invis and contributors. Nerd Font variants use the
-      <a href="https://github.com/ryanoasis/nerd-fonts" rel="noopener">Nerd Fonts</a>
-      project. Every specimen on this page is live text set in Ioskeley Mono;
-      the people, services and data in the scenes are invented.
-    </p>
+    <div class="site-footer__text">
+      <section class="site-footer__support" aria-labelledby="support-title">
+        <h2 class="sys-h" id="support-title">Support</h2>
+        <p>
+          Ioskeley is free and open, with nothing held back. If it has become part
+          of how you work, you can help keep the project healthy through
+          <a href="https://github.com/sponsors/ahatem" rel="noopener">GitHub Sponsors</a>;
+          sponsorship goes toward the testing, packaging and refinement behind
+          each release. A star, a careful bug report or a screenshot of your setup
+          helps too.
+        </p>
+      </section>
+      <p class="site-footer__note">
+        Ioskeley Mono is released under the SIL Open Font License 1.1. It is built
+        with <a href="https://github.com/be5invis/Iosevka" rel="noopener">Iosevka</a>
+        by Belleve Invis and contributors. Nerd Font variants use the
+        <a href="https://github.com/ryanoasis/nerd-fonts" rel="noopener">Nerd Fonts</a>
+        project. Every specimen on this page is live text set in Ioskeley Mono;
+        the people, services and data in the scenes are invented.
+      </p>
+    </div>
     <div class="site-footer__links">
       <a href="https://github.com/ahatem/IoskeleyMono" rel="noopener">GitHub</a>
       <a href="https://github.com/ahatem/IoskeleyMono/blob/main/LICENSE" rel="noopener">License</a>
       <a href="https://github.com/ahatem/IoskeleyMono#why-i-built-ioskeley-mono" rel="noopener">Project story</a>
-      <a href="https://github.com/sponsors/ahatem" rel="noopener">Support</a>
     </div>
   </div>
 </footer>

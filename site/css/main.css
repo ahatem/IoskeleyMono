@@ -672,7 +672,10 @@ input[type="range"]::-moz-range-thumb {
 .wb__scroll {
   position: relative;
   overflow: hidden;
-  height: calc(var(--wb-lines) * 13px * 1.6 + 14px);
+  /* Whole lines plus 1px less than the bottom padding: the last scroll
+     position then falls just past a line boundary, inside the next line's
+     blank half-leading, so the end of a file shows no clipped line. */
+  height: calc(var(--wb-lines) * 13px * 1.6 + 11px);
 }
 .wb__code {
   font-family: inherit;
@@ -801,7 +804,7 @@ input[type="range"]::-moz-range-thumb {
   .wb__title-meta, .wb__status-hide, .wb__panel-shell { display: none; }
   .wb__code { font-size: 11.5px; }
   .wb__scroll {
-    height: calc(var(--wb-lines) * 11.5px * 1.6 + 14px);
+    height: calc(var(--wb-lines) * 11.5px * 1.6 + 11px);
     overflow-x: auto;
     overscroll-behavior-x: contain;
   }
@@ -859,6 +862,13 @@ input[type="range"]::-moz-range-thumb {
   height: 2px;
   background: var(--proof-red);
 }
+/* The progress bar's full blocks are exactly one cell wide, so neighbours
+   meet edge to edge. A terminal snaps cells to whole pixels (and most draw
+   block elements themselves); a browser antialiases each glyph on its own,
+   and two half-covered edge pixels leave a lighter hairline at every joint.
+   Striking the same run again one pixel over fills those joints, as the
+   bar looks in a terminal. */
+.tmux .bar__fill { text-shadow: 1px 0 currentColor; }
 .tmux__status {
   grid-area: s;
   display: flex;
@@ -1809,6 +1819,10 @@ input[type="range"]::-moz-range-thumb {
   justify-content: space-between;
   align-items: flex-start;
 }
+.site-footer__text { display: grid; gap: 32px; max-width: 60ch; }
+/* Support closes the page in the same voice as Install: one plain link, no
+   button and no accent. */
+.site-footer__support p { margin-top: 12px; font-size: 13px; line-height: 1.75; color: var(--secondary); }
 .site-footer__note { max-width: 56ch; font-size: 12.5px; line-height: 1.8; color: var(--grammar); }
 .site-footer__links { display: flex; flex-wrap: wrap; gap: 10px 22px; font-size: 12px; }
 .site-footer__links a { text-decoration: none; color: var(--secondary); }

@@ -591,14 +591,23 @@
   var wbState = { width: 'normal', weight: 400 };
 
   /* Editors scroll like real viewports: keep the current line in view,
-     snapped to whole lines so none is cut at the top edge. */
+     snapped to whole lines so none is cut at the top edge. Lines are a
+     fractional 13 × 1.6 px, so the snap uses the measured height (not the
+     rounded offsetHeight) from the first line's top, and never asks for more
+     than the scroller can reach. scrollTop is whole pixels: rounding up lands
+     in the next line's blank half-leading, never in a glyph. */
   function revealCurrentLine() {
     $$('.wb__scroll').forEach(function (s) {
-      var cur = $('.ln.is-current', s);
-      if (!cur) { s.scrollTop = 0; return; }
-      var lh = cur.offsetHeight || 1;
-      var top = cur.getBoundingClientRect().top - s.getBoundingClientRect().top + s.scrollTop;
-      s.scrollTop = Math.max(0, Math.round((top - s.clientHeight * 0.6) / lh) * lh);
+      var lines = $$('.ln', s);
+      var idx = lines.indexOf($('.ln.is-current', s));
+      var lh = lines.length ? lines[0].getBoundingClientRect().height : 0;
+      if (idx < 0 || !lh) { s.scrollTop = 0; return; }
+      var origin = lines[0].offsetTop;
+      var max = s.scrollHeight - s.clientHeight;
+      var last = Math.floor((max - origin) / lh);
+      if (Math.ceil(origin + last * lh) > max) last--;
+      var k = Math.min(last, Math.round(idx - s.clientHeight * 0.6 / lh));
+      s.scrollTop = k > 0 ? Math.ceil(origin + k * lh) : 0;
     });
   }
 
@@ -662,15 +671,17 @@
 
   /* One command types, its output resolves, the replay bar fills: once. */
   var tmux = $('#tmux');
+  /* Markup, not text: the run of full blocks sits in .bar__fill (see CSS). */
   function barText(f, total) {
     var cells = 30;
     var whole = Math.floor(f * cells);
     var rem = f * cells - whole;
-    var s = new Array(whole + 1).join('█') + (rem ? ' ▏▎▍▌▋▊▉'.charAt(Math.min(7, Math.round(rem * 8))) : '');
-    while (s.length < cells) s += ' ';
+    var s = (rem ? ' ▏▎▍▌▋▊▉'.charAt(Math.min(7, Math.round(rem * 8))) : '');
+    while (whole + s.length < cells) s += ' ';
     var pct = String(Math.round(f * 100));
     var done = String(Math.round(f * total));
-    return '[' + s + ']  ' + ('  ' + pct).slice(-Math.max(2, pct.length)) + '%  ' + ('    ' + done).slice(-4) + '/' + total;
+    return '[<span class="bar__fill">' + new Array(whole + 1).join('█') + '</span>' + s + ']  ' +
+      ('  ' + pct).slice(-Math.max(2, pct.length)) + '%  ' + ('    ' + done).slice(-4) + '/' + total;
   }
 
   if (motionOK && tmux) {
@@ -678,14 +689,14 @@
     var output = $('.type-out', tmux);
     var bar = $('.bar', tmux);
     var command = typed ? typed.dataset.type : '';
-    var barFinal = bar ? bar.textContent : '';
+    var barFinal = bar ? bar.innerHTML : '';
     var barTo = bar ? parseFloat(bar.dataset.bar) : 0;
     var barTotal = bar ? parseInt(bar.dataset.total, 10) : 0;
 
     whenNear(tmux, function () {
       if (typed) typed.textContent = '';
       if (output) output.style.visibility = 'hidden';
-      if (bar) bar.textContent = barText(0, barTotal);
+      if (bar) bar.innerHTML = barText(0, barTotal);
       tmux.classList.add('is-typing');
 
       whenSeen(tmux, function () {
@@ -708,7 +719,7 @@
             if (t0 === null) t0 = t;
             var k = Math.min(1, (t - t0) / 1600);
             var eased = 1 - Math.pow(1 - k, 2);
-            bar.textContent = k < 1 ? barText(barTo * eased, barTotal) : barFinal;
+            bar.innerHTML = k < 1 ? barText(barTo * eased, barTotal) : barFinal;
             if (k < 1) requestAnimationFrame(run);
           };
           setTimeout(function () { requestAnimationFrame(run); }, 300);

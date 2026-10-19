@@ -98,21 +98,6 @@ const PLACE = (sel) => `(() => {
   return { x: b.left + scrollX, y: b.top + scrollY, w: b.width, h: b.height };
 })()`;
 
-// Settle each editor on a whole line, after the page's own reveal has run, so
-// no clipped glyph tails show along its top edge. scrollTop is whole pixels
-// and lines are not, so round up past the seam.
-const SNAP = `document.querySelectorAll('.wb__scroll').forEach((s) => {
-  const first = s.querySelector('.ln');
-  if (!first) return;
-  const lh = first.getBoundingClientRect().height;
-  const pad = first.offsetTop;
-  // At the end of a file the reveal is clamped short of a line boundary; one
-  // more line of empty padding below the last line gives the snap room.
-  const code = s.querySelector('.wb__code');
-  code.style.paddingBottom = parseFloat(getComputedStyle(code).paddingBottom) + lh + 'px';
-  s.scrollTop = Math.ceil(Math.round((s.scrollTop - pad) / lh) * lh + pad);
-})`;
-
 await send('Page.enable');
 await send('Runtime.enable');
 mkdirSync(OUT, { recursive: true });
@@ -131,8 +116,6 @@ try {
       await sleep(800);
       const r = await run(PLACE(sel));
       await sleep(800);
-      await run(SNAP);
-      await sleep(200);
       const missing = await run(VERIFY(sel));
       if (missing.length) throw new Error(`${name} (${scheme}): no loaded face for ${missing.join(', ')}`);
       const clip = { x: r.x - PAD, y: r.y - PAD, width: Math.ceil(r.w) + 2 * PAD, height: Math.ceil(r.h) + 2 * PAD, scale: 1 };
