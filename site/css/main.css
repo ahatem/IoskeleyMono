@@ -41,7 +41,10 @@
   --keyword: #74726e;
   --operator: #74726e;
   --punctuation: #686763;
-  --comment: #5f5d58;
+  /* Comments are read, so they sit at the 4.5:1 text floor on the canvas. */
+  --comment: #7e7c77;
+  /* The same role on a tonal fill (added diff rows, hunk headers). */
+  --muted-on-tint: #8f8d86;
   --proof-red: #b04a43;
   --title: #ece9e2;
   --rule: #343330;
@@ -74,11 +77,13 @@
   --canvas: #f2f0ea;
   --primary: #292826;
   --secondary: #4e4d49;
-  --grammar: #807d77;
+  /* Grammar carries the labels and unselected controls: 4.5:1 or better. */
+  --grammar: #6e6b65;
   --keyword: #68655f;
   --operator: #77746e;
   --punctuation: #8b8880;
-  --comment: #98958d;
+  --comment: #6f6c66;
+  --muted-on-tint: #5c5954;
   --proof-red: #913832;
   --title: #171614;
   --rule: #d3d0c8;
@@ -630,6 +635,7 @@ input[type="range"]::-moz-range-thumb {
 .wb__tree li.d2 { --d: 2; }
 .wb__tree li.is-current { background: var(--selection); color: var(--title); }
 .wb__tree li i { margin-left: auto; font-style: normal; color: var(--grammar); }
+.wb__tree li.is-current i { color: var(--secondary); }
 .wb__tree--outline li { color: var(--grammar); }
 .wb__tree--outline li.is-current { color: var(--title); }
 
@@ -973,9 +979,10 @@ input[type="range"]::-moz-range-thumb {
 .dr__c { white-space: pre-wrap; overflow-wrap: anywhere; padding-right: 14px; }
 .dr--meta { color: var(--grammar); }
 .dr--meta .dr__c { white-space: pre; overflow: hidden; text-overflow: ellipsis; }
-.dr--hunk { background: var(--tint); color: var(--grammar); }
+.dr--hunk { background: var(--tint); color: var(--muted-on-tint); }
 .dr--hunk .dr__c { font-style: italic; white-space: pre; overflow: hidden; text-overflow: ellipsis; }
 .dr--add { background: var(--tint-strong); }
+.dr--add .t-comment { color: var(--muted-on-tint); }
 .dr--add .dr__s,
 .dr--add .dr__n { color: var(--primary); }
 .dr--del,
@@ -1333,6 +1340,11 @@ input[type="range"]::-moz-range-thumb {
   --editor-weight: 400;
   --editor-style: normal;
   --editor-liga: common-ligatures contextual;
+  /* Set by main.js: the cell advance and line height snapped to the 1/64 px
+     grid that inline layout uses, so a line of many highlight spans advances
+     exactly as far as the same line in the textarea. */
+  --editor-ls: 0.003125px;
+  --editor-lh: 24.65625px;
   border: 1px solid var(--rule);
   position: relative;
 }
@@ -1343,14 +1355,16 @@ input[type="range"]::-moz-range-thumb {
 .lab-controls { display: flex; flex-wrap: wrap; gap: 12px 26px; align-items: flex-end; }
 .lab-controls .control { gap: 6px; }
 
-/* The highlight layer defines the box; the textarea is stretched over it, so
-   both scroll together without a sync routine and nothing can drift. Both take
-   their metrics from the same custom properties, which is what keeps the caret
-   aligned with the coloured text. */
+/* One editor, two layers. The highlight layer sits in the flow, so its content
+   sizes the box (clamped by max-height), but the box itself clips and never
+   scrolls. The textarea is stretched over it and is the only scroller: it owns
+   the wheel, the scrollbars and the caret, and main.js moves the highlight by
+   exactly its scroll offset. Both layers take their metrics from the same
+   custom properties and the same text settings below, which is what keeps the
+   caret aligned with the coloured text. */
 .editor__scroll {
   position: relative;
-  overflow: auto;
-  overscroll-behavior: contain;
+  overflow: hidden;
   min-height: 300px;
   max-height: min(62vh, 560px);
   padding: clamp(18px, 2.6vw, 30px);
@@ -1360,6 +1374,7 @@ input[type="range"]::-moz-range-thumb {
   pointer-events: none;
   min-width: 100%;
   width: max-content;
+  will-change: transform;
 }
 .editor__hl,
 .editor__input {
@@ -1368,8 +1383,17 @@ input[type="range"]::-moz-range-thumb {
   font-weight: var(--editor-weight);
   font-style: var(--editor-style);
   font-variant-ligatures: var(--editor-liga);
+  font-kerning: normal;
   font-synthesis: none;
-  line-height: 1.7;
+  line-height: var(--editor-lh);
+  letter-spacing: var(--editor-ls);
+  word-spacing: normal;
+  text-indent: 0;
+  text-rendering: optimizeLegibility;
+  white-space: pre;
+  tab-size: 2;
+  word-break: normal;
+  overflow-wrap: normal;
 }
 .editor__input {
   position: absolute;
@@ -1380,14 +1404,11 @@ input[type="range"]::-moz-range-thumb {
   padding: inherit;
   border: 0;
   resize: none;
-  overflow: hidden;
+  overflow: auto;
+  overscroll-behavior: contain;
   background: transparent;
   color: transparent;
   caret-color: var(--title);
-  white-space: pre;
-  tab-size: 2;
-  word-break: normal;
-  overflow-wrap: normal;
 }
 .editor__input:focus { outline: none; }
 .editor__input:focus-visible { outline: 2px solid var(--primary); outline-offset: -2px; }

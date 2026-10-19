@@ -34,6 +34,13 @@ Comments use the real italic face in both modes, never a synthesised oblique.
 Light-mode punctuation and comments sit closer to primary than in the previous
 revision so that a 14–15 px italic comment stays readable on `#F2F0EA`.
 
+On the website, text that is meant to be read holds the WCAG 4.5:1 floor against
+the canvas, so three tokens sit above the artwork values: comments (`#7E7C77`
+dark, `#6F6C66` light), light-mode grammar (`#6E6B65`), and a muted tone for text
+on tonal fills (`#8F8D86` dark, `#5C5954` light). The plates above keep the
+values in the table. Keywords, operators and punctuation are syntax glyphs, not
+prose, and keep their table values.
+
 `Selection` is a reserved role: no production plate uses it yet, so the artwork
 generators do not define it. If a plate ever needs a selection state, use this
 token rather than inventing a new one.

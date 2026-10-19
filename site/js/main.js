@@ -457,15 +457,28 @@
     }).join('');
   }
 
+  /* The textarea is the only scroller: wheel, scrollbars, caret movement and
+     find-in-page all move it. The highlight layer is clipped by the editor box
+     and follows by the same offset, applied in the scroll event, which runs in
+     the frame that scrolled. */
+  var hlLayer = highlight && highlight.parentNode;
+  function syncHighlight() {
+    if (!input || !hlLayer) return;
+    hlLayer.style.transform = 'translate(' + -input.scrollLeft + 'px,' + -input.scrollTop + 'px)';
+  }
+
   function paint() {
     if (!input || !highlight) return;
     highlight.innerHTML = tokenize(input.value, state.lang);
+    syncHighlight();
   }
 
   function loadSample(i) {
     var s = SAMPLES[state.lang][i];
     if (!s || !input) return;
     input.value = s.code;
+    input.scrollTop = 0;
+    input.scrollLeft = 0;
     paint();
   }
 
@@ -474,6 +487,8 @@
     loadSample(0);
 
     input.addEventListener('input', paint);
+    input.addEventListener('scroll', syncHighlight, { passive: true });
+    if ('ResizeObserver' in window) new ResizeObserver(syncHighlight).observe(input);
     /* Tab is left to the browser so the keyboard never gets stuck here;
        Escape simply drops focus. */
     input.addEventListener('keydown', function (e) {
@@ -497,13 +512,23 @@
   function applyEditor() {
     if (!editor) return;
     var sc = state.width === 'sc';
-    ensureFace(state.weight, state.style === 'italic', sc);
-    /* Keywords are always Bold and comments always Italic, so those faces
-       follow the chosen width too. */
-    ensureFace(700, false, sc);
-    ensureFace(400, true, sc);
+    var italic = state.style === 'italic';
+    /* Keywords are always Bold in the chosen style, and comments always
+       Italic at the chosen weight, so those faces follow the width, weight
+       and style: Regular + Italic needs Bold Italic for its keywords, and
+       Bold needs Bold Italic for its comments. Nothing is synthesised. */
+    ensureFace(state.weight, italic, sc);
+    ensureFace(700, italic, sc);
+    ensureFace(state.weight, true, sc);
     editor.style.setProperty('--editor-family', (sc ? 'IoskeleySC, ' : '') + 'Ioskeley, ui-monospace, monospace');
     editor.style.setProperty('--editor-size', state.size + 'px');
+    /* Inline layout rounds every highlight span up to 1/64 px, which adds up
+       over a long line while the textarea lays its text out as one run. Snap
+       the cell advance (0.6 em Normal, 0.54 em SemiCondensed) and the line
+       height to that grid so both layers step identically. */
+    var adv = state.size * (sc ? 0.54 : 0.6);
+    editor.style.setProperty('--editor-ls', (Math.round(adv * 64) / 64 - adv).toFixed(6) + 'px');
+    editor.style.setProperty('--editor-lh', (Math.round(state.size * 1.7 * 64) / 64) + 'px');
     editor.style.setProperty('--editor-weight', String(state.weight));
     editor.style.setProperty('--editor-style', state.style);
     editor.style.setProperty('--editor-liga', state.liga);
@@ -512,6 +537,8 @@
         WEIGHT_LABEL[state.weight] + ' ' + state.weight + ' · ' + LANG_LABEL[state.lang];
     }
     if (advLine) advLine.textContent = (sc ? '540' : '600') + ' units/char';
+    /* Metrics changed, so the scroll range did too. */
+    syncHighlight();
   }
 
   /* One handler for every segmented control on the page. */
