@@ -14,11 +14,12 @@ editor chrome, gradients, glows, decorative grids, and hue-based syntax.
 | Canvas | `#101010` | `#F2F0EA` |
 | Ink / primary | `#D8D5CE` | `#292826` |
 | Secondary | `#B8B5AF` | `#4E4D49` |
-| Grammar | `#7E7C77` | `#807D77` |
-| Keywords | `#74726E` | `#68655F` |
-| Operators | `#74726E` | `#77746E` |
-| Punctuation | `#686763` | `#8B8880` |
-| Comments | `#5F5D58` italic | `#98958D` italic |
+| Grammar / informational line numbers | `#7E7C77` | `#6E6B65` |
+| Keywords | `#85837D` | `#68655F` |
+| Operators | `#807E78` | `#6E6B65` |
+| Punctuation / delimiters | `#7E7C77` | `#6F6C66` |
+| Comments | `#7E7C77` italic | `#6F6C66` italic |
+| Muted text on tonal fills | `#8F8D86` | `#5C5954` |
 | Proof Red | `#B04A43` | `#913832` |
 | Rare emphasis | `#ECE9E2` | `#171614` |
 | Rule | `#343330` | `#D3D0C8` |
@@ -31,15 +32,23 @@ moves toward the paper. Proof Red is the only non-neutral colour in the system a
 is governed separately below; no other branding hue is permitted.
 
 Comments use the real italic face in both modes, never a synthesised oblique.
-Light-mode punctuation and comments sit closer to primary than in the previous
-revision so that a 14–15 px italic comment stays readable on `#F2F0EA`.
+All readable text meets 4.5:1 against its effective rendered background:
+keywords, operators, punctuation, comments, enabled control labels, status words
+such as `ERROR`, and informational line numbers. Syntax is text, with the same
+contrast requirement as prose. On current Workbench lines and tinted Review
+rows, the muted-on-tint role lifts grammar, comments and gutters above that floor;
+calculate the 6% / 11% ink fills over the canvas before measuring contrast.
+Content remains strongest; bold keywords, italic comments and gutter placement
+preserve hierarchy without making information illegible.
 
-On the website, text that is meant to be read holds the WCAG 4.5:1 floor against
-the canvas, so three tokens sit above the artwork values: comments (`#7E7C77`
-dark, `#6F6C66` light), light-mode grammar (`#6E6B65`), and a muted tone for text
-on tonal fills (`#8F8D86` dark, `#5C5954` light). The plates above keep the
-values in the table. Keywords, operators and punctuation are syntax glyphs, not
-prose, and keep their table values.
+Only non-essential graphics may recede below the text floor: hairline rules,
+ornamental guides, measurement decorations and registration marks. Do not use
+the decorative guide token for readable location references. Native scrollbars
+use square neutral thumbs, usable tracks and restrained hover/drag states;
+forced-colour modes retain system rendering.
+
+The table records the website's readable roles. Existing artwork plates are
+separate exports; their older tones are not a contrast exemption for live text.
 
 `Selection` is a reserved role: no production plate uses it yet, so the artwork
 generators do not define it. If a plate ever needs a selection state, use this
@@ -56,7 +65,8 @@ everywhere, it marks nothing.
 
 ### Where it may appear
 
-- Branded code specimens, on structural punctuation only.
+- Small structural marks accompanying branded code specimens; readable
+  punctuation stays neutral on the website.
 - One small technical proof or registration mark per specimen. The approved
   Social Preview uses the baseline registration tick, drawn on the measurement
   canvas; the cap and x-height ticks stay grammar grey so the highlight reads as a
@@ -69,21 +79,20 @@ everywhere, it marks nothing.
 
 Not a general styling device. Do not use it for headings, large borders, card
 backgrounds, paragraph emphasis, filled buttons, generic hover decoration,
-ornamental marks, or warnings and errors unless the red is semantically an error.
+ornamental marks, or low-contrast readable warnings and errors. An error may
+carry a small red tick beside a compliant neutral severity label.
 A dense run of red punctuation, or red applied to commas, colons, or semicolons,
 stops reading as structure and becomes a syntax theme.
 
 ### Structural punctuation set
 
-Accented: `{ } [ ] ( ) " " ' '`.
+Structural delimiters: `{ } [ ] ( ) " " ' '`.
 
-Not accented by default: `,` `:` `;`, keywords, operators, identifiers, numbers,
-comments, string contents, and member-access periods.
-
-The punctuation itself takes the colour; the content it encloses keeps its normal
-monochrome role, so `"!="` shows a red delimiter around monochrome content. Proof
-Red is presentation applied in HTML/CSS. It is not a font feature and must never be
-described as the typeface colouring punctuation.
+These glyphs and ordinary separators use the readable punctuation tone on the
+website. Proof Red may accompany structure, but must never reduce text contrast.
+Existing active-control ticks, pane marks and review rules carry the signature;
+do not add a mark to every delimiter. Colour is presentation in HTML/CSS, never
+a font feature. Ioskeley itself ships monochrome.
 
 ### Branded specimens versus analytical plates
 

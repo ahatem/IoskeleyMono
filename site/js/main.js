@@ -1,8 +1,8 @@
 /* ==========================================================================
    Ioskeley Mono — showcase site
    No framework, no syntax-highlighting library. The frozen hierarchy is
-   implemented here so the page keeps exact control over which punctuation
-   takes Proof Red, and so a visitor pays for no third-party script.
+   implemented here so the page keeps exact control over readable syntax roles,
+   and so a visitor pays for no third-party script.
 
    Every scene is complete static HTML. Scripts only enhance it: tokenising,
    laying out the diff, and the few one-time motions, which are skipped
@@ -122,7 +122,7 @@
 
   /* ------------------------------------------------------- tokenizing -- */
 
-  /* Structural punctuation takes Proof Red. Everything else stays neutral. */
+  /* Delimiters have a distinct token class; CSS keeps all syntax readable. */
   var STRUCTURAL = '{ } [ ] ( ) " \''.split(' ');
 
   var LANGS = {

@@ -3,9 +3,8 @@
 /* ==========================================================================
    Ioskeley Mono — showcase site
    Identity tokens come from docs/VISUAL_IDENTITY.md. Proof Red is a single
-   chromatic exception: structural punctuation in the branded code specimens,
-   one active state or registration mark per scene, and the one log line that
-   is semantically an error. Everything else is neutral.
+   chromatic exception for structural marks and restrained active states.
+   Readable information, including syntax and status labels, stays neutral.
    ========================================================================== */
 
 /* Only the faces the first screen needs. Remaining weights and the
@@ -38,11 +37,12 @@
   --primary: #d8d5ce;
   --secondary: #b8b5af;
   --grammar: #7e7c77;
-  --keyword: #74726e;
-  --operator: #74726e;
-  --punctuation: #686763;
+  --keyword: #85837d;
+  --operator: #807e78;
+  --punctuation: #7e7c77;
   /* Comments are read, so they sit at the 4.5:1 text floor on the canvas. */
   --comment: #7e7c77;
+  --line-number: var(--grammar);
   /* The same role on a tonal fill (added diff rows, hunk headers). */
   --muted-on-tint: #8f8d86;
   --proof-red: #b04a43;
@@ -80,8 +80,8 @@
   /* Grammar carries the labels and unselected controls: 4.5:1 or better. */
   --grammar: #6e6b65;
   --keyword: #68655f;
-  --operator: #77746e;
-  --punctuation: #8b8880;
+  --operator: #6e6b65;
+  --punctuation: #6f6c66;
   --comment: #6f6c66;
   --muted-on-tint: #5c5954;
   --proof-red: #913832;
@@ -149,6 +149,33 @@ a:hover { text-decoration-color: var(--primary); }
   border: 1px solid var(--primary);
 }
 .skip-link:focus { left: 8px; top: 8px; }
+
+/* Native scroll surfaces: full pointer tracks, square neutral thumbs.
+   Firefox keeps its usable auto width; WebKit supplies explicit geometry.
+   Forced-colour users retain the system's scrollbar rendering. */
+@media (forced-colors: none) {
+  * { scrollbar-width: auto; scrollbar-color: var(--grammar) var(--canvas); }
+  *:hover { scrollbar-color: var(--secondary) var(--canvas); }
+  *:active { scrollbar-color: var(--primary) var(--canvas); }
+
+  @supports selector(::-webkit-scrollbar) {
+    /* Standard colours override the pseudo-elements in newer Chromium. */
+    *, *:hover, *:active { scrollbar-color: auto; }
+    ::-webkit-scrollbar { width: 12px; height: 12px; }
+    html::-webkit-scrollbar { width: 14px; height: 14px; }
+    ::-webkit-scrollbar-track,
+    ::-webkit-scrollbar-corner { background: var(--canvas); }
+    ::-webkit-scrollbar-thumb {
+      background: var(--grammar);
+      border: 3px solid var(--canvas);
+      border-radius: 0;
+      min-height: 32px;
+      min-width: 32px;
+    }
+    ::-webkit-scrollbar-thumb:hover { background: var(--secondary); }
+    ::-webkit-scrollbar-thumb:active { background: var(--primary); }
+  }
+}
 
 /* ------------------------------------------------------------ primitives -- */
 
@@ -541,8 +568,8 @@ input[type="range"]::-moz-range-thumb {
 
 /* --------------------------------------------------------- code surface -- */
 
-/* Frozen hierarchy: content strongest, grammar recedes. Proof Red appears on
-   structural punctuation only, and is presentation applied here in CSS. */
+/* Content remains strongest; every syntax glyph meets the readable-text floor.
+   Proof Red marks the surrounding structure, never a low-contrast delimiter. */
 .code {
   font-family: Ioskeley, ui-monospace, monospace;
   font-synthesis: none;
@@ -559,14 +586,21 @@ input[type="range"]::-moz-range-thumb {
 :is(.code, .diff) .t-keyword { color: var(--keyword); font-weight: 700; }
 :is(.code, .diff) .t-operator { color: var(--operator); }
 :is(.code, .diff) .t-number { color: var(--primary); }
-:is(.code, .diff) .t-punct { color: var(--punctuation); }
-:is(.code, .diff) .t-mark { color: var(--proof-red); }
+:is(.code, .diff) .t-punct,
+:is(.code, .diff) .t-mark { color: var(--punctuation); }
 
-/* Outside the two branded code specimens (workbench and lab), delimiters stay
-   neutral so red keeps its meaning. */
-.scene--review .t-mark,
-.scene--query .t-mark,
-.scene--docs .t-mark { color: var(--punctuation); }
+/* Semantic text on the actual filled rows needs a stronger neutral. Scoped
+   roles cover both current editor lines and every kind of Review row. */
+.wb__code .ln.is-current,
+.dr--add,
+.dr--hunk {
+  --keyword: var(--muted-on-tint);
+  --operator: var(--muted-on-tint);
+  --punctuation: var(--muted-on-tint);
+  --comment: var(--muted-on-tint);
+  --grammar: var(--muted-on-tint);
+  --line-number: var(--muted-on-tint);
+}
 
 /* ============================================================ WORKBENCH == */
 
@@ -586,7 +620,7 @@ input[type="range"]::-moz-range-thumb {
   border: 1px solid var(--rule);
 }
 
-.wb__dim { color: var(--guide); }
+.wb__dim { color: var(--grammar); }
 
 .wb__title {
   display: flex;
@@ -702,7 +736,7 @@ input[type="range"]::-moz-range-thumb {
   width: 5ch;
   padding-right: 2ch;
   text-align: right;
-  color: var(--guide);
+  color: var(--line-number);
   font-weight: 400;
   font-style: normal;
 }
@@ -971,7 +1005,7 @@ input[type="range"]::-moz-range-thumb {
 .dr__n {
   padding-right: 1.2ch;
   text-align: right;
-  color: var(--guide);
+  color: var(--line-number);
   font-variant-numeric: tabular-nums;
   user-select: none;
 }
@@ -982,7 +1016,6 @@ input[type="range"]::-moz-range-thumb {
 .dr--hunk { background: var(--tint); color: var(--muted-on-tint); }
 .dr--hunk .dr__c { font-style: italic; white-space: pre; overflow: hidden; text-overflow: ellipsis; }
 .dr--add { background: var(--tint-strong); }
-.dr--add .t-comment { color: var(--muted-on-tint); }
 .dr--add .dr__s,
 .dr--add .dr__n { color: var(--primary); }
 .dr--del,
@@ -1056,7 +1089,17 @@ input[type="range"]::-moz-range-thumb {
 .lg-p { color: var(--primary); }
 .lg-l--info { color: var(--grammar); }
 .lg-l--warn { color: var(--title); font-weight: 700; }
-.lg-l--error { color: var(--proof-red); font-weight: 700; }
+.lg-l--error { position: relative; color: var(--title); font-weight: 700; }
+/* A severity tick accompanies the readable label without changing its width. */
+.lg-l--error::before {
+  content: "";
+  position: absolute;
+  left: -0.65ch;
+  top: 0.15em;
+  bottom: 0.15em;
+  width: 2px;
+  background: var(--proof-red);
+}
 .lg-s--4xx { color: var(--title); }
 .lg-s--5xx { color: var(--title); font-weight: 700; }
 
