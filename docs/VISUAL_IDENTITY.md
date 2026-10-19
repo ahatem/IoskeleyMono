@@ -16,8 +16,8 @@ editor chrome, gradients, glows, decorative grids, and hue-based syntax.
 | Grammar | `#7E7C77` | `#807D77` |
 | Keywords | `#74726E` | `#68655F` |
 | Operators | `#74726E` | `#77746E` |
-| Punctuation | `#686763` | `#918E87` |
-| Comments | `#5F5D58` italic | `#A09D95` italic |
+| Punctuation | `#686763` | `#8B8880` |
+| Comments | `#5F5D58` italic | `#98958D` italic |
 | Rare emphasis | `#ECE9E2` | `#171614` |
 | Rule | `#343330` | `#D3D0C8` |
 | Guide | `#4A4843` | `#BDBAB2` |
@@ -26,6 +26,14 @@ editor chrome, gradients, glows, decorative grids, and hue-based syntax.
 Keep emphasis rare. Use primary/secondary for identifiers and meaningful values;
 use grammar tones for keywords, operators, and punctuation. In light mode grammar
 moves toward the paper. Do not add a branding hue by default.
+
+Comments use the real italic face in both modes, never a synthesised oblique.
+Light-mode punctuation and comments sit closer to primary than in the previous
+revision so that a 14–15 px italic comment stays readable on `#F2F0EA`.
+
+`Selection` is a reserved role: no production plate uses it yet, so the artwork
+generators do not define it. If a plate ever needs a selection state, use this
+token rather than inventing a new one.
 
 ## Typography and specimens
 
@@ -48,12 +56,49 @@ negative space around both code and display glyphs. Use approved metrics only:
 cap height 690, x-height 520, Normal advance 600, SemiCondensed advance 540, and
 italic angle 11.8°.
 
+Cap height 690 and x-height 520 are the declared design metrics (OS/2
+`sCapHeight` / `sxHeight`), not the maximum ink bounds of the outlines. Artwork
+must label them as metrics — `CAP METRIC · 690`, `X METRIC · 520` — and must not
+present them as measured ink extremes. The metric is where a guide belongs; no
+glyph needs to touch it.
+
 ## Font and export requirements
 
 Artwork generators must explicitly load the local Regular, Italic, and Bold
 artifacts from `site/fonts/` using `@font-face`. Await `document.fonts.ready` and
-verify Regular 400, Italic 400, and Bold 700 with `document.fonts.check()` before
-rendering. Do not depend on installed system fonts or a generic fallback during
+verify Regular 400, Italic 400, and Bold 700 before rendering. Verify faces by
+membership in `document.fonts` (family, style, weight, status `loaded`), not with
+`document.fonts.check()`, which reports `true` for families that do not exist.
+Do not depend on installed system fonts or a generic fallback during
 export. For historical comparison studies only, resolve TX-02 from the
 maintainer's local installation; never copy it into this repository or distribute
-it. Pin the HTML-to-PNG renderer and export at exactly 1280×640.
+it. If TX-02 is absent, stop the export rather than substituting another face.
+Pin the HTML-to-PNG renderer — it is vendored at
+`artwork/vendor/html2canvas-1.4.1.min.js`; do not load it from a CDN.
+
+Compose on a fixed 1280×640 logical plate and export at 2× physical resolution,
+so the delivered PNG is **2560×1280** and stays sharp on HiDPI surfaces. The
+generator's size assertion must check the delivered size, not the layout size.
+Internal comparison canvases use a 2× backing store over their layout box, which
+maps 1:1 into the 2× output.
+
+Type must not be placed in inline `<svg>`. The HTML-to-PNG renderer rasterises SVG
+subtrees as standalone images, where page `@font-face` rules cannot load, so live
+specimens silently export in a fallback serif. Draw measurement diagrams and glyph
+comparisons on a `<canvas>`, which is drawn with the loaded faces and copied at its
+backing resolution.
+
+## Specimen boxes and glyph fitting
+
+Size every container from measured ink, never from a guessed box. A sample row's
+line box must hold the real ascender and descender of both faces at the rendered
+size plus clearance; do not use `overflow: hidden` on a glyph container, and do not
+use `line-height: 1` with a fixed-height box — both silently crop descenders. For
+overlay studies, draw both faces at one em size, one baseline, and one origin:
+allocate the cell margin from the union of the faces' ink bounds, never fit one
+glyph individually, and never stretch or squash to fill a cell. Size backing buffers
+from the element's layout size, never from a CSS-scaled rectangle, so output does
+not depend on the browser viewport. Render at a true multiple of the layout size
+(2× is sufficient; 4× changes under 0.3% of output pixels). Let the generators
+assert these conditions on load and report the result, rather than relying on
+visual inspection.

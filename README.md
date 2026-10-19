@@ -1,5 +1,8 @@
 <p align="center">
-  <img src="assets/SocialPreview.png" alt="Ioskeley Mono — monochrome type specimen" width="100%">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/SocialPreview-Light.png">
+    <img src="assets/SocialPreview.png" alt="Ioskeley Mono — monochrome type specimen" width="100%">
+  </picture>
 </p>
 
 # Ioskeley Mono
@@ -31,6 +34,14 @@
   <a href="#build-from-source">Build</a>
 </p>
 
+> **Read this before you download.** The links below currently serve **v2.1.0**,
+> the latest published release. This README documents the **2.2.0** product, and
+> the two are not identical: the **NF / NFM split described under
+> [Nerd Font or Nerd Font Mono?](#nerd-font-or-nerd-font-mono) ships in 2.2.0
+> only**. If you download today, the Nerd Font archives will not contain both
+> variants. Everything else — families, widths, weights, web packages — is
+> unchanged. See [Release timing](#downloads).
+
 ## Why I Built Ioskeley Mono
 
 Berkeley Mono was the first typeface that made me think seriously about how much
@@ -56,7 +67,9 @@ made the experiment possible.
   not.
 - **Purposeful forms:** single-storey `g`, dotted zero, open `6` and `9`, and
   clearly differentiated programming punctuation.
-- **Three Nerd Font archives:** each includes both NF and NFM variants in 2.2.0.
+- **Three Nerd Font archives:** from 2.2.0 each includes both NF and NFM
+  variants. The current v2.1.0 archives contain neither split — see the note
+  above.
 - **Two web packages:** a compact subset and Web Full.
 - **Open source:** licensed under the SIL Open Font License 1.1.
 
@@ -95,6 +108,9 @@ Both widths are included in desktop and Nerd Font packages.
 
 ### Nerd Font or Nerd Font Mono?
 
+> **Applies to 2.2.0.** The currently published v2.1.0 Nerd Font archives do not
+> contain this split. If you are on v2.1.0, ignore this section until 2.2.0 ships.
+
 Every 2.2.0 Nerd Font archive contains both patched variants:
 
 - **Nerd Font (NF):** ordinary Nerd Fonts geometry with larger icons. A good
@@ -104,12 +120,14 @@ Every 2.2.0 Nerd Font archive contains both patched variants:
   pickers that require true monospace behavior.
 
 Neither is universally better. Choose the geometry your application expects.
-The Standard, Term, and NL Nerd Font archives each contain NF and NFM.
+The Standard, Term, and NL Nerd Font archives each contain NF and NFM from
+2.2.0 onward.
 
 ## Downloads
 
 The archives contain the styles for their family and, where applicable, both
-widths. Nerd Font archives include both NF and NFM as described above.
+widths. Nerd Font archives include both NF and NFM as described above, once
+2.2.0 is published.
 
 | Use | Archive |
 |---|---|

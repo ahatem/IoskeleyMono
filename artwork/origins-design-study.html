@@ -4,12 +4,15 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Ioskeley Mono — Origins / Design Study</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <!-- Vendored: see artwork/vendor/README.md. No network dependency, so the
+       export is reproducible offline. -->
+  <script src="vendor/html2canvas-1.4.1.min.js"></script>
   <style>
     @font-face { font-family: Ioskeley; src: url("../site/fonts/IoskeleyMono-Regular.woff2") format("woff2"); font-style: normal; font-weight: 400; font-display: block; }
     @font-face { font-family: Ioskeley; src: url("../site/fonts/IoskeleyMono-Italic.woff2") format("woff2"); font-style: italic; font-weight: 400; font-display: block; }
     @font-face { font-family: Ioskeley; src: url("../site/fonts/IoskeleyMono-Bold.woff2") format("woff2"); font-style: normal; font-weight: 700; font-display: block; }
-    /* TX-02 is resolved only from the reference font installed on the maintainer's machine. */
+    /* TX-02 is resolved only from the reference font installed on the maintainer's machine.
+       It is never bundled, never fetched and never written to this repository. */
     @font-face { font-family: TX-02; src: local("TX-02 Regular"), local("TX-02"); font-style: normal; font-weight: 400; font-display: block; }
 
     * { box-sizing: border-box; }
@@ -18,7 +21,10 @@
     .toolbar { display: flex; justify-content: space-between; align-items: center; gap: 20px; padding-bottom: 16px; border-bottom: 1px solid #BDBDBA; }
     .toolbar h1 { margin: 0; font-size: 22px; font-weight: 700; }
     .toolbar p { margin: 5px 0 0; color: #5D5D59; font-size: 10px; }
+    .toolbar-status { text-align: right; }
     .font-status { color: #494946; font-size: 9px; letter-spacing: .07em; text-transform: uppercase; }
+    .audit-status { margin-top: 4px; color: #5D5D59; font-size: 9px; letter-spacing: .07em; }
+    .audit-status[data-state="fail"] { color: #8A2F22; }
     .study-group { padding-top: 18px; margin-top: 17px; border-top: 1px solid #BDBDBA; }
     .group-head { display: flex; align-items: baseline; justify-content: space-between; gap: 20px; margin-bottom: 7px; }
     .group-head h2 { margin: 0; font-size: 12px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; }
@@ -44,51 +50,55 @@
     .method { color: var(--grammar); font-size: 9px; line-height: 1.6; text-align: right; letter-spacing: .07em; text-transform: uppercase; }
     .method b { color: var(--secondary); font-weight: 400; }
 
+    /* Sample rows: the line box is sized from the measured ink extents of both
+       faces (see SAMPLE_ROWS) and the container never clips. No overflow rule,
+       no line-height:1 — both are what silently ate descenders before. */
     .forms { flex: 1 1 auto; min-height: 0; display: grid; grid-template-rows: 34px repeat(4, 1fr); }
     .forms-head, .form-row { display: grid; grid-template-columns: 170px minmax(0, 1fr) minmax(0, 1fr); align-items: center; column-gap: 24px; }
     .forms-head { color: var(--grammar); font-size: 8px; letter-spacing: .1em; text-transform: uppercase; border-bottom: 1px solid var(--rule); }
     .form-row { border-bottom: 1px solid var(--rule); }
     .form-kind { color: var(--grammar); font-size: 8px; letter-spacing: .08em; text-transform: uppercase; }
-    .form-sample { min-width: 0; overflow: hidden; color: var(--primary); font-size: 21px; line-height: 1; white-space: nowrap; font-feature-settings: "calt" 1, "liga" 1; }
+    .form-sample { min-width: 0; color: var(--primary); font-size: 21px; line-height: 26px; padding: 5px 0; white-space: nowrap; font-feature-settings: "calt" 1, "liga" 1; }
     .form-sample.ios { font-family: Ioskeley; }
     .form-sample.tx { color: var(--secondary); font-family: TX-02; }
-    .form-row.ops .form-sample { font-size: 18px; }
+    .form-row.ops .form-sample { font-size: 18px; line-height: 22px; }
     .note { color: var(--grammar); font-size: 9px; }
 
     .overlay-head { display: flex; justify-content: space-between; gap: 20px; padding: 8px 0; border-bottom: 1px solid var(--rule); color: var(--grammar); font-size: 8px; letter-spacing: .08em; text-transform: uppercase; }
     .overlay-key { display: flex; gap: 18px; }
     .overlay-key b { color: var(--secondary); font-weight: 400; }
     .overlay-grid { flex: 1 1 auto; min-height: 0; display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(2, 1fr); }
-    .overlay-cell { min-width: 0; min-height: 0; position: relative; border-bottom: 1px solid var(--rule); }
-    .overlay-cell:not(:nth-child(3n+1)) { border-left: 1px solid var(--rule); }
-    .overlay-cell:nth-child(3n+1) { padding-right: 12px; }
-    .overlay-cell:nth-child(3n+2) { padding-inline: 12px; }
-    .overlay-cell:nth-child(3n) { padding-left: 12px; }
+    /* Identical padding on all six cells, so all six canvases share one geometry.
+       Column rules are painted with a pseudo-element, so they never steal content
+       width and the three columns stay byte-identical in geometry. */
+    .overlay-cell { min-width: 0; min-height: 0; position: relative; padding-inline: 12px; border-bottom: 1px solid var(--rule); display: flex; flex-direction: column; }
+    .overlay-cell:not(:nth-child(3n+1))::before { content: ""; position: absolute; inset: 0 auto 0 0; border-left: 1px solid var(--rule); }
     .glyph-label { display: flex; justify-content: space-between; padding-top: 8px; color: var(--grammar); font-size: 8px; letter-spacing: .08em; text-transform: uppercase; }
     .glyph-label strong { color: var(--secondary); font-weight: 400; }
-    .diff-canvas { display: block; width: 100%; height: calc(100% - 24px); }
+    .diff-canvas { display: block; width: 100%; flex: 1 1 auto; min-height: 0; }
 
-    .code-compare { flex: 1 1 auto; min-height: 0; display: grid; grid-template-columns: 1fr 1fr; }
+    /* The divider spans only the text block, so the plate reads as two specimens of
+       equal length rather than two empty columns. */
+    .code-compare { flex: 1 1 auto; min-height: 0; display: grid; grid-template-columns: 1fr 1fr; align-items: start; }
     .code-column { min-width: 0; display: flex; flex-direction: column; }
-    .code-column + .code-column { padding-left: 24px; margin-left: 24px; border-left: 1px solid var(--rule); }
+    .code-column + .code-column { position: relative; padding-left: 24px; margin-left: 24px; }
+    .code-column + .code-column::before { content: ""; position: absolute; inset: 0 auto 0 0; border-left: 1px solid var(--rule); }
     .code-label { padding: 9px 0; color: var(--grammar); font-size: 8px; letter-spacing: .1em; text-transform: uppercase; }
     .code-column.ios .code-label { color: var(--secondary); }
-    .code-block { min-width: 0; margin: 0; color: var(--primary); font-size: 14px; font-weight: 400; line-height: 1.55; white-space: pre; overflow: hidden; font-feature-settings: "calt" 1, "liga" 1; font-variant-ligatures: common-ligatures contextual; }
+    .code-block { min-width: 0; margin: 0; color: var(--primary); font-size: 15px; font-weight: 400; line-height: 1.62; white-space: pre; font-feature-settings: "calt" 1, "liga" 1; font-variant-ligatures: common-ligatures contextual; }
     .code-column.ios .code-block { font-family: Ioskeley; }
     .code-column.tx .code-block { color: var(--secondary); font-family: TX-02; }
     .kw { color: var(--keyword); font-weight: 700; }
     .op { color: var(--operator); }
-    .punct { color: var(--punctuation); }
     .comment { color: var(--comment); font-style: italic; }
     .string { color: var(--secondary); }
-    .artboard.exporting [contenteditable] { caret-color: transparent !important; }
     @media (max-width: 900px) { body { padding: 16px; } .pair { grid-template-columns: 1fr; } .toolbar, .group-head { align-items: flex-start; flex-direction: column; } }
   </style>
 </head>
 <body>
   <header class="toolbar">
     <div><h1>Ioskeley Mono / Origins · Design Study</h1><p>Ioskeley is an independent design; TX-02 is a historical local reference only.</p></div>
-    <div class="font-status" id="fontStatus" role="status">Checking local typefaces…</div>
+    <div class="toolbar-status"><div class="font-status" id="fontStatus" role="status">Checking local typefaces…</div><div class="audit-status" id="auditStatus" role="status">Auditing…</div></div>
   </header>
   <main class="study-groups">
     <section class="study-group"><header class="group-head"><h2>01 / Character forms</h2><p>Paired specimens · same point size · local TX-02 reference</p></header><div class="pair" id="formsPair"></div></section>
@@ -100,7 +110,7 @@
     <article class="artboard">
       <div class="inner">
         <header class="running running-head"><span>Ioskeley Mono · Origins / 01</span><span>Regular 400 · Tracking 0</span></header><div class="rule"></div>
-        <div class="intro"><div><div class="eyebrow">Historical reference · glyph study</div><h1 class="title">Character forms</h1><p class="subtitle">An early influence, examined as one part of Ioskeley's design history.</p></div><div class="method">Point size <b>22 px</b><br>Advance comparison <b>local fonts</b></div></div>
+        <div class="intro"><div><div class="eyebrow">Historical reference · glyph study</div><h1 class="title">Character forms</h1><p class="subtitle">An early influence, examined as one part of Ioskeley's design history.</p></div><div class="method">Point size <b id="formsPointSize">21 px</b><br>Advance comparison <b>local fonts</b></div></div>
         <div class="forms">
           <div class="forms-head"><span>Specimen</span><span>Ioskeley Mono</span><span>TX-02 · Berkeley Mono</span></div>
           <div class="form-row"><div class="form-kind">Identity forms</div><div class="form-sample ios">a g k r y Q @ $</div><div class="form-sample tx">a g k r y Q @ $</div></div>
@@ -117,15 +127,15 @@
     <article class="artboard">
       <div class="inner">
         <header class="running running-head"><span>Ioskeley Mono · Origins / 02</span><span>Outline overlay · regular 400</span></header><div class="rule"></div>
-        <div class="intro"><div><div class="eyebrow">Historical reference · measured forms</div><h1 class="title">Where forms diverge</h1><p class="subtitle">Shared ink is neutral; each face's differences remain tonal.</p></div><div class="method">Render size <b>128 px</b><br>Origin <b>shared</b></div></div>
-        <div class="overlay-head"><div class="overlay-key"><span><b>Shared</b> · Ink</span><span><b>Ioskeley</b> · Secondary</span><span><b>TX-02</b> · Grammar</span></div><span>baseline and origin guides</span></div>
+        <div class="intro"><div><div class="eyebrow">Historical reference · measured forms</div><h1 class="title">Where forms diverge</h1><p class="subtitle">Shared ink is neutral; each face's differences remain tonal.</p></div><div class="method">Render size <b id="overlayPointSize">— px</b><br>Origin <b>shared</b></div></div>
+        <div class="overlay-head"><div class="overlay-key"><span><b>Shared</b> · Ink</span><span><b>Ioskeley</b> · Secondary</span><span><b>TX-02</b> · Grammar</span></div><span id="overlayMeta">baseline and origin guides</span></div>
         <div class="overlay-grid">
-          <div class="overlay-cell" data-glyph="a"><div class="glyph-label"><span>a / lowercase</span><strong>Δ — px</strong></div><canvas class="diff-canvas"></canvas></div>
-          <div class="overlay-cell" data-glyph="g"><div class="glyph-label"><span>g / lowercase</span><strong>Δ — px</strong></div><canvas class="diff-canvas"></canvas></div>
-          <div class="overlay-cell" data-glyph="0"><div class="glyph-label"><span>0 / figure</span><strong>Δ — px</strong></div><canvas class="diff-canvas"></canvas></div>
-          <div class="overlay-cell" data-glyph="Q"><div class="glyph-label"><span>Q / capital</span><strong>Δ — px</strong></div><canvas class="diff-canvas"></canvas></div>
-          <div class="overlay-cell" data-glyph="@"><div class="glyph-label"><span>@ / symbol</span><strong>Δ — px</strong></div><canvas class="diff-canvas"></canvas></div>
-          <div class="overlay-cell" data-glyph="$"><div class="glyph-label"><span>$ / symbol</span><strong>Δ — px</strong></div><canvas class="diff-canvas"></canvas></div>
+          <div class="overlay-cell" data-glyph="a"><div class="glyph-label"><span>a / lowercase</span><strong>Δh — px</strong></div><canvas class="diff-canvas"></canvas></div>
+          <div class="overlay-cell" data-glyph="g"><div class="glyph-label"><span>g / lowercase</span><strong>Δh — px</strong></div><canvas class="diff-canvas"></canvas></div>
+          <div class="overlay-cell" data-glyph="0"><div class="glyph-label"><span>0 / figure</span><strong>Δh — px</strong></div><canvas class="diff-canvas"></canvas></div>
+          <div class="overlay-cell" data-glyph="Q"><div class="glyph-label"><span>Q / capital</span><strong>Δh — px</strong></div><canvas class="diff-canvas"></canvas></div>
+          <div class="overlay-cell" data-glyph="@"><div class="glyph-label"><span>@ / symbol</span><strong>Δh — px</strong></div><canvas class="diff-canvas"></canvas></div>
+          <div class="overlay-cell" data-glyph="$"><div class="glyph-label"><span>$ / symbol</span><strong>Δh — px</strong></div><canvas class="diff-canvas"></canvas></div>
         </div>
         <div class="rule"></div><footer class="running running-foot"><span>Overlay is design evidence, not a target drawing</span><span>TX-02 remains a local reference only</span></footer>
       </div>
@@ -136,34 +146,40 @@
     <article class="artboard">
       <div class="inner">
         <header class="running running-head"><span>Ioskeley Mono · Origins / 03</span><span>Same source · regular 400</span></header><div class="rule"></div>
-        <div class="intro"><div><div class="eyebrow">Historical reference · reading texture</div><h1 class="title">Code, at working scale</h1><p class="subtitle">Ioskeley's current voice is its own; this pairing documents an early reference.</p></div><div class="method">Type size <b>14 px</b><br>Line height <b>1.55</b></div></div>
+        <div class="intro"><div><div class="eyebrow">Historical reference · reading texture</div><h1 class="title">Code, at working scale</h1><p class="subtitle">Ioskeley's current voice is its own; this pairing documents an early reference.</p></div><div class="method">Type size <b id="codePointSize">15 px</b><br>Line height <b id="codeLineHeight">1.62</b></div></div>
         <div class="code-compare">
-          <section class="code-column ios"><div class="code-label">Ioskeley Mono · open type</div><pre class="code-block"><span class="kw">const</span> glyphs = {
-  forms: <span class="string">"g a Q @ $ · 0 O 1 I l"</span>,
-  figures: [0xFC82, 100_000, 0.0],
-  ops: [<span class="string">"!="</span>, <span class="string">"==="</span>, <span class="string">"=&gt;"</span>, <span class="string">"-&gt;"</span>, <span class="string">"::"</span>],
-};
+          <section class="code-column ios"><div class="code-label">Ioskeley Mono · open type</div><pre class="code-block"><span class="kw">const</span> glyphs <span class="op">=</span> <span class="punct">{</span>
+  forms<span class="punct">:</span> <span class="string">"g a Q @ $ · 0 O 1 I l"</span><span class="punct">,</span>
+  figures<span class="punct">:</span> <span class="punct">[</span>0xFC82<span class="punct">,</span> 100_000<span class="punct">,</span> 0.0<span class="punct">]</span><span class="punct">,</span>
+  ops<span class="punct">:</span> <span class="punct">[</span><span class="string">"!="</span><span class="punct">,</span> <span class="string">"==="</span><span class="punct">,</span> <span class="string">"&gt;"</span><span class="punct">,</span> <span class="string">"-&gt;"</span><span class="punct">,</span> <span class="string">"::"</span><span class="punct">]</span><span class="punct">,</span>
+  marks<span class="punct">:</span> <span class="punct">[</span><span class="string">"{"</span><span class="punct">,</span> <span class="string">"}"</span><span class="punct">,</span> <span class="string">"["</span><span class="punct">,</span> <span class="string">"]"</span><span class="punct">,</span> <span class="string">"("</span><span class="punct">,</span> <span class="string">")"</span><span class="punct">]</span><span class="punct">,</span>
+<span class="punct">}</span><span class="punct">;</span>
 
 <span class="comment">// Read the shape, then the rhythm.</span>
-<span class="kw">export function</span> resolve(value) {
-  <span class="kw">if</span> (value !== <span class="string">""</span> &amp;&amp; value.includes(<span class="string">"=&gt;"</span>)) {
-    <span class="kw">return</span> new Map([[<span class="string">"=&gt;"</span>, 1], [<span class="string">"-&gt;"</span>, 2]]);
-  }
-  <span class="kw">return</span> new Map();
-}</pre></section>
-          <section class="code-column tx"><div class="code-label">TX-02 · Berkeley Mono · local reference</div><pre class="code-block"><span class="kw">const</span> glyphs = {
-  forms: <span class="string">"g a Q @ $ · 0 O 1 I l"</span>,
-  figures: [0xFC82, 100_000, 0.0],
-  ops: [<span class="string">"!="</span>, <span class="string">"==="</span>, <span class="string">"=&gt;"</span>, <span class="string">"-&gt;"</span>, <span class="string">"::"</span>],
-};
+<span class="kw">export function</span> resolve<span class="punct">(</span>value<span class="punct">)</span> <span class="punct">{</span>
+  <span class="kw">if</span> <span class="punct">(</span>value <span class="op">!==</span> <span class="string">""</span> <span class="op">&amp;&amp;</span> value<span class="punct">.</span>includes<span class="punct">(</span><span class="string">"=&gt;"</span><span class="punct">))</span> <span class="punct">{</span>
+    <span class="kw">return new</span> Map<span class="punct">([[</span><span class="string">"=&gt;"</span><span class="punct">,</span> 1<span class="punct">]</span><span class="punct">,</span> <span class="punct">[</span><span class="string">"-&gt;"</span><span class="punct">,</span> 2<span class="punct">]])</span><span class="punct">;</span>
+  <span class="punct">}</span>
+  <span class="kw">return new</span> Map<span class="punct">()</span><span class="punct">;</span>
+<span class="punct">}</span>
+
+export { glyphs };</pre></section>
+          <section class="code-column tx"><div class="code-label">TX-02 · Berkeley Mono · local reference</div><pre class="code-block"><span class="kw">const</span> glyphs <span class="op">=</span> <span class="punct">{</span>
+  forms<span class="punct">:</span> <span class="string">"g a Q @ $ · 0 O 1 I l"</span><span class="punct">,</span>
+  figures<span class="punct">:</span> <span class="punct">[</span>0xFC82<span class="punct">,</span> 100_000<span class="punct">,</span> 0.0<span class="punct">]</span><span class="punct">,</span>
+  ops<span class="punct">:</span> <span class="punct">[</span><span class="string">"!="</span><span class="punct">,</span> <span class="string">"==="</span><span class="punct">,</span> <span class="string">"&gt;"</span><span class="punct">,</span> <span class="string">"-&gt;"</span><span class="punct">,</span> <span class="string">"::"</span><span class="punct">]</span><span class="punct">,</span>
+  marks<span class="punct">:</span> <span class="punct">[</span><span class="string">"{"</span><span class="punct">,</span> <span class="string">"}"</span><span class="punct">,</span> <span class="string">"["</span><span class="punct">,</span> <span class="string">"]"</span><span class="punct">,</span> <span class="string">"("</span><span class="punct">,</span> <span class="string">")"</span><span class="punct">]</span><span class="punct">,</span>
+<span class="punct">}</span><span class="punct">;</span>
 
 <span class="comment">// Read the shape, then the rhythm.</span>
-<span class="kw">export function</span> resolve(value) {
-  <span class="kw">if</span> (value !== <span class="string">""</span> &amp;&amp; value.includes(<span class="string">"=&gt;"</span>)) {
-    <span class="kw">return</span> new Map([[<span class="string">"=&gt;"</span>, 1], [<span class="string">"-&gt;"</span>, 2]]);
-  }
-  <span class="kw">return</span> new Map();
-}</pre></section>
+<span class="kw">export function</span> resolve<span class="punct">(</span>value<span class="punct">)</span> <span class="punct">{</span>
+  <span class="kw">if</span> <span class="punct">(</span>value <span class="op">!==</span> <span class="string">""</span> <span class="op">&amp;&amp;</span> value<span class="punct">.</span>includes<span class="punct">(</span><span class="string">"=&gt;"</span><span class="punct">))</span> <span class="punct">{</span>
+    <span class="kw">return new</span> Map<span class="punct">([[</span><span class="string">"=&gt;"</span><span class="punct">,</span> 1<span class="punct">]</span><span class="punct">,</span> <span class="punct">[</span><span class="string">"-&gt;"</span><span class="punct">,</span> 2<span class="punct">]])</span><span class="punct">;</span>
+  <span class="punct">}</span>
+  <span class="kw">return new</span> Map<span class="punct">()</span><span class="punct">;</span>
+<span class="punct">}</span>
+
+export { glyphs };</pre></section>
         </div>
         <div class="rule"></div><footer class="running running-foot"><span>Origins / Design Study · historical comparison</span><span>No claim of equivalence or affiliation</span></footer>
       </div>
@@ -172,33 +188,70 @@
 
   <script>
     const palettes = {
-      dark: { name: "Dark", canvas: "#101010", primary: "#D8D5CE", secondary: "#B8B5AF", grammar: "#7E7C77", keyword: "#74726E", operator: "#74726E", punctuation: "#686763", comment: "#5F5D58", rule: "#343330", guide: "#4A4843", selection: "#302F2B" },
-      light: { name: "Light", canvas: "#F2F0EA", primary: "#292826", secondary: "#4E4D49", grammar: "#807D77", keyword: "#68655F", operator: "#77746E", punctuation: "#918E87", comment: "#A09D95", rule: "#D3D0C8", guide: "#BDBAB2", selection: "#E2DFD8" }
+      dark: { name: "Dark", canvas: "#101010", primary: "#D8D5CE", secondary: "#B8B5AF", grammar: "#7E7C77", keyword: "#74726E", operator: "#74726E", punctuation: "#686763", comment: "#5F5D58", rule: "#343330", guide: "#4A4843" },
+      light: { name: "Light", canvas: "#F2F0EA", primary: "#292826", secondary: "#4E4D49", grammar: "#807D77", keyword: "#68655F", operator: "#77746E", punctuation: "#8B8880", comment: "#98958D", rule: "#D3D0C8", guide: "#BDBAB2" }
     };
 
-    const fontSpecs = [['Ioskeley Regular 400', '400 24px "Ioskeley"'], ['TX-02 local Regular 400', '400 24px "TX-02"']];
-    let facesReady = false;
+    // Every face the artboards actually draw. document.fonts.check() returns true
+    // for families that do not exist, so face membership is verified directly.
+    const REQUIRED_FACES = [
+      { family: "Ioskeley", style: "normal", weight: "400", spec: '400 24px "Ioskeley"' },
+      { family: "Ioskeley", style: "italic", weight: "400", spec: 'italic 400 24px "Ioskeley"' },
+      { family: "Ioskeley", style: "normal", weight: "700", spec: '700 24px "Ioskeley"' }
+    ];
+    const OPTIONAL_FACES = [{ family: "TX-02", style: "normal", weight: "400", spec: '400 24px "TX-02"' }];
+
     const groups = { forms: 'formsPair', overlay: 'overlayPair', code: 'codePair' };
     const templates = { forms: 'formsTemplate', overlay: 'overlayTemplate', code: 'codeTemplate' };
     const fileBases = { forms: 'Origins-01-Character-Forms', overlay: 'Origins-02-Overlay-Study', code: 'Origins-03-Code-Texture' };
 
-    async function verifyFonts() {
-      await Promise.all(fontSpecs.map(([, spec]) => document.fonts.load(spec)));
-      await document.fonts.ready;
-      const checks = fontSpecs.map(([name, spec]) => ({name, loaded: document.fonts.check(spec)}));
-      facesReady = checks.every(face => face.loaded);
-      document.getElementById('fontStatus').textContent = checks.map(face => `${face.name} ${face.loaded ? '✓' : '×'}`).join(' · ');
-      return facesReady;
+    /* Every plate is a fixed 1280 × 640 logical composition, written out at 2×
+       physical resolution. */
+    const PLATE = { width: 1280, height: 640, scale: 2 };
+
+    /* Origins-02 states its comparison basis on the plate itself, so the per-cell
+       readout cannot be misread as a quality score or a ranking. Δh is the signed
+       difference in the glyph's total ink height between the two faces, in plate
+       pixels — exactly the vertical extent the overlay draws. */
+    const DELTA_NOTE = 'Δh = ink height, TX-02 − Ioskeley · shared baseline and origin';
+
+    /* Overlay contract: one em size, one baseline, one origin, for both faces.
+       No per-glyph fitting, no stretching — the canvas backing store is the
+       element's own layout size times OVERLAY_BACKING, which never depends on
+       the browser viewport. OVERLAY_BACKING may be raised to 4 for inspection
+       with ?backing=4; at the delivered 2× plate it maps 1:1 into the output. */
+    const OVERLAY_GLYPHS = ['a', 'g', '0', 'Q', '@', '$'];
+    const OVERLAY_FACES = ['Ioskeley', 'TX-02'];
+    const OVERLAY_MARGIN = 12;
+    const OVERLAY_BACKING = Number(new URLSearchParams(location.search).get('backing')) || PLATE.scale;
+    const SAMPLE_CLEARANCE = 4;
+
+    const faceLoaded = face => [...document.fonts].some(f => f.family === face.family && f.style === face.style && f.weight === face.weight && f.status === 'loaded');
+
+    async function loadFace(face) {
+      try { await document.fonts.load(face.spec); } catch (error) { /* reported by the membership check below */ }
     }
 
-    function fit() { document.querySelectorAll('.stage').forEach(stage => { stage.querySelector('.artboard').style.transform = `scale(${stage.clientWidth / 1280})`; }); }
+    async function verifyFonts() {
+      const required = [...REQUIRED_FACES, ...OPTIONAL_FACES];
+      await Promise.all(required.map(loadFace));
+      await document.fonts.ready;
+      const ioskeley = REQUIRED_FACES.map(face => ({ name: `${face.family} ${face.weight}${face.style === 'italic' ? ' italic' : ''}`, loaded: faceLoaded(face) }));
+      const tx02 = OPTIONAL_FACES.map(face => ({ name: 'TX-02 local 400', loaded: faceLoaded(face) }));
+      const status = document.getElementById('fontStatus');
+      status.textContent = ioskeley.map(face => `${face.name} ${face.loaded ? '✓' : '×'}`).join(' · ')
+        + ' · ' + tx02.map(face => `${face.name} ${face.loaded ? '✓' : 'not installed'}`).join(' · ');
+      return { ioskeley: ioskeley.every(face => face.loaded), tx02: tx02[0].loaded };
+    }
+
+    function fit() { document.querySelectorAll('.stage').forEach(stage => { stage.querySelector('.artboard').style.transform = `scale(${stage.clientWidth / PLATE.width})`; }); }
 
     function addProof(kind, mode) {
       const theme = palettes[mode];
       const id = `${kind}-${mode}`;
       const proof = document.createElement('section');
       proof.className = 'proof';
-      proof.innerHTML = `<div class="proof-head"><span class="proof-name">${theme.name} / ${fileBases[kind]}</span><button data-export="${id}" type="button">Export 1280 × 640</button></div><div class="stage"></div>`;
+      proof.innerHTML = `<div class="proof-head"><span class="proof-name">${theme.name} / ${fileBases[kind]}</span><button data-export="${id}" type="button">Export 2560 × 1280</button></div><div class="stage"></div>`;
       const board = document.getElementById(templates[kind]).content.firstElementChild.cloneNode(true);
       board.id = `artboard-${id}`;
       board.dataset.proof = id;
@@ -213,61 +266,218 @@
     fit();
 
     function hexRgb(hex) { return [1, 3, 5].map(i => parseInt(hex.slice(i, i + 2), 16)); }
-    function renderDiff(cell, theme) {
-      const canvas = cell.querySelector('canvas');
-      const box = canvas.getBoundingClientRect();
-      const width = Math.max(180, Math.round(box.width));
-      const height = Math.max(100, Math.round(box.height));
-      const scale = 2;
-      canvas.width = width * scale;
-      canvas.height = height * scale;
-      const glyph = cell.dataset.glyph;
-      const originX = 35;
-      const baseline = Math.round(height * .76);
-      function sample(family) {
-        const ctx = document.createElement('canvas').getContext('2d', {willReadFrequently: true});
-        ctx.canvas.width = width * scale; ctx.canvas.height = height * scale; ctx.scale(scale, scale);
-        ctx.font = `400 128px "${family}"`;
-        ctx.textBaseline = 'alphabetic'; ctx.fillStyle = '#FFFFFF'; ctx.fillText(glyph, originX, baseline);
-        return {data: ctx.getImageData(0, 0, width * scale, height * scale).data, advance: ctx.measureText(glyph).width};
+
+    /* Per-em ink metrics for every overlay glyph in both faces, measured at a
+       reference size so the result is independent of the render size. */
+    function measureOverlay() {
+      const REF = 100;
+      const ctx = document.createElement('canvas').getContext('2d');
+      const per = {};
+      let maxAscent = 0, maxDescent = 0, minLeft = Infinity, maxRight = -Infinity;
+      for (const glyph of OVERLAY_GLYPHS) {
+        const faces = {};
+        for (const family of OVERLAY_FACES) {
+          ctx.font = `400 ${REF}px "${family}"`;
+          const m = ctx.measureText(glyph);
+          faces[family] = {
+            left: -m.actualBoundingBoxLeft / REF,
+            right: m.actualBoundingBoxRight / REF,
+            ascent: m.actualBoundingBoxAscent / REF,
+            descent: m.actualBoundingBoxDescent / REF,
+            advance: m.width / REF
+          };
+        }
+        const entry = { faces };
+        entry.left = Math.min(...OVERLAY_FACES.map(f => faces[f].left));
+        entry.right = Math.max(...OVERLAY_FACES.map(f => faces[f].right));
+        entry.ascent = Math.max(...OVERLAY_FACES.map(f => faces[f].ascent));
+        entry.descent = Math.max(...OVERLAY_FACES.map(f => faces[f].descent));
+        entry.height = OVERLAY_FACES.map(f => faces[f].ascent + faces[f].descent);
+        per[glyph] = entry;
+        maxAscent = Math.max(maxAscent, entry.ascent);
+        maxDescent = Math.max(maxDescent, entry.descent);
+        minLeft = Math.min(minLeft, entry.left);
+        maxRight = Math.max(maxRight, entry.right);
       }
+      return { per, maxAscent, maxDescent, minLeft, maxRight };
+    }
+
+    /* Layout shared by all six cells: the em size is the largest that keeps the
+       union ink box of every glyph, in both faces, inside the cell with
+       OVERLAY_MARGIN to spare. One size, one baseline, one origin for all. */
+    function overlayLayout(width, height, metrics) {
+      const size = Math.min(
+        (height - 2 * OVERLAY_MARGIN) / (metrics.maxAscent + metrics.maxDescent),
+        (width - 2 * OVERLAY_MARGIN) / (metrics.maxRight - metrics.minLeft)
+      );
+      const baseline = Math.round((OVERLAY_MARGIN + metrics.maxAscent * size) * 100) / 100;
+      const originX = Math.round((width / 2 - ((metrics.maxRight + metrics.minLeft) / 2) * size) * 100) / 100;
+      return { size: Math.round(size * 100) / 100, baseline, originX };
+    }
+
+    function renderDiff(cell, theme, metrics) {
+      const canvas = cell.querySelector('canvas');
+      const glyph = cell.dataset.glyph;
+      const displayW = canvas.offsetWidth;
+      const displayH = canvas.offsetHeight;
+      const layout = overlayLayout(displayW, displayH, metrics);
+      const backing = OVERLAY_BACKING;
+      const pixelsW = Math.round(displayW * backing);
+      const pixelsH = Math.round(displayH * backing);
+
+      // Both faces are drawn once, at the same size, baseline and origin.
+      const sample = family => {
+        const off = document.createElement('canvas');
+        off.width = pixelsW; off.height = pixelsH;
+        const ctx = off.getContext('2d', { willReadFrequently: true });
+        ctx.scale(backing, backing);
+        ctx.font = `400 ${layout.size}px "${family}"`;
+        ctx.textBaseline = 'alphabetic';
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillText(glyph, layout.originX, layout.baseline);
+        return ctx.getImageData(0, 0, pixelsW, pixelsH).data;
+      };
       const ios = sample('Ioskeley');
       const tx = sample('TX-02');
+
+      canvas.width = pixelsW; canvas.height = pixelsH;
       const outCtx = canvas.getContext('2d');
-      const out = outCtx.createImageData(canvas.width, canvas.height);
+      const out = outCtx.createImageData(pixelsW, pixelsH);
       const common = hexRgb(theme.primary), onlyIos = hexRgb(theme.secondary), onlyTx = hexRgb(theme.grammar);
       for (let i = 0; i < out.data.length; i += 4) {
-        const a = ios.data[i + 3] / 255, b = tx.data[i + 3] / 255;
+        const a = ios[i + 3] / 255, b = tx[i + 3] / 255;
         const shared = Math.min(a, b), iosOnly = Math.max(0, a - b), txOnly = Math.max(0, b - a);
         if (Math.max(a, b) < .012) continue;
         for (let c = 0; c < 3; c++) out.data[i + c] = Math.round(shared * common[c] + iosOnly * onlyIos[c] + txOnly * onlyTx[c]);
         out.data[i + 3] = Math.round(Math.max(a, b) * 255);
       }
       outCtx.putImageData(out, 0, 0);
-      outCtx.save(); outCtx.scale(scale, scale); outCtx.lineWidth = .7;
-      outCtx.strokeStyle = theme.guide; outCtx.beginPath(); outCtx.moveTo(0, baseline + .5); outCtx.lineTo(width, baseline + .5); outCtx.stroke();
-      outCtx.beginPath(); outCtx.moveTo(originX + .5, 8); outCtx.lineTo(originX + .5, height - 8); outCtx.stroke(); outCtx.restore();
-      cell.querySelector('.glyph-label strong').textContent = `Δ ${tx.advance - ios.advance >= 0 ? '+' : ''}${(tx.advance - ios.advance).toFixed(2)} px`;
+
+      outCtx.save();
+      outCtx.scale(backing, backing);
+      outCtx.lineWidth = 1;
+      outCtx.strokeStyle = theme.guide;
+      outCtx.beginPath();
+      outCtx.moveTo(0, layout.baseline + .5); outCtx.lineTo(displayW, layout.baseline + .5);
+      outCtx.moveTo(layout.originX + .5, OVERLAY_MARGIN); outCtx.lineTo(layout.originX + .5, displayH - OVERLAY_MARGIN);
+      outCtx.stroke();
+      outCtx.restore();
+
+      const faces = metrics.per[glyph].faces;
+      const delta = (faces['TX-02'].ascent + faces['TX-02'].descent - faces['Ioskeley'].ascent - faces['Ioskeley'].descent) * layout.size;
+      cell.querySelector('.glyph-label strong').textContent = `Δh ${delta >= 0 ? '+' : ''}${delta.toFixed(2)} px`;
+
+      return {
+        glyph, displayW, displayH, backing, pixelsW, pixelsH,
+        size: layout.size, baseline: layout.baseline, originX: layout.originX,
+        ink: Object.fromEntries(OVERLAY_FACES.map(family => [family, {
+          left: +(layout.originX + faces[family].left * layout.size).toFixed(2),
+          right: +(layout.originX + faces[family].right * layout.size).toFixed(2),
+          top: +(layout.baseline - faces[family].ascent * layout.size).toFixed(2),
+          bottom: +(layout.baseline + faces[family].descent * layout.size).toFixed(2)
+        }]))
+      };
     }
 
-    async function renderOverlays(mode) {
+    function renderOverlays(mode, metrics) {
       const theme = palettes[mode];
-      document.querySelectorAll(`#artboard-overlay-${mode} .overlay-cell`).forEach(cell => renderDiff(cell, theme));
+      const report = [];
+      document.querySelectorAll(`#artboard-overlay-${mode} .overlay-cell`).forEach(cell => report.push(renderDiff(cell, theme, metrics)));
+      return report;
+    }
+
+    /* Box audit: proves from measured ink, not from client boxes, that no sample
+       row and no overlay glyph can be cropped. Surfaces in the toolbar. */
+    function audit(metrics, reports) {
+      const problems = [];
+      const sampleCtx = document.createElement('canvas').getContext('2d');
+
+      for (const el of document.querySelectorAll('.form-sample')) {
+        const cs = getComputedStyle(el);
+        const size = parseFloat(cs.fontSize);
+        const family = cs.fontFamily.replace(/["']/g, '').split(',')[0].trim();
+        sampleCtx.font = `${cs.fontWeight} ${size}px "${family}"`;
+        const m = sampleCtx.measureText(el.textContent);
+        const ink = m.actualBoundingBoxAscent + m.actualBoundingBoxDescent;
+        const needed = ink + 2 * SAMPLE_CLEARANCE;
+        if (el.offsetHeight + .5 < needed) problems.push(`${el.closest('.form-row').querySelector('.form-kind').textContent} / ${family}: box ${el.offsetHeight.toFixed(1)}px < ink ${ink.toFixed(1)}px + ${2 * SAMPLE_CLEARANCE}px clearance`);
+        if (cs.overflow !== 'visible') problems.push(`${family}: sample container clips (overflow: ${cs.overflow})`);
+        if (cs.lineHeight !== 'normal' && parseFloat(cs.lineHeight) <= size + .5) problems.push(`${family}: line-height ${cs.lineHeight} is tighter than the em box`);
+      }
+
+      for (const report of reports) {
+        for (const [family, box] of Object.entries(report.ink)) {
+          if (box.left < OVERLAY_MARGIN - .01 || box.right > report.displayW - OVERLAY_MARGIN + .01
+            || box.top < OVERLAY_MARGIN - .01 || box.bottom > report.displayH - OVERLAY_MARGIN + .01) {
+            problems.push(`overlay ${report.glyph} / ${family}: ink ${JSON.stringify(box)} crosses the ${OVERLAY_MARGIN}px safe margin in ${report.displayW}×${report.displayH}`);
+          }
+        }
+      }
+
+      // Origins-03: the specimen must fill its column without leaving a dead
+      // band at the foot, and must not overflow the column or the plate.
+      const codeBoard = document.getElementById('artboard-code-dark');
+      if (codeBoard) {
+        const scale = codeBoard.getBoundingClientRect().width / PLATE.width;
+        const toPlate = el => {
+          const r = el.getBoundingClientRect();
+          const b = codeBoard.getBoundingClientRect();
+          return { top: (r.top - b.top) / scale, bottom: (r.bottom - b.top) / scale, left: (r.left - b.left) / scale, width: r.width / scale };
+        };
+        const area = toPlate(codeBoard.querySelector('.code-compare'));
+        const block = codeBoard.querySelector('.code-block');
+        const blockBox = toPlate(block);
+        const column = codeBoard.querySelector('.code-column');
+        const columnBox = toPlate(column);
+        const fill = (blockBox.bottom - area.top) / area.height;
+        if (fill > 1.005) problems.push(`Origins-03: specimen overruns its column by ${((fill - 1) * area.height).toFixed(1)}px`);
+        if (fill < .9) problems.push(`Origins-03: specimen fills only ${(fill * 100).toFixed(0)}% of the column, leaving a dead band at the foot`);
+        if (blockBox.bottom > PLATE.height - 29 + .5) problems.push(`Origins-03: specimen reaches ${blockBox.bottom.toFixed(1)}px, past the plate content edge`);
+        sampleCtx.font = `${getComputedStyle(block).fontWeight} ${getComputedStyle(block).fontSize} Ioskeley`;
+        const widest = Math.max(...block.textContent.split('\n').filter(line => line.length).map(line => sampleCtx.measureText(line).width));
+        if (widest > columnBox.width + .5) problems.push(`Origins-03: widest line ${widest.toFixed(1)}px exceeds the ${columnBox.width.toFixed(1)}px column`);
+      }
+
+      const status = document.getElementById('auditStatus');
+      const sample = reports[0];
+      status.textContent = problems.length
+        ? `audit: ${problems.length} problem(s) — ${problems[0]}`
+        : `audit: clean · 0 clipped · overlay ${sample.size}px em · ${sample.pixelsW}×${sample.pixelsH} backing (${sample.backing}×) · plate ${PLATE.width}×${PLATE.height} at ${PLATE.scale}×`;
+      status.dataset.state = problems.length ? 'fail' : 'pass';
+      if (problems.length) console.warn('Artwork audit problems:', problems);
+      return problems;
+    }
+
+    function updateArtworkLabels() {
+      const sample = document.querySelector('.form-sample');
+      const formsSize = parseFloat(getComputedStyle(sample).fontSize);
+      document.querySelectorAll('#formsPointSize').forEach(el => { el.textContent = `${formsSize} px`; });
+      const codeStyle = getComputedStyle(document.querySelector('.code-block'));
+      const codeSize = parseFloat(codeStyle.fontSize);
+      document.querySelectorAll('#codePointSize').forEach(el => { el.textContent = `${codeSize} px`; });
+      document.querySelectorAll('#codeLineHeight').forEach(el => { el.textContent = String(+codeStyle.lineHeight.replace('px', '') / codeSize); });
+      document.querySelectorAll('#overlayMeta').forEach(el => { el.textContent = DELTA_NOTE; });
     }
 
     async function exportProof(id, button) {
       if (!window.html2canvas) throw new Error('html2canvas 1.4.1 did not load.');
-      if (!await verifyFonts()) throw new Error('The local Ioskeley or TX-02 face did not load; export stopped rather than substituting another font.');
+      const fonts = await verifyFonts();
+      if (!fonts.ioskeley) throw new Error('A local Ioskeley face did not load; export stopped rather than substituting another font.');
+      if (!fonts.tx02) throw new Error('TX-02 is not installed on this machine. The Origins studies compare against it, so export stopped rather than substituting another font.');
       const [kind, mode] = id.split('-');
-      if (kind === 'overlay') await renderOverlays(mode);
+      const metrics = measureOverlay();
+      if (kind === 'overlay') renderOverlays(mode, metrics);
       const board = document.getElementById(`artboard-${id}`);
       const transform = board.style.transform;
       board.classList.add('exporting');
-      await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      // Settle layout deterministically; requestAnimationFrame would never fire
+      // in a backgrounded tab and would leave the export hanging.
+      void board.offsetHeight;
+      await new Promise(resolve => setTimeout(resolve, 0));
       try {
-        const canvas = await html2canvas(board, {scale: 1, width: 1280, height: 640, backgroundColor: palettes[mode].canvas, useCORS: true, allowTaint: false, logging: false, scrollX: 0, scrollY: 0});
-        if (canvas.width !== 1280 || canvas.height !== 640) throw new Error(`Unexpected PNG size: ${canvas.width} × ${canvas.height}`);
-        const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png', 1));
+        const canvas = await html2canvas(board, {scale: PLATE.scale, width: PLATE.width, height: PLATE.height, backgroundColor: palettes[mode].canvas, useCORS: true, allowTaint: false, logging: false, scrollX: 0, scrollY: 0});
+        if (canvas.width !== PLATE.width * PLATE.scale || canvas.height !== PLATE.height * PLATE.scale) throw new Error(`Unexpected PNG size: ${canvas.width} × ${canvas.height}, expected ${PLATE.width * PLATE.scale} × ${PLATE.height * PLATE.scale}`);
+        const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
         if (!blob) throw new Error('PNG encoding failed.');
         const url = URL.createObjectURL(blob);
         const anchor = document.createElement('a');
@@ -283,7 +493,15 @@
       catch (error) { console.error(error); alert(error.message || error); }
       finally { button.disabled = false; }
     }));
-    window.addEventListener('load', async () => { await verifyFonts(); await renderOverlays('dark'); await renderOverlays('light'); });
+
+    window.addEventListener('load', async () => {
+      await verifyFonts();
+      await updateArtworkLabels();
+      const metrics = measureOverlay();
+      const reports = [...renderOverlays('dark', metrics), ...renderOverlays('light', metrics)];
+      document.querySelectorAll('#overlayPointSize').forEach(el => { el.textContent = `${reports[0].size} px`; });
+      audit(metrics, reports);
+    });
   </script>
 </body>
 </html>

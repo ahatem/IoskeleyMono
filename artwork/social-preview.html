@@ -4,7 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Ioskeley Mono — Social Preview Source</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <!-- Vendored: see artwork/vendor/README.md. No network dependency, so the
+       export is reproducible offline. -->
+  <script src="vendor/html2canvas-1.4.1.min.js"></script>
   <style>
     @font-face { font-family: Ioskeley; src: url("../site/fonts/IoskeleyMono-Regular.woff2") format("woff2"); font-style: normal; font-weight: 400; font-display: block; }
     @font-face { font-family: Ioskeley; src: url("../site/fonts/IoskeleyMono-Italic.woff2") format("woff2"); font-style: italic; font-weight: 400; font-display: block; }
@@ -17,6 +19,9 @@
     .toolbar h1 { margin: 0; font-size: 22px; font-weight: 700; }
     .toolbar p { margin: 5px 0 0; color: #5D5D59; font-size: 10px; }
     .font-status { color: #494946; font-size: 9px; letter-spacing: .07em; text-transform: uppercase; }
+    .audit-status { margin-top: 4px; color: #5D5D59; font-size: 9px; letter-spacing: .07em; }
+    .audit-status[data-state="fail"] { color: #8A2F22; }
+    .toolbar-status { text-align: right; }
     .boards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; padding-top: 18px; }
     .proof-head { display: flex; justify-content: space-between; align-items: center; min-height: 30px; margin-bottom: 6px; }
     .proof-label { font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
@@ -41,11 +46,12 @@
     .operator { color: var(--operator); }
     .punctuation { color: var(--punctuation); }
     .comment { color: var(--comment); font-style: italic; }
-    .measure { width: 405px; height: 465px; align-self: center; overflow: visible; z-index: 0; }
-    .measure-line { stroke: var(--guide); stroke-width: 1; }
-    .measure-tick { stroke: var(--grammar); stroke-width: 1; }
-    .measure-label { fill: var(--grammar); font-family: Ioskeley; font-size: 9px; letter-spacing: 1px; }
-    .measure-glyph { fill: var(--primary); font-family: Ioskeley; font-size: 400px; font-weight: 400; }
+    .measure { width: 405px; height: 465px; align-self: center; z-index: 0; }
+    /* The measurement diagram is drawn to a canvas, not to SVG <text>. html2canvas
+       rasterises SVG subtrees as standalone images, where page @font-face rules are
+       unavailable, so live SVG type silently exported in a fallback serif. A canvas
+       is drawn with the loaded faces and is copied through at backing resolution. */
+    .measure-canvas { display: block; width: 405px; height: 465px; }
     .facts { display: flex; align-items: center; gap: 23px; color: var(--grammar); font-size: 9px; line-height: 1; letter-spacing: .07em; text-transform: uppercase; }
     .facts b { margin-left: 5px; color: var(--secondary); font-weight: 400; }
     .artboard.exporting { transform: none !important; }
@@ -54,8 +60,8 @@
 </head>
 <body>
   <header class="toolbar">
-    <div><h1>Ioskeley Mono / Social Preview</h1><p>Two fixed 1280 × 640 production artboards · local font faces · PNG at 1×</p></div>
-    <div class="font-status" id="fontStatus" role="status">Checking Ioskeley faces…</div>
+    <div><h1>Ioskeley Mono / Social Preview</h1><p>Two fixed 1280 × 640 production artboards · local font faces · PNG at 2× (2560 × 1280)</p></div>
+    <div class="toolbar-status"><div class="font-status" id="fontStatus" role="status">Checking Ioskeley faces…</div><div class="audit-status" id="measureStatus" role="status">Auditing…</div></div>
   </header>
   <main class="boards" id="boards"></main>
 
@@ -68,30 +74,27 @@
           <section class="copy">
             <h2 class="title">Ioskeley Mono</h2>
             <p class="tagline">An open programming typeface built on Iosevka.</p>
-            <pre class="code"><span class="keyword">const</span> <span class="identifier">glyphs</span> <span class="operator">=</span> {
-  <span class="identifier">forms</span>: <span class="secondary">"g a Q @ $ · 0 O 1 I l"</span>,
-  <span class="identifier">figures</span>: [<span class="identifier">0xFC82</span>, <span class="identifier">100_000</span>, <span class="identifier">0.0</span>],
-  <span class="identifier">ops</span>: [<span class="secondary">"!="</span>, <span class="secondary">"==="</span>, <span class="secondary">"&lt;="</span>, <span class="secondary">"=&gt;"</span>, <span class="secondary">"-&gt;"</span>, <span class="secondary">"::"</span>],
-};
+            <pre class="code"><span class="keyword">const</span> <span class="identifier">glyphs</span> <span class="operator">=</span> <span class="punctuation">{</span>
+  <span class="identifier">forms</span><span class="punctuation">:</span> <span class="secondary">"g a Q @ $ · 0 O 1 I l"</span><span class="punctuation">,</span>
+  <span class="identifier">figures</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="identifier">0xFC82</span><span class="punctuation">,</span> <span class="identifier">100_000</span><span class="punctuation">,</span> <span class="identifier">0.0</span><span class="punctuation">]</span><span class="punctuation">,</span>
+  <span class="identifier">ops</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="secondary">"!="</span><span class="punctuation">,</span> <span class="secondary">"==="</span><span class="punctuation">,</span> <span class="secondary">"&lt;="</span><span class="punctuation">,</span> <span class="secondary">"=&gt;"</span><span class="punctuation">,</span> <span class="secondary">"-&gt;"</span><span class="punctuation">,</span> <span class="secondary">"::"</span><span class="punctuation">]</span><span class="punctuation">,</span>
+<span class="punctuation">}</span><span class="punctuation">;</span>
 
 <span class="comment">// Forms are quiet; shape does the talking.</span>
-<span class="keyword">export function</span> <span class="identifier">resolve</span>(value: <span class="secondary">string</span>) {
-  <span class="keyword">if</span> (value <span class="operator">!==</span> <span class="secondary">""</span> <span class="operator">&amp;&amp;</span> value.includes(<span class="secondary">"=&gt;"</span>)) {
-    <span class="keyword">return</span> <span class="keyword">new</span> Map([[<span class="secondary">"=&gt;"</span>, <span class="identifier">1</span>], [<span class="secondary">"-&gt;"</span>, <span class="identifier">2</span>]]);
-  }
-  <span class="keyword">return</span> <span class="keyword">new</span> Map();
-}</pre>
+<span class="keyword">export function</span> <span class="identifier">resolve</span><span class="punctuation">(</span>value<span class="punctuation">:</span> <span class="secondary">string</span><span class="punctuation">)</span> <span class="punctuation">{</span>
+  <span class="keyword">if</span> <span class="punctuation">(</span>value <span class="operator">!==</span> <span class="secondary">""</span> <span class="operator">&amp;&amp;</span> value<span class="punctuation">.</span>includes<span class="punctuation">(</span><span class="secondary">"=&gt;"</span><span class="punctuation">))</span> <span class="punctuation">{</span>
+    <span class="keyword">return</span> <span class="keyword">new</span> <span class="identifier">Map</span><span class="punctuation">([[</span><span class="secondary">"=&gt;"</span><span class="punctuation">,</span> <span class="identifier">1</span><span class="punctuation">]</span><span class="punctuation">,</span> <span class="punctuation">[</span><span class="secondary">"-&gt;"</span><span class="punctuation">,</span> <span class="identifier">2</span><span class="punctuation">]])</span><span class="punctuation">;</span>
+  <span class="punctuation">}</span>
+  <span class="keyword">return</span> <span class="keyword">new</span> <span class="identifier">Map</span><span class="punctuation">()</span><span class="punctuation">;</span>
+<span class="punctuation">}</span></pre>
           </section>
-          <svg class="measure" viewBox="0 0 405 465" role="img" aria-label="Ioskeley single-storey g aligned to cap, x-height and baseline guides">
-            <text class="measure-label" x="1" y="104">CAP · 690</text><line class="measure-line" x1="63" y1="110" x2="398" y2="110" /><line class="measure-tick" x1="57" y1="110" x2="69" y2="110" />
-            <text class="measure-label" x="1" y="172">X · 520</text><line class="measure-line" x1="63" y1="178" x2="398" y2="178" /><line class="measure-tick" x1="57" y1="178" x2="69" y2="178" />
-            <text class="measure-label" x="1" y="392">BASE</text><line class="measure-line" x1="63" y1="386" x2="398" y2="386" /><line class="measure-tick" x1="57" y1="386" x2="69" y2="386" />
-            <text class="measure-glyph" x="74" y="386">g</text>
-          </svg>
+          <div class="measure" role="img" aria-label="Ioskeley single-storey g shown against the declared cap, x-height and baseline metrics">
+            <canvas class="measure-canvas" width="810" height="930"></canvas>
+          </div>
         </main>
         <div class="rule"></div>
         <footer class="running running-foot">
-          <div class="facts"><span>Cap<b>690</b></span><span>X-height<b>520</b></span><span>Width<b>600</b></span><span>Italic<b>11.8°</b></span></div>
+          <div class="facts"><span>Cap metric<b>690</b></span><span>X metric<b>520</b></span><span>Width<b>600</b></span><span>Italic<b>11.8°</b></span></div>
           <span>Technical character · quiet by design</span>
         </footer>
       </div>
@@ -99,26 +102,39 @@
   </template>
 
   <script>
+    /* `primary` carries body ink; `title` is the rare-emphasis tone used only by
+       the product title. `punctuation` is applied in the Origins code studies;
+       the `selection` role from the identity token table is not yet used by any
+       production plate, so it is not defined here. */
     const palettes = {
-      dark: { name: "Dark", canvas: "#101010", ink: "#D8D5CE", primary: "#D8D5CE", secondary: "#B8B5AF", grammar: "#7E7C77", keyword: "#74726E", operator: "#74726E", punctuation: "#686763", comment: "#5F5D58", title: "#ECE9E2", rule: "#343330", guide: "#4A4843", selection: "#302F2B", file: "SocialPreview.png" },
-      light: { name: "Light", canvas: "#F2F0EA", ink: "#292826", primary: "#292826", secondary: "#4E4D49", grammar: "#807D77", keyword: "#68655F", operator: "#77746E", punctuation: "#918E87", comment: "#A09D95", title: "#171614", rule: "#D3D0C8", guide: "#BDBAB2", selection: "#E2DFD8", file: "SocialPreview-Light.png" }
+      dark: { name: "Dark", canvas: "#101010", primary: "#D8D5CE", secondary: "#B8B5AF", grammar: "#7E7C77", keyword: "#74726E", operator: "#74726E", punctuation: "#686763", comment: "#5F5D58", title: "#ECE9E2", rule: "#343330", guide: "#4A4843", file: "SocialPreview.png" },
+      light: { name: "Light", canvas: "#F2F0EA", primary: "#292826", secondary: "#4E4D49", grammar: "#807D77", keyword: "#68655F", operator: "#77746E", punctuation: "#8B8880", comment: "#98958D", title: "#171614", rule: "#D3D0C8", guide: "#BDBAB2", file: "SocialPreview-Light.png" }
     };
 
-    const fontSpecs = [['Regular 400', '400 16px "Ioskeley"'], ['Italic 400', 'italic 400 16px "Ioskeley"'], ['Bold 700', '700 50px "Ioskeley"']];
-    let facesReady = false;
+    const REQUIRED_FACES = [
+      { family: "Ioskeley", style: "normal", weight: "400", spec: '400 16px "Ioskeley"', name: "Regular 400" },
+      { family: "Ioskeley", style: "italic", weight: "400", spec: 'italic 400 16px "Ioskeley"', name: "Italic 400" },
+      { family: "Ioskeley", style: "normal", weight: "700", spec: '700 50px "Ioskeley"', name: "Bold 700" }
+    ];
+
+    /* The composition is a fixed 1280 × 640 logical plate. The PNG is written at
+       PLATE_SCALE, so the delivered raster is 2560 × 1280 and stays sharp on HiDPI
+       surfaces where the plate is displayed near full width. */
+    const PLATE = { width: 1280, height: 640, scale: 2 };
+
+    const faceLoaded = face => [...document.fonts].some(f => f.family === face.family && f.style === face.style && f.weight === face.weight && f.status === 'loaded');
 
     async function verifyFonts() {
-      await Promise.all(fontSpecs.map(([, spec]) => document.fonts.load(spec)));
+      await Promise.all(REQUIRED_FACES.map(face => document.fonts.load(face.spec).catch(() => {})));
       await document.fonts.ready;
-      const checks = fontSpecs.map(([name, spec]) => ({name, loaded: document.fonts.check(spec)}));
-      facesReady = checks.every(face => face.loaded);
+      const checks = REQUIRED_FACES.map(face => ({ name: face.name, loaded: faceLoaded(face) }));
       document.getElementById('fontStatus').textContent = checks.map(face => `${face.name} ${face.loaded ? '✓' : '×'}`).join(' · ');
-      return facesReady;
+      return checks.every(face => face.loaded);
     }
 
     function fit() {
       document.querySelectorAll('.stage').forEach(stage => {
-        stage.querySelector('.artboard').style.transform = `scale(${stage.clientWidth / 1280})`;
+        stage.querySelector('.artboard').style.transform = `scale(${stage.clientWidth / PLATE.width})`;
       });
     }
 
@@ -126,7 +142,7 @@
       const palette = palettes[mode];
       const section = document.createElement('section');
       section.className = 'proof';
-      section.innerHTML = `<div class="proof-head"><span class="proof-label">${palette.name} / Social preview</span><button type="button" data-export="${mode}">Export 1280 × 640 PNG</button></div><div class="stage"></div>`;
+      section.innerHTML = `<div class="proof-head"><span class="proof-label">${palette.name} / Social preview</span><button type="button" data-export="${mode}">Export 2560 × 1280 PNG</button></div><div class="stage"></div>`;
       const board = document.getElementById('socialCard').content.firstElementChild.cloneNode(true);
       board.id = `social-${mode}`;
       board.dataset.mode = mode;
@@ -135,24 +151,115 @@
       document.getElementById('boards').append(section);
     }
 
+    /* Measurement diagram geometry, in plate pixels. Cap and x-height guides are
+       derived from the approved metrics (690 / 520 per 1000 units) rather than
+       re-typed, so the guides and the printed values cannot drift apart.
+       The baseline sits 15px above its previous position: at 400px the real
+       Ioskeley 'g' descends 93.75px, which previously ran past the plate edge
+       and was silently cropped in the export. */
+    const MEASURE = { size: 400, cap: 690, xHeight: 520, baseline: 371, glyphX: 74, lineX1: 63, lineX2: 398, tickX1: 57, tickX2: 69, labelX: 1, labelSize: 9, labelTracking: 1, backing: 2 };
+    const MEASURE_GLYPH = 'g';
+
+    function renderMeasure(board) {
+      const canvas = board.querySelector('.measure-canvas');
+      if (!canvas) return null;
+      const style = getComputedStyle(board);
+      const ink = name => style.getPropertyValue('--' + name).trim();
+      const displayW = canvas.offsetWidth, displayH = canvas.offsetHeight;
+      const backing = MEASURE.backing;
+      canvas.width = Math.round(displayW * backing);
+      canvas.height = Math.round(displayH * backing);
+      const ctx = canvas.getContext('2d');
+      ctx.scale(backing, backing);
+      ctx.textBaseline = 'alphabetic';
+
+      const baseline = MEASURE.baseline;
+      const guides = [
+        { y: baseline - MEASURE.cap / 1000 * MEASURE.size, label: `CAP METRIC · ${MEASURE.cap}`, below: false },
+        { y: baseline - MEASURE.xHeight / 1000 * MEASURE.size, label: `X METRIC · ${MEASURE.xHeight}`, below: false },
+        { y: baseline, label: 'BASE', below: true }
+      ];
+
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = ink('guide');
+      for (const guide of guides) {
+        ctx.beginPath();
+        ctx.moveTo(MEASURE.lineX1, guide.y + .5); ctx.lineTo(MEASURE.lineX2, guide.y + .5);
+        ctx.stroke();
+      }
+      ctx.strokeStyle = ink('grammar');
+      for (const guide of guides) {
+        ctx.beginPath();
+        ctx.moveTo(MEASURE.tickX1, guide.y + .5); ctx.lineTo(MEASURE.tickX2, guide.y + .5);
+        ctx.stroke();
+      }
+
+      ctx.fillStyle = ink('grammar');
+      ctx.font = `400 ${MEASURE.labelSize}px Ioskeley`;
+      if ('letterSpacing' in ctx) ctx.letterSpacing = `${MEASURE.labelTracking}px`;
+      for (const guide of guides) ctx.fillText(guide.label, MEASURE.labelX, guide.y + (guide.below ? 6 : -6));
+      if ('letterSpacing' in ctx) ctx.letterSpacing = '0px';
+
+      ctx.fillStyle = ink('primary');
+      ctx.font = `400 ${MEASURE.size}px Ioskeley`;
+      ctx.fillText(MEASURE_GLYPH, MEASURE.glyphX, baseline);
+
+      // Report the real ink box so a clipped descender cannot pass unnoticed.
+      const m = ctx.measureText(MEASURE_GLYPH);
+      return {
+        size: MEASURE.size, baseline, backing, displayW, displayH,
+        pixels: [canvas.width, canvas.height],
+        inkTop: +(baseline - m.actualBoundingBoxAscent).toFixed(2),
+        inkBottom: +(baseline + m.actualBoundingBoxDescent).toFixed(2),
+        inkLeft: +(MEASURE.glyphX - m.actualBoundingBoxLeft).toFixed(2),
+        inkRight: +(MEASURE.glyphX + m.actualBoundingBoxRight).toFixed(2),
+        fits: baseline + m.actualBoundingBoxDescent <= displayH && baseline - m.actualBoundingBoxAscent >= 0
+      };
+    }
+
+    async function auditMeasure() {
+      const problems = [];
+      let report = null;
+      for (const board of document.querySelectorAll('.artboard')) {
+        report = renderMeasure(board) || report;
+        if (!report.fits) problems.push(`${board.id}: specimen ink ${report.inkTop}–${report.inkBottom} exceeds the ${report.displayH}px plate`);
+      }
+      const status = document.getElementById('measureStatus');
+      if (status) {
+        status.textContent = problems.length ? `specimen audit: ${problems[0]}` : `specimen audit: clean · ink ${report.inkTop}–${report.inkBottom} in ${report.displayH}px · backing ${report.pixels[0]}×${report.pixels[1]}`;
+        status.dataset.state = problems.length ? 'fail' : 'pass';
+      }
+      if (problems.length) console.warn('Measure audit problems:', problems);
+      return problems;
+    }
+
     async function exportPng(mode, button) {
       if (!window.html2canvas) throw new Error('html2canvas 1.4.1 did not load.');
       if (!await verifyFonts()) throw new Error('A local Ioskeley face did not load.');
       const palette = palettes[mode];
       const board = document.getElementById(`social-${mode}`);
+      const measure = renderMeasure(board);
+      if (measure && !measure.fits) throw new Error(`The specimen glyph would be cropped (ink reaches ${measure.inkBottom}px of a ${measure.displayH}px plate).`);
       const transform = board.style.transform;
       board.classList.add('exporting');
-      await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      // Settle layout deterministically. requestAnimationFrame is not used here:
+      // it never fires in a backgrounded tab, which would leave the export
+      // hanging with no error. A forced reflow plus a task is enough, because the
+      // renderer reads geometry synchronously and draws into its own canvas.
+      void board.offsetHeight;
+      await new Promise(resolve => setTimeout(resolve, 0));
       try {
-        const canvas = await html2canvas(board, {scale: 1, width: 1280, height: 640, backgroundColor: palette.canvas, useCORS: true, allowTaint: false, logging: false, scrollX: 0, scrollY: 0});
-        if (canvas.width !== 1280 || canvas.height !== 640) throw new Error(`Unexpected PNG size: ${canvas.width} × ${canvas.height}`);
-        const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png', 1));
+        const canvas = await html2canvas(board, {scale: PLATE.scale, width: PLATE.width, height: PLATE.height, backgroundColor: palette.canvas, useCORS: true, allowTaint: false, logging: false, scrollX: 0, scrollY: 0});
+        if (canvas.width !== PLATE.width * PLATE.scale || canvas.height !== PLATE.height * PLATE.scale) throw new Error(`Unexpected PNG size: ${canvas.width} × ${canvas.height}, expected ${PLATE.width * PLATE.scale} × ${PLATE.height * PLATE.scale}`);
+        const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
         if (!blob) throw new Error('PNG encoding failed.');
         const url = URL.createObjectURL(blob);
         const anchor = document.createElement('a');
         anchor.href = url;
         anchor.download = palette.file;
+        document.body.append(anchor);
         anchor.click();
+        anchor.remove();
         setTimeout(() => URL.revokeObjectURL(url), 1200);
       } finally { board.classList.remove('exporting'); board.style.transform = transform; fit(); }
     }
@@ -167,7 +274,7 @@
       catch (error) { console.error(error); alert(error.message || error); }
       finally { button.disabled = false; }
     }));
-    window.addEventListener('load', verifyFonts);
+    window.addEventListener('load', async () => { await verifyFonts(); await auditMeasure(); });
   </script>
 </body>
 </html>
