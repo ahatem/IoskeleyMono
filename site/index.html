@@ -25,7 +25,7 @@
 
 <link rel="icon" href="imgs/SocialPreview.png" type="image/png">
 
-<!-- Only the three faces the first screen needs. The remaining weights and the
+<!-- Only the three faces the first screen needs. Every other weight and the
      SemiCondensed width are requested on approach by js/main.js. -->
 <link rel="preload" href="fonts/IoskeleyMono-Regular.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/IoskeleyMono-Bold.woff2" as="font" type="font/woff2" crossorigin>
@@ -33,14 +33,18 @@
 <link rel="stylesheet" href="css/main.css">
 
 <script>
-  /* Resolve the theme before first paint so light mode never flashes dark. */
+  /* Resolve the theme before first paint so light mode never flashes dark,
+     and note whether scripted motion is allowed before any scene renders. */
   (function () {
+    var root = document.documentElement;
     var saved = null;
     try { saved = localStorage.getItem('ioskeley-theme'); } catch (e) {}
     var light = saved
       ? saved === 'light'
       : !!(window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches);
-    if (light) document.documentElement.setAttribute('data-theme', 'light');
+    if (light) root.setAttribute('data-theme', 'light');
+    var still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!still && 'IntersectionObserver' in window) root.classList.add('motion');
   })();
 </script>
 </head>
@@ -55,11 +59,10 @@
       <span class="brand__sub">Open programming typeface</span>
     </a>
     <nav class="site-nav" aria-label="Sections">
-      <a href="#specimen">Specimen</a>
-      <a href="#families">Families</a>
+      <a href="#in-use">In use</a>
+      <a href="#specimen">Lab</a>
+      <a href="#system">System</a>
       <a href="#nerd">Nerd Font</a>
-      <a href="#weights">Weights</a>
-      <a href="#width">Width</a>
       <a href="#origins">Origins</a>
       <a href="#download">Download</a>
     </nav>
@@ -95,7 +98,7 @@
 
         <dl class="hero__facts">
           <span><b>Normal</b> · <b>Regular 400</b></span>
-          <span>cap <b>690</b> · x <b>520</b></span>
+          <span>cap metric <b>690</b> · x metric <b>520</b></span>
           <span>advance <b>600</b></span>
           <span><b>10</b> weights · upright &amp; italic</span>
           <span><b>2</b> widths · <b>3</b> families</span>
@@ -105,7 +108,7 @@
           <a class="btn btn--solid" href="#download">
             Download <span class="btn__arrow" aria-hidden="true">→</span>
           </a>
-          <a class="btn" href="#specimen">Explore the specimen</a>
+          <a class="btn" href="#in-use">See it at work</a>
         </div>
       </div>
 
@@ -113,69 +116,608 @@
         <div class="hero__glyph">g</div>
       </div>
     </div>
+
+    <!-- The day index: the showcase reads as one working day, one face. -->
+    <nav class="day" aria-label="Ioskeley in use, scene by scene">
+      <p class="day__label micro">In use — one face, one working day</p>
+      <ol class="day__list">
+        <li><a href="#workbench"><span class="day__time">09:12</span><span class="day__name">Workbench</span></a></li>
+        <li><a href="#terminal"><span class="day__time">10:40</span><span class="day__name">Terminal</span></a></li>
+        <li><a href="#review"><span class="day__time">13:05</span><span class="day__name">Review</span></a></li>
+        <li><a href="#logs"><span class="day__time">15:22</span><span class="day__name">Logs</span></a></li>
+        <li><a href="#query"><span class="day__time">16:48</span><span class="day__name">Query</span></a></li>
+        <li><a href="#docs"><span class="day__time">17:30</span><span class="day__name">Docs</span></a></li>
+        <li><a href="#proof"><span class="day__time">18:02</span><span class="day__name">Proof</span></a></li>
+      </ol>
+    </nav>
   </section>
 
-  <!-- ======================================================== specimen -->
-  <section class="section wrap" id="specimen" aria-labelledby="specimen-title">
-    <div class="section__head">
-      <p class="section__label micro">01 — Live specimen</p>
-      <h2 class="section__title" id="specimen-title">Type your own text</h2>
-      <p class="section__lede">
-        Edit the code directly. The colours are presentation applied on this page,
-        not a font feature: the typeface itself ships monochrome, and Proof Red
-        here marks structural punctuation only.
-      </p>
-    </div>
+  <div class="in-use" id="in-use">
 
-    <div class="controls">
-      <div class="control">
-        <span class="control__label" id="ctl-width">Width</span>
-        <div class="seg" role="group" aria-labelledby="ctl-width" data-control="width">
+  <!-- ======================================================= workbench -->
+  <section class="scene scene--workbench" id="workbench" aria-labelledby="wb-title">
+    <div class="wrap scene__head scene__head--split">
+      <div>
+        <p class="slug micro"><span class="slug__time">09:12</span><span class="slug__name">Workbench</span></p>
+        <h2 class="scene__title" id="wb-title">Eight hours in one face.</h2>
+        <p class="scene__note">Interface, editor and terminal: the same typeface at three sizes.</p>
+      </div>
+      <div class="scene__controls">
+        <div class="seg seg--quiet" role="group" aria-label="Workbench width" data-control="wb-width">
           <button class="seg__btn" type="button" data-value="normal" aria-pressed="true">Normal</button>
           <button class="seg__btn" type="button" data-value="sc" aria-pressed="false">SemiCondensed</button>
         </div>
-      </div>
-
-      <div class="control">
-        <span class="control__label" id="ctl-weight">Weight</span>
-        <div class="seg" role="group" aria-labelledby="ctl-weight" data-control="weight">
-          <button class="seg__btn" type="button" data-value="300" aria-pressed="false">Light</button>
+        <div class="seg seg--quiet" role="group" aria-label="Workbench weight" data-control="wb-weight">
           <button class="seg__btn" type="button" data-value="400" aria-pressed="true">Regular</button>
           <button class="seg__btn" type="button" data-value="500" aria-pressed="false">Medium</button>
-          <button class="seg__btn" type="button" data-value="700" aria-pressed="false">Bold</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="wb wrap-wide" id="wb">
+      <div class="wb__title" aria-hidden="true">
+        <span class="wb__title-path">relay <span class="wb__dim">/</span> src <span class="wb__dim">/</span> queue <span class="wb__dim">/</span> retry.ts</span>
+        <span class="wb__title-meta">feat/retry-cap <span class="wb__dim">·</span> ⇡2</span>
+      </div>
+
+      <div class="wb__body">
+        <div class="wb__explorer" aria-hidden="true">
+          <p class="wb__label">Explorer</p>
+          <ul class="wb__tree">
+            <li class="is-open">src</li>
+            <li class="d1 is-open">queue</li>
+            <li class="d2 f is-current">retry.ts <i>M</i></li>
+            <li class="d2 f">scheduler.ts</li>
+            <li class="d2 f">dead-letter.ts</li>
+            <li class="d1">http</li>
+            <li class="d1">telemetry</li>
+            <li class="d1 f">types.ts</li>
+            <li class="is-open">test</li>
+            <li class="d1 f">retry.test.ts <i>M</i></li>
+            <li class="d1 f">scheduler.test.ts</li>
+            <li class="f">CHANGELOG.md</li>
+            <li class="f">package.json</li>
+            <li class="f">relay.toml</li>
+            <li class="f">tsconfig.json</li>
+          </ul>
+          <p class="wb__label wb__label--low">Outline</p>
+          <ul class="wb__tree wb__tree--outline">
+            <li class="f">MAX_ATTEMPTS</li>
+            <li class="f">BASE_DELAY_MS</li>
+            <li class="f">CEILING_MS</li>
+            <li class="f">backoff(attempt, jitter)</li>
+            <li class="f is-current">deliver(d, ep)</li>
+          </ul>
+        </div>
+
+        <div class="wb__main">
+          <div class="wb__editors" id="wb-editors">
+            <div class="wb__group wb__group--a" aria-hidden="true">
+              <div class="wb__tabs">
+                <span class="wb__tab is-active">retry.ts <i>●</i></span>
+                <span class="wb__tab">scheduler.ts</span>
+                <span class="wb__tab">relay.toml</span>
+              </div>
+              <div class="wb__crumbs">src › queue › retry.ts › deliver</div>
+              <div class="wb__scroll" data-scroll-label="retry.ts">
+<pre class="code wb__code" data-code="ts" data-current="31" data-caret="31" data-diag="3:tracer:'tracer' is declared but its value is never read.">import { setTimeout as sleep } from "node:timers/promises";
+import type { Delivery, Endpoint } from "../types";
+import { metrics, tracer } from "../telemetry";
+
+const MAX_ATTEMPTS = 8;
+const BASE_DELAY_MS = 250;
+const CEILING_MS = 60_000;
+
+/** Equal jitter, capped: 250 ms, 500 ms, 1 s … 60 s. */
+export function backoff(attempt: number, jitter = Math.random()): number {
+  const exp = Math.min(CEILING_MS, BASE_DELAY_MS * 2 ** attempt);
+  return Math.round(exp / 2 + (exp / 2) * jitter);
+}
+
+export async function deliver(d: Delivery, ep: Endpoint): Promise&lt;boolean&gt; {
+  for (let attempt = 0; attempt &lt; MAX_ATTEMPTS; attempt++) {
+    const res = await fetch(ep.url, {
+      method: "POST",
+      headers: { "content-type": "application/json", "x-relay-id": d.id },
+      body: JSON.stringify(d.payload),
+      signal: AbortSignal.timeout(10_000),
+    });
+    if (res.ok) {
+      metrics.increment("delivery.ok", { endpoint: ep.id });
+      return true;
+    }
+    if (res.status &gt;= 400 &amp;&amp; res.status &lt; 500 &amp;&amp; res.status !== 429) break;
+
+    const retryAfter = Number(res.headers.get("retry-after"));
+    const wait = Number.isFinite(retryAfter) &amp;&amp; retryAfter &gt; 0
+      ? Math.min(CEILING_MS, retryAfter * 1_000)
+      : backoff(attempt);
+    await sleep(wait);
+  }
+  metrics.increment("delivery.failed", { endpoint: ep.id });
+  return false;
+}</pre>
+              </div>
+            </div>
+
+            <div class="wb__divider" id="wb-divider" role="separator" tabindex="0"
+                 aria-orientation="vertical" aria-label="Resize editor split"
+                 aria-valuemin="35" aria-valuemax="75" aria-valuenow="58"></div>
+
+            <div class="wb__group wb__group--b" aria-hidden="true">
+              <div class="wb__tabs">
+                <span class="wb__tab is-active">retry.test.ts <i>●</i></span>
+              </div>
+              <div class="wb__crumbs">test › retry.test.ts › describe("backoff")</div>
+              <div class="wb__scroll">
+<pre class="code wb__code" data-code="ts">import { describe, expect, it } from "vitest";
+import { backoff } from "../src/queue/retry";
+
+describe("backoff", () =&gt; {
+  it("is half the window with zero jitter", () =&gt; {
+    expect(backoff(0, 0)).toBe(125);
+    expect(backoff(3, 0)).toBe(1_000);
+  });
+
+  it("never exceeds CEILING_MS", () =&gt; {
+    for (let n = 0; n &lt; 32; n++) {
+      expect(backoff(n, 1)).toBeLessThanOrEqual(60_000);
+    }
+  });
+
+  it("doubles until the ceiling", () =&gt; {
+    const delays = [0, 1, 2, 3, 4].map((n) =&gt; backoff(n, 1));
+    expect(delays).toEqual([250, 500, 1_000, 2_000, 4_000]);
+  });
+});</pre>
+              </div>
+            </div>
+          </div>
+
+          <div class="wb__panel" aria-hidden="true">
+            <div class="wb__panel-tabs">
+              <span>Problems <b>1</b></span>
+              <span>Output</span>
+              <span class="is-active">Terminal</span>
+              <span class="wb__panel-shell">zsh · relay</span>
+            </div>
+<pre class="wb__term"><span class="p-user">mira@forge</span> <span class="p-dir">~/src/relay</span> <span class="p-git">(feat/retry-cap)</span> <b>$</b> pnpm vitest run test/retry
+<span class="wb__reveal"> <span class="t-badge">RUN</span> v2.1.4 /home/mira/src/relay
+
+ √ test/retry.test.ts (3 tests) 4ms
+
+ Test Files  <b>1 passed</b> (1)
+      Tests  <b>3 passed</b> (3)
+   Start at  09:14:07
+   Duration  412ms (transform 61ms, setup 0ms, collect 88ms, tests 4ms)</span></pre>
+          </div>
         </div>
       </div>
 
-      <div class="control">
-        <span class="control__label" id="ctl-style">Style</span>
-        <div class="seg" role="group" aria-labelledby="ctl-style" data-control="style">
-          <button class="seg__btn" type="button" data-value="normal" aria-pressed="true">Upright</button>
-          <button class="seg__btn" type="button" data-value="italic" aria-pressed="false">Italic</button>
-        </div>
+      <div class="wb__status" aria-hidden="true">
+        <span>⇡2 feat/retry-cap</span>
+        <span>0 errors · 1 warning</span>
+        <span class="wb__status-gap"></span>
+        <span>Ln 31, Col 49</span>
+        <span class="wb__status-hide">Spaces: 2</span>
+        <span class="wb__status-hide">UTF-8</span>
+        <span class="wb__status-hide">LF</span>
+        <span>TypeScript</span>
+        <span id="wb-face">Ioskeley Mono · Normal · Regular 400</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================== terminal -->
+  <section class="scene scene--terminal" id="terminal" aria-labelledby="term-title">
+    <div class="wrap-wide scene__grid">
+      <div class="scene__aside">
+        <p class="slug micro"><span class="slug__time">10:40</span><span class="slug__name">Terminal</span></p>
+        <h2 class="scene__title" id="term-title">Every character on the grid.</h2>
+        <p class="scene__note">
+          Box drawing meets at a line height of exactly 1.25, because that is
+          where the font's own metrics put it. Paths, flags and figures hold
+          their columns.
+        </p>
+        <p class="scene__spec micro">Regular 400 · Bold 700 · line 1.25</p>
+        <p class="scene__fine">
+          Set here in the Standard web build. For a terminal, install
+          <b>Ioskeley Mono Term</b>, whose arrows and box drawing are tuned to
+          the cell.
+        </p>
       </div>
 
-      <div class="control">
-        <label class="control__label" for="ctl-size">Size <span class="control__value" id="size-value">14.5px</span></label>
-        <input type="range" id="ctl-size" min="11" max="26" step="0.5" value="14.5">
-      </div>
+      <div class="tmux" id="tmux" aria-hidden="true">
+        <div class="tmux__pane tmux__pane--a is-active">
+<pre><span class="p-user">mira@forge</span> <span class="p-dir">~/src/relay</span> <span class="p-git">(feat/retry-cap)</span>
+<b>$</b> git status -sb
+<b>## feat/retry-cap</b>...origin/feat/retry-cap [ahead 2]
+ M src/queue/retry.ts
+ M test/retry.test.ts
+?? docs/retries.md
 
-      <div class="control">
-        <span class="control__label" id="ctl-liga">Ligatures</span>
-        <div class="seg" role="group" aria-labelledby="ctl-liga" data-control="ligatures">
-          <button class="seg__btn" type="button" data-value="on" aria-pressed="true">On</button>
-          <button class="seg__btn" type="button" data-value="off" aria-pressed="false">Off</button>
+<b>$</b> git log --oneline --graph --all -9
+* <span class="h">4e1d0b7</span> (<b>HEAD -&gt; feat/retry-cap</b>) parse Retry-After
+* <span class="h">b7d03f5</span> honour Retry-After on 429 and 503
+* <span class="h">9c41e2a</span> (origin/feat/retry-cap) cap backoff
+| * <span class="h">61aa0c3</span> (origin/main, main) bump undici
+|/
+*   <span class="h">d2f8e17</span> Merge pull request #209 from ade/dlq-ttl
+|\
+| * <span class="h">0b93c4a</span> dead-letter: expire after 14 days
+|/
+* <span class="h">5e7fa12</span> (<b>tag: v0.14.2</b>) release 0.14.2
+
+<b>$</b> <span class="type" data-type="pnpm outdated">pnpm outdated</span>
+<span class="type-out">┌──────────────────┬─────────┬────────┐
+│ Package          │ Current │ Latest │
+├──────────────────┼─────────┼────────┤
+│ undici           │ 6.19.8  │ 6.21.0 │
+├──────────────────┼─────────┼────────┤
+│ vitest (dev)     │ 2.1.4   │ 2.1.8  │
+├──────────────────┼─────────┼────────┤
+│ typescript (dev) │ 5.6.2   │ 5.6.3  │
+└──────────────────┴─────────┴────────┘</span>
+<b>$</b> <span class="cursor"></span></pre>
+        </div>
+        <div class="tmux__pane tmux__pane--b">
+<pre><b>$</b> relay --help
+relay 0.15.0-rc.1 · webhook delivery service
+
+Usage: relay &lt;command&gt; [options]
+
+Commands:
+  serve              Start the HTTP API and workers
+  replay &lt;since&gt;     Re-enqueue failed deliveries
+  endpoints ls       Endpoint health
+  dlq purge          Drop dead letters past ttl
+
+Options:
+  -c, --config &lt;path&gt;  Config       [./relay.toml]
+  -w, --workers &lt;n&gt;    Worker count            [4]
+      --attempts &lt;n&gt;   Attempts each           [8]
+      --ceiling &lt;ms&gt;   Backoff cap         [60000]
+  -q, --quiet          Warnings, errors only
+  -h, --help           Show this message</pre>
+        </div>
+        <div class="tmux__pane tmux__pane--c">
+<pre><b>$</b> relay replay --since 2026-10-19T09:00Z
+scanning dead-letter queue … 1,284 candidates
+
+ endpoint             sent   fail      p95
+ ep_billing_live       412      3    184ms
+ ep_ledger_sync        388      0     96ms
+ ep_crm_contacts       137     11    1.21s
+
+ <span class="bar" data-bar="0.73" data-total="1284">[█████████████████████▉        ]  73%   937/1284</span>
+ eta 00:00:41   rate 22.6/s   workers 4/4</pre>
+        </div>
+        <div class="tmux__status">
+          <span><b>[relay]</b> 0:zsh*  1:logs-  2:db</span>
+          <span>"forge" 10:41 19-Oct-26</span>
         </div>
       </div>
+    </div>
+  </section>
+
+  <!-- ========================================================== review -->
+  <section class="scene scene--review" id="review" aria-labelledby="review-title">
+    <div class="wrap scene__head">
+      <p class="slug micro"><span class="slug__time">13:05</span><span class="slug__name">Review</span></p>
+      <h2 class="scene__title" id="review-title">Reading change, line by line.</h2>
+      <p class="scene__note">Hashes, hunks, two gutters of line numbers and a conversation in the margin. Added and removed lines differ in tone, not hue.</p>
+    </div>
+
+    <div class="wrap review">
+      <div class="review__meta" aria-hidden="true">
+        <p class="review__pr"><span class="review__num">#214</span> Cap retry delay and honour Retry-After</p>
+        <p class="review__branch"><b>feat/retry-cap</b> → main · 3 commits · mira</p>
+        <ul class="review__commits">
+          <li><span class="h">9c41e2a</span> cap exponential backoff at CEILING_MS</li>
+          <li><span class="h">b7d03f5</span> honour Retry-After on 429 and 503</li>
+          <li><span class="h">4e1d0b7</span> parse Retry-After HTTP-date form</li>
+        </ul>
+        <ul class="review__files">
+          <li><span>src/queue/retry.ts</span><span class="review__delta">+17 −4</span></li>
+          <li><span>test/retry.test.ts</span><span class="review__delta">+22 −0</span></li>
+          <li><span>CHANGELOG.md</span><span class="review__delta">+2 −0</span></li>
+        </ul>
+      </div>
+
+      <div class="review__diff" aria-hidden="true">
+        <div class="review__file">
+          <span>src/queue/retry.ts</span>
+          <span class="review__delta">+17 −4</span>
+        </div>
+<pre class="diff" id="diff" data-diff>diff --git a/src/queue/retry.ts b/src/queue/retry.ts
+index 3f9c2e1..a07b4d8 100644
+--- a/src/queue/retry.ts
++++ b/src/queue/retry.ts
+@@ -2,9 +2,12 @@
+ import type { Delivery, Endpoint } from "../types";
+ import { metrics } from "../telemetry";
+ 
+-const MAX_ATTEMPTS = 12;
+-const BASE_DELAY_MS = 500;
++const MAX_ATTEMPTS = 8;
++const BASE_DELAY_MS = 250;
++const CEILING_MS = 60_000;
+ 
+-export function backoff(attempt: number): number {
+-  return BASE_DELAY_MS * 2 ** attempt;
++/** Equal jitter, capped: 250 ms, 500 ms, 1 s … 60 s. */
++export function backoff(attempt: number, jitter = Math.random()): number {
++  const exp = Math.min(CEILING_MS, BASE_DELAY_MS * 2 ** attempt);
++  return Math.round(exp / 2 + (exp / 2) * jitter);
+ }
+@@ -22,7 +25,12 @@ export async function deliver(d: Delivery, ep: Endpoint): Promise&lt;boolean&gt; {
+       return true;
+     }
+     if (res.status &gt;= 400 &amp;&amp; res.status &lt; 500 &amp;&amp; res.status !== 429) break;
+-    await sleep(backoff(attempt));
++
++    const retryAfter = Number(res.headers.get("retry-after"));
++    const wait = Number.isFinite(retryAfter) &amp;&amp; retryAfter &gt; 0
++      ? Math.min(CEILING_MS, retryAfter * 1_000)
++      : backoff(attempt);
++    await sleep(wait);
+   }
+   metrics.increment("delivery.failed", { endpoint: ep.id });
+   return false;</pre>
+        <div class="thread" id="thread" data-after-new="31">
+          <div class="thread__msg">
+            <p class="thread__who"><b>tomas</b> · 2 h ago</p>
+            <p>Retry-After can also be an HTTP-date (RFC 9110 §10.2.3). <code>Number()</code> turns that into NaN and we quietly fall back to backoff. Fine, but worth a test?</p>
+          </div>
+          <div class="thread__msg">
+            <p class="thread__who"><b>mira</b> · 1 h ago</p>
+            <p>Covered both forms with <code>parseRetryAfter()</code> in <span class="h">4e1d0b7</span>.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ logs -->
+  <section class="scene scene--logs" id="logs" aria-labelledby="logs-title">
+    <div class="wrap scene__head scene__head--row">
+      <p class="slug micro"><span class="slug__time">15:22</span><span class="slug__name">Logs</span></p>
+      <h2 class="scene__title" id="logs-title">Scanning at density.</h2>
+      <p class="scene__note">Timestamps, UUIDs and durations in SemiCondensed at 11&nbsp;px. The eye runs down columns, not across noise.</p>
+    </div>
+
+    <div class="logs" id="logs-strip" data-scroll-label="Log stream, scrolls horizontally">
+      <div class="logs__bar" aria-hidden="true">
+        <span><b>relay-prod</b> · eu-west-1 · tail -f /var/log/relay/worker.log</span>
+        <span>16 lines · UTC</span>
+      </div>
+<pre class="logs__body" aria-hidden="true"><span class="lg-d">2026-10-19T</span><span class="lg-t">15:22:07.560Z</span>  <span class="lg-l lg-l--info">INFO </span>  <span class="lg-w">w03</span>  <span class="lg-id">3d81bc8b-c705-4fe8-b9ea-6dc136d4983a</span>  <span class="lg-m">POST</span>  <span class="lg-p">/v1/endpoints/ep_billing_live/deliveries </span> <span class="lg-s lg-s--2xx">202</span> <span class="lg-ms">   12.4ms</span>  <span class="lg-x">bytes=1874</span>
+<span class="lg-d">2026-10-19T</span><span class="lg-t">15:22:08.129Z</span>  <span class="lg-l lg-l--info">INFO </span>  <span class="lg-w">w01</span>  <span class="lg-id">3a699eef-ad63-4a68-ae08-a5268a17bc21</span>  <span class="lg-m">POST</span>  <span class="lg-p">/v1/endpoints/ep_ledger_sync/deliveries  </span> <span class="lg-s lg-s--2xx">202</span> <span class="lg-ms">    9.8ms</span>  <span class="lg-x">bytes=622</span>
+<span class="lg-d">2026-10-19T</span><span class="lg-t">15:22:08.857Z</span>  <span class="lg-l lg-l--info">INFO </span>  <span class="lg-w">w04</span>  <span class="lg-id">39b5abbe-427b-4a04-a967-2b78630ead13</span>  <span class="lg-m">GET </span>  <span class="lg-p">/v1/deliveries/dlv_01J9ZK3T0QW7          </span> <span class="lg-s lg-s--2xx">200</span> <span class="lg-ms">    3.1ms</span>  <span class="lg-x">cache=hit</span>
+<span class="lg-d">2026-10-19T</span><span class="lg-t">15:22:08.996Z</span>  <span class="lg-l lg-l--warn">WARN </span>  <span class="lg-w">w02</span>  <span class="lg-id">0c7323f8-68b1-49c0-999e-6963a71b9d71</span>  <span class="lg-m">POST</span>  <span class="lg-p">/v1/endpoints/ep_crm_contacts/deliveries </span> <span class="lg-s lg-s--5xx">503</span> <span class="lg-ms"> 1204.9ms</span>  <span class="lg-x">retry=3 wait_ms=2000 reason=&quot;upstream unavailable&quot;</span>
+<span class="lg-d">2026-10-19T</span><span class="lg-t">15:22:09.759Z</span>  <span class="lg-l lg-l--info">INFO </span>  <span class="lg-w">w03</span>  <span class="lg-id">a746164a-78f5-4663-bf40-594c49d5f1b0</span>  <span class="lg-m">POST</span>  <span class="lg-p">/v1/endpoints/ep_billing_live/deliveries </span> <span class="lg-s lg-s--2xx">202</span> <span class="lg-ms">   11.0ms</span>  <span class="lg-x">bytes=1902</span>
+<span class="lg-d">2026-10-19T</span><span class="lg-t">15:22:09.846Z</span>  <span class="lg-l lg-l--warn">WARN </span>  <span class="lg-w">w01</span>  <span class="lg-id">9a4d9000-281c-4bc7-9e80-9fd61ee1da19</span>  <span class="lg-m">POST</span>  <span class="lg-p">/v1/endpoints/ep_crm_contacts/deliveries </span> <span class="lg-s lg-s--4xx">429</span> <span class="lg-ms">   88.2ms</span>  <span class="lg-x">retry=4 retry_after=30 wait_ms=30000</span>
+<span class="lg-d">2026-10-19T</span><span class="lg-t">15:22:10.581Z</span>  <span class="lg-l lg-l--info">INFO </span>  <span class="lg-w">gc </span>  <span class="lg-id">-                                   </span>  <span class="lg-x">kind=minor heap_used=182.4MiB heap_total=256.0MiB rss=311.0MiB</span>  <span class="lg-ms">4.7ms</span>
+<span class="lg-d">2026-10-19T</span><span class="lg-t">15:22:11.206Z</span>  <span class="lg-l lg-l--info">INFO </span>  <span class="lg-w">w04</span>  <span class="lg-id">6ff8c37e-2b39-4a56-8f3c-51c168c301a4</span>  <span class="lg-m">POST</span>  <span class="lg-p">/v1/endpoints/ep_ledger_sync/deliveries  </span> <span class="lg-s lg-s--2xx">202</span> <span class="lg-ms">   10.3ms</span>  <span class="lg-x">bytes=640</span>
+<span class="lg-d">2026-10-19T</span><span class="lg-t">15:22:11.343Z</span>  <span class="lg-l lg-l--error">ERROR</span>  <span class="lg-w">w02</span>  <span class="lg-id">72d4a4bc-1a32-410f-b181-69b34ab63fad</span>  <span class="lg-m">POST</span>  <span class="lg-p">/v1/endpoints/ep_crm_contacts/deliveries </span> <span class="lg-s lg-s--5xx">503</span> <span class="lg-ms">10000.0ms</span>  <span class="lg-x">attempts=8 outcome=dead_letter err=&quot;TimeoutError: signal timed out&quot;</span>
+                                                                                  <span class="lg-x">at deliver (/srv/relay/dist/queue/retry.js:41:19)</span>
+                                                                                  <span class="lg-x">at async Worker.run (/srv/relay/dist/queue/worker.js:88:7)</span>
+<span class="lg-d">2026-10-19T</span><span class="lg-t">15:22:11.883Z</span>  <span class="lg-l lg-l--info">INFO </span>  <span class="lg-w">w01</span>  <span class="lg-id">aead9dc2-c505-431a-81c7-e760cd890019</span>  <span class="lg-m">POST</span>  <span class="lg-p">/v1/endpoints/ep_billing_live/deliveries </span> <span class="lg-s lg-s--2xx">202</span> <span class="lg-ms">   13.6ms</span>  <span class="lg-x">bytes=1866</span>
+<span class="lg-d">2026-10-19T</span><span class="lg-t">15:22:12.538Z</span>  <span class="lg-l lg-l--info">INFO </span>  <span class="lg-w">q  </span>  <span class="lg-id">-                                   </span>  <span class="lg-x">window=60s queue_depth=1284 inflight=37 p50=41ms p95=184ms p99=1.21s</span>
+<span class="lg-d">2026-10-19T</span><span class="lg-t">15:22:12.840Z</span>  <span class="lg-l lg-l--info">INFO </span>  <span class="lg-w">w03</span>  <span class="lg-id">49de527c-353e-42a7-bb44-6701d20637cf</span>  <span class="lg-m">DEL </span>  <span class="lg-p">/v1/dlq?older_than=14d                   </span> <span class="lg-s lg-s--2xx">204</span> <span class="lg-ms">   27.5ms</span>  <span class="lg-x">purged=0</span>
+<span class="lg-d">2026-10-19T</span><span class="lg-t">15:22:13.068Z</span>  <span class="lg-l lg-l--info">INFO </span>  <span class="lg-w">w04</span>  <span class="lg-id">d9c9e409-31a0-45b3-922e-435832accabd</span>  <span class="lg-m">POST</span>  <span class="lg-p">/v1/endpoints/ep_ledger_sync/deliveries  </span> <span class="lg-s lg-s--2xx">202</span> <span class="lg-ms">    9.1ms</span>  <span class="lg-x">bytes=598</span>
+<span class="lg-d">2026-10-19T</span><span class="lg-t">15:22:13.544Z</span>  <span class="lg-l lg-l--info">INFO </span>  <span class="lg-w">w02</span>  <span class="lg-id">587f1d63-d2a0-49b5-8137-7b211fa6f6fd</span>  <span class="lg-m">POST</span>  <span class="lg-p">/v1/endpoints/ep_crm_contacts/deliveries </span> <span class="lg-s lg-s--2xx">202</span> <span class="lg-ms">  142.7ms</span>  <span class="lg-x">retry=4 recovered=true</span></pre>
+    </div>
+  </section>
+
+  <!-- =========================================================== query -->
+  <section class="scene scene--query" id="query" aria-labelledby="query-title">
+    <div class="wrap-wide query">
+      <div class="query__ask">
+        <p class="slug micro"><span class="slug__time">16:48</span><span class="slug__name">Query</span></p>
+        <h2 class="scene__title" id="query-title">Columns that line up by themselves.</h2>
+        <p class="scene__note">Every figure takes the same advance, so psql's padding alone aligns money, ratios and dates. Zero, O, one, I and l stay distinct inside the IDs.</p>
+<pre class="code query__sql" data-code="sql" data-scroll-label="SQL query, scrolls horizontally">SELECT a.account_id,
+       a.plan,
+       count(d.id)                         AS deliveries_30d,
+       round(avg((d.status &gt;= 400)::int), 4) AS failed_ratio,
+       a.credit_balance_usd,
+       max(p.paid_at)::date                AS last_payment_at,
+       a.is_suspended
+  FROM accounts a
+  LEFT JOIN deliveries d
+         ON d.account_id = a.account_id
+        AND d.created_at &gt; now() - interval '30 days'
+  LEFT JOIN payments p ON p.account_id = a.account_id
+ GROUP BY a.account_id
+ ORDER BY failed_ratio DESC NULLS LAST, deliveries_30d DESC;</pre>
+      </div>
+      <div class="query__result" data-scroll-label="Query result, scrolls horizontally">
+<pre class="query__out" aria-hidden="true"><span class="q-prompt">relay=&gt;</span> \pset null NULL
+Null display is "NULL".
+<span class="q-prompt">relay=&gt;</span> \i accounts_at_risk.sql
+  account_id   |    plan    | deliveries_30d | failed_ratio | credit_balance_usd | last_payment_at | is_suspended
+---------------+------------+----------------+--------------+--------------------+-----------------+--------------
+ acct_1PlO0kQz | team       |          84210 |       0.0417 |            -128.40 | 2026-09-30      | f
+ acct_7oO0sLm1 | free       |           3118 |       0.0263 |               0.00 | NULL            | f
+ acct_0Il9xWe2 | enterprise |        1204331 |       0.0031 |           18920.75 | 2026-10-01      | f
+ acct_I1ldN0Ob | scale      |         402977 |       0.0009 |            2450.00 | 2026-10-14      | f
+ acct_4fZl1O0q | team       |             61 |       0.0000 |              -3.12 | 2026-08-30      | t
+ acct_8IlO0rTy | free       |              0 |         NULL |               0.00 | NULL            | t
+(6 rows)
+
+Time: 38.412 ms</pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ docs -->
+  <section class="scene scene--docs" id="docs" aria-labelledby="docs-title">
+    <div class="wrap scene__head scene__head--split">
+      <div>
+        <p class="slug micro"><span class="slug__time">17:30</span><span class="slug__name">Docs</span></p>
+        <h2 class="scene__title" id="docs-title">Prose, signature and table on one page.</h2>
+      </div>
+      <p class="scene__note">A monospace that holds a paragraph, not only a code block.</p>
+    </div>
+
+    <div class="wrap docs" aria-hidden="true">
+      <div class="docs__nav">
+        <p class="docs__brand"><b>relay</b> docs <span>v0.15</span></p>
+        <p class="docs__group">Guides</p>
+        <ul>
+          <li>Quick start</li>
+          <li>Delivery semantics</li>
+          <li>Retries and backoff</li>
+        </ul>
+        <p class="docs__group">Reference</p>
+        <ul>
+          <li>deliver()</li>
+          <li class="is-current">backoff()</li>
+          <li>Endpoint</li>
+          <li>relay.toml</li>
+        </ul>
+      </div>
+
+      <article class="docs__page">
+        <p class="docs__crumb">Reference / queue</p>
+        <h3 class="docs__h1">backoff()</h3>
+        <p class="docs__lede">
+          Returns the delay, in milliseconds, before attempt <code>n</code> is
+          retried. Delays double from <code>BASE_DELAY_MS</code> and stop at
+          <code>CEILING_MS</code>; jitter spreads retries from many workers so
+          they do not reach an endpoint in lockstep.
+        </p>
+<pre class="docs__sig code" data-code="ts">function backoff(attempt: number, jitter?: number): number</pre>
+
+        <h4 class="docs__h2">Parameters</h4>
+        <table class="docs__table">
+          <thead><tr><th>Name</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>attempt</code></td><td>number</td><td>—</td><td>Zero-based attempt index.</td></tr>
+            <tr><td><code>jitter</code></td><td>number</td><td><code>Math.random()</code></td><td>In [0, 1). Zero gives the lower bound.</td></tr>
+          </tbody>
+        </table>
+
+        <h4 class="docs__h2">Returns</h4>
+        <p><code>number</code>, in milliseconds, between half the window and the full window, never above <code>60_000</code>.</p>
+
+        <div class="docs__callout">
+          <p><b>Note</b> A <code>429</code> or <code>503</code> carrying <code>Retry-After</code> overrides the computed delay. See <u>Delivery semantics</u>.</p>
+        </div>
+
+<pre class="docs__example code" data-code="ts">backoff(0, 0);   // 125
+backoff(3, 0);   // 1_000
+backoff(20, 1);  // 60_000, capped</pre>
+      </article>
+    </div>
+  </section>
+
+  <!-- =========================================================== proof -->
+  <section class="scene scene--proof" id="proof" aria-labelledby="proof-title">
+    <div class="wrap proof">
+      <div class="proof__aside">
+        <p class="slug micro"><span class="slug__time">18:02</span><span class="slug__name">Proof</span></p>
+        <h2 class="scene__title" id="proof-title">Off the screen, onto paper.</h2>
+        <p class="scene__note">A machine proof of the family itself: metrics, files and counts, totalled in tabular figures. Every number here is read from the fonts on this page.</p>
+        <p class="scene__spec micro">Regular 400 · Bold 700 · 12.5 / 18</p>
+      </div>
+      <div class="proof__slot">
+        <div class="receipt" id="receipt">
+<pre class="receipt__body">       <b>IOSKELEY TYPE WORKS</b>
+   proof of setting · no. 0219
+==================================
+DATE          2026-10-19  18:02:41
+JOB           in-use showcase · 03
+----------------------------------
+PACKAGE           IoskeleyMono.zip
+FAMILY                    Standard
+WIDTH  Normal                600 u
+       SemiCondensed         540 u
+WEIGHT Thin – Black        100–900
+STYLE  Upright, Italic       11.8°
+----------------------------------
+UNITS PER EM                  1000
+CAP METRIC                     690
+X METRIC                       520
+LINE  965 / −285          1.250 em
+----------------------------------
+FILE (WEB)                     KiB
+Regular.woff2                94.23
+Italic.woff2                104.71
+Bold.woff2                   94.47
+----------------------------------
+WEIGHTS                      ×  10
+STYLES                       ×   2
+WIDTHS                       ×   2
+==================================
+<span class="receipt__total"><b>TOTAL FACES                     40</b></span>
+==================================
+LICENSE                SIL OFL 1.1
+      use · modify · embed · share</pre>
+          <pre class="receipt__code" aria-hidden="true">▌│█▌║▌││█║▌║││▌█│▌║█▌│║▌█││▌║█│▌
+▌│█▌║▌││█║▌║││▌█│▌║█▌│║▌█││▌║█│▌
+▌│█▌║▌││█║▌║││▌█│▌║█▌│║▌█││▌║█│▌</pre>
+          <p class="receipt__id" aria-hidden="true">IKM · N600 · C690 · X520 · OFL</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  </div><!-- /in-use -->
+
+  <!-- ============================================================= lab -->
+  <section class="chapter wrap" id="specimen" aria-labelledby="specimen-title">
+    <div class="chapter__head">
+      <p class="slug micro"><span class="slug__time">Lab</span><span class="slug__name">Your turn</span></p>
+      <h2 class="chapter__title" id="specimen-title">Type your own text.</h2>
+      <p class="scene__note">
+        The punctuation colour is presentation on this page, not a font feature:
+        Ioskeley ships monochrome.
+      </p>
     </div>
 
     <div class="editor" id="editor">
       <div class="editor__bar">
-        <div class="editor__samples" id="samples" role="group" aria-label="Sample code"></div>
-        <div class="seg" role="group" aria-label="Sample language" data-control="language">
-          <button class="seg__btn" type="button" data-value="js" aria-pressed="true">JS</button>
-          <button class="seg__btn" type="button" data-value="py" aria-pressed="false">Python</button>
-          <button class="seg__btn" type="button" data-value="rust" aria-pressed="false">Rust</button>
-          <button class="seg__btn" type="button" data-value="c" aria-pressed="false">C</button>
+        <div class="lab-controls">
+          <div class="control">
+            <span class="control__label" id="ctl-width">Width</span>
+            <div class="seg seg--quiet" role="group" aria-labelledby="ctl-width" data-control="width">
+              <button class="seg__btn" type="button" data-value="normal" aria-pressed="true">Normal</button>
+              <button class="seg__btn" type="button" data-value="sc" aria-pressed="false">SemiCondensed</button>
+            </div>
+          </div>
+
+          <div class="control">
+            <span class="control__label" id="ctl-weight">Weight</span>
+            <div class="seg seg--quiet" role="group" aria-labelledby="ctl-weight" data-control="weight">
+              <button class="seg__btn" type="button" data-value="300" aria-pressed="false">Light</button>
+              <button class="seg__btn" type="button" data-value="400" aria-pressed="true">Regular</button>
+              <button class="seg__btn" type="button" data-value="500" aria-pressed="false">Medium</button>
+              <button class="seg__btn" type="button" data-value="700" aria-pressed="false">Bold</button>
+            </div>
+          </div>
+
+          <div class="control">
+            <span class="control__label" id="ctl-style">Style</span>
+            <div class="seg seg--quiet" role="group" aria-labelledby="ctl-style" data-control="style">
+              <button class="seg__btn" type="button" data-value="normal" aria-pressed="true">Upright</button>
+              <button class="seg__btn" type="button" data-value="italic" aria-pressed="false">Italic</button>
+            </div>
+          </div>
+
+          <div class="control">
+            <label class="control__label" for="ctl-size">Size <span class="control__value" id="size-value">14.5px</span></label>
+            <input type="range" id="ctl-size" min="11" max="26" step="0.5" value="14.5">
+          </div>
+
+          <div class="control">
+            <span class="control__label" id="ctl-liga">Ligatures</span>
+            <div class="seg seg--quiet" role="group" aria-labelledby="ctl-liga" data-control="ligatures">
+              <button class="seg__btn" type="button" data-value="on" aria-pressed="true">On</button>
+              <button class="seg__btn" type="button" data-value="off" aria-pressed="false">Off</button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -186,130 +728,150 @@
                   aria-label="Editable code specimen"></textarea>
       </div>
 
-      <div class="editor__foot micro">
-        <span id="editor-meta">Ioskeley Mono · Normal · Regular 400</span>
-        <span id="editor-adv">600 units/char</span>
+      <div class="editor__foot">
+        <div class="seg seg--quiet" role="group" aria-label="Sample language" data-control="language">
+          <button class="seg__btn" type="button" data-value="js" aria-pressed="true">JS</button>
+          <button class="seg__btn" type="button" data-value="py" aria-pressed="false">Python</button>
+          <button class="seg__btn" type="button" data-value="rust" aria-pressed="false">Rust</button>
+          <button class="seg__btn" type="button" data-value="c" aria-pressed="false">C</button>
+        </div>
+        <div class="editor__samples seg seg--quiet" id="samples" role="group" aria-label="Sample code"></div>
+        <span class="editor__meta micro"><span id="editor-meta">Ioskeley Mono · Normal · Regular 400</span> · <span id="editor-adv">600 units/char</span></span>
       </div>
     </div>
   </section>
 
-  <!-- =========================================================== forms -->
-  <section class="section wrap" id="forms" aria-labelledby="forms-title">
-    <div class="section__head">
-      <p class="section__label micro">02 — Forms</p>
-      <h2 class="section__title" id="forms-title">What the typeface is for</h2>
-      <p class="section__lede">
-        The forms that matter in a programming face, shown the way they actually
-        appear — inside code, not in a glyph dump.
-      </p>
+  <!-- ========================================================== system -->
+  <section class="system" id="system" aria-labelledby="system-title">
+    <div class="wrap system__open">
+      <p class="slug micro"><span class="slug__time">System</span><span class="slug__name">How it is built</span></p>
+      <h2 class="system__title" id="system-title">One face. <span>Ten weights.</span> <span>Two widths.</span> <span>Three families.</span></h2>
     </div>
 
-    <div class="forms">
-      <div class="forms__cell">
-        <span class="forms__label">Ambiguous pairs</span>
-        <div class="forms__value">0 O 1 I l 5 S 2 Z 8 B</div>
-      </div>
-      <div class="forms__cell">
-        <span class="forms__label">Signature &amp; symbols</span>
-        <div class="forms__value">g a Q @ $ _ ~ &amp;</div>
-      </div>
-      <div class="forms__cell">
-        <span class="forms__label">Operators</span>
-        <div class="forms__value">!= === &lt;= &gt;= =&gt; -&gt; ::</div>
-      </div>
-      <div class="forms__cell">
-        <span class="forms__label">Numerals</span>
-        <div class="forms__value">0123456789 0xFC82 100_000 0.0</div>
+    <!-- forms: one huge signature glyph against its metrics, then the
+         confusables at reading scale -->
+    <div class="wrap forms" id="forms">
+      <figure class="glyph-plate" tabindex="0" aria-label="Single-storey g drawn against the cap metric 690, x metric 520 and the baseline. Focus or hover to show the guides.">
+        <div class="glyph-plate__stage" aria-hidden="true">
+          <span class="guide guide--cap"><i>cap metric 690</i></span>
+          <span class="guide guide--x"><i>x metric 520</i></span>
+          <span class="guide guide--base"><i>baseline 0</i></span>
+          <span class="glyph-plate__g">g</span>
+        </div>
+        <figcaption class="glyph-plate__cap micro"><span>Single-storey g</span><span>Hover or focus for metrics</span></figcaption>
+      </figure>
+
+      <div class="forms__side">
+        <h3 class="sys-h">Signature forms</h3>
+        <ul class="sig">
+          <li><span class="sig__g">a</span><span class="sig__n">double-storey</span></li>
+          <li><span class="sig__g">Q</span><span class="sig__n">straight tail</span></li>
+          <li><span class="sig__g">@</span><span class="sig__n">compact</span></li>
+          <li><span class="sig__g">$</span><span class="sig__n">ascends</span></li>
+          <li><span class="sig__g">&amp;</span><span class="sig__n">open</span></li>
+          <li><span class="sig__g">*</span><span class="sig__n">raised</span></li>
+        </ul>
+
+        <h3 class="sys-h">Never confused</h3>
+        <ul class="amb">
+          <li><span class="amb__g">0O</span><span class="amb__n">dotted zero</span></li>
+          <li><span class="amb__g">1Il|</span><span class="amb__n">four strokes</span></li>
+          <li><span class="amb__g">5S</span></li>
+          <li><span class="amb__g">2Z</span></li>
+          <li><span class="amb__g">8B</span></li>
+          <li><span class="amb__g">rn m</span></li>
+          <li><span class="amb__g">;: ,.</span></li>
+          <li><span class="amb__g">'`"</span></li>
+        </ul>
+        <p class="amb__run" aria-label="Dense run of confusable characters">Il1|O0o Il1|O0o lI1|0Oo 1lI|o0O Il|1O0o I1l|0oO</p>
       </div>
     </div>
-  </section>
 
-  <!-- ======================================================== families -->
-  <section class="section wrap" id="families" aria-labelledby="families-title">
-    <div class="section__head">
-      <p class="section__label micro">03 — Families &amp; builds</p>
-      <h2 class="section__title" id="families-title">Three builds, two widths</h2>
-      <p class="section__lede">
-        Every family carries ten weights in upright and italic. The difference
-        between them is ligatures and terminal rhythm — nothing else.
-      </p>
+    <!-- weights -->
+    <div class="wrap sys-block" id="weights">
+      <div class="sys-block__head">
+        <h3 class="sys-h">Ten weights</h3>
+        <div class="sys-block__ctl">
+          <div class="seg seg--quiet" role="group" aria-label="Weight sample style" data-control="weight-style">
+            <button class="seg__btn" type="button" data-value="normal" aria-pressed="true">Upright</button>
+            <button class="seg__btn" type="button" data-value="italic" aria-pressed="false">Italic</button>
+          </div>
+          <div class="seg seg--quiet" role="group" aria-label="Weight sample width" data-control="weight-width">
+            <button class="seg__btn" type="button" data-value="normal" aria-pressed="true">Normal</button>
+            <button class="seg__btn" type="button" data-value="sc" aria-pressed="false">SemiCondensed</button>
+          </div>
+        </div>
+      </div>
+      <div class="weights__list" id="weights-list"></div>
     </div>
 
-    <div class="grid-2">
-      <article class="entry">
-        <h3 class="entry__name">Standard</h3>
-        <p class="entry__id">Ioskeley Mono</p>
-        <p class="entry__desc">
-          The everyday choice. Programming ligatures are on, and the full glyph
-          repertoire is present.
-        </p>
-        <p class="entry__note">Editors, IDEs, anything that shows ligatures well.</p>
-      </article>
+    <!-- width -->
+    <div class="wrap sys-block" id="width">
+      <div class="sys-block__head">
+        <h3 class="sys-h">Two widths</h3>
+        <p class="sys-note">Same design, same size. SemiCondensed sets 540 units per character instead of 600, so a line runs exactly ten percent shorter.</p>
+      </div>
+      <div class="widths" id="width-compare">
+        <div class="widths__row">
+          <p class="widths__name micro">Normal · 600</p>
+          <p class="widths__text">const glyphs = { figures: [0xFC82, 100_000, 0.0] };</p>
+          <div class="widths__bar" aria-hidden="true"><span style="--cols: 51; --adv: 0.6"></span></div>
+        </div>
+        <div class="widths__row widths__row--sc">
+          <p class="widths__name micro">SemiCondensed · 540</p>
+          <p class="widths__text">const glyphs = { figures: [0xFC82, 100_000, 0.0] };</p>
+          <div class="widths__bar" aria-hidden="true"><span style="--cols: 51; --adv: 0.54"></span><em>−10%</em></div>
+        </div>
+      </div>
+    </div>
 
-      <article class="entry">
-        <h3 class="entry__name">Term</h3>
-        <p class="entry__id">Ioskeley Mono Term</p>
-        <p class="entry__desc">
-          Arrow and box-drawing forms are tuned for a terminal grid, so they keep
-          their rhythm at cell size.
-        </p>
-        <p class="entry__note">Terminals: Kitty, Ghostty, WezTerm, Alacritty.</p>
-      </article>
-
-      <article class="entry">
-        <h3 class="entry__name">NL</h3>
-        <p class="entry__id">Ioskeley Mono NL</p>
-        <p class="entry__desc">
-          No programming ligatures at all. Ordinary character shaping only.
-        </p>
-        <p class="entry__note">Apps that cannot disable ligatures, or where you want none.</p>
-      </article>
-
-      <article class="entry">
-        <h3 class="entry__name">Widths</h3>
-        <p class="entry__id">Normal 600 · SemiCondensed 540</p>
-        <p class="entry__desc">
-          Two widths in every package. SemiCondensed is 90% of Normal, so it fits
-          90% of the characters in the same space.
-        </p>
-        <p class="entry__note"><a href="#width">Compare the widths side by side →</a></p>
-      </article>
+    <!-- families -->
+    <div class="wrap sys-block" id="families">
+      <div class="sys-block__head">
+        <h3 class="sys-h">Three families</h3>
+        <p class="sys-note">Every family carries ten weights, upright and italic, in both widths. They differ in ligatures and terminal rhythm only.</p>
+      </div>
+      <div class="fams">
+        <article class="fam">
+          <p class="fam__name">Standard</p>
+          <p class="fam__id micro">Ioskeley Mono</p>
+          <p class="fam__sample">a =&gt; b != c &lt;= d</p>
+          <p class="fam__desc">Programming ligatures on. The everyday choice for editors and IDEs.</p>
+        </article>
+        <article class="fam">
+          <p class="fam__name">Term</p>
+          <p class="fam__id micro">Ioskeley Mono Term</p>
+          <p class="fam__sample fam__sample--none">—</p>
+          <p class="fam__desc">Same ligatures, with arrows and box drawing tuned to the terminal cell. Not shown: this page carries the Standard web build only.</p>
+        </article>
+        <article class="fam">
+          <p class="fam__name">NL</p>
+          <p class="fam__id micro">Ioskeley Mono NL</p>
+          <p class="fam__sample fam__sample--nl">a =&gt; b != c &lt;= d</p>
+          <p class="fam__desc">No programming ligatures; ordinary shaping only. Shown here with ligatures switched off, which is how NL sets.</p>
+        </article>
+      </div>
     </div>
   </section>
 
   <!-- ============================================================ nerd -->
   <section class="section wrap" id="nerd" aria-labelledby="nerd-title">
-    <div class="section__head">
-      <p class="section__label micro">04 — Nerd Font geometry</p>
-      <h2 class="section__title" id="nerd-title">NF or NFM?</h2>
-      <p class="section__lede">
-        Each Nerd Font archive ships two patched variants. They carry the same
-        icons and differ only in geometry — pick the one your application expects.
-      </p>
-    </div>
-
-    <div class="grid-2">
-      <article class="entry">
-        <h3 class="entry__name">NF — Nerd Font</h3>
-        <p class="entry__id">Ioskeley Mono Nerd Font</p>
-        <p class="entry__desc">
-          Ordinary Nerd Font geometry, with the larger icons kept intact. An icon
-          may extend a little past one cell — that is normal, and looks right in
-          most prompts.
-        </p>
-        <p class="entry__note">A good default when you simply want icons.</p>
-      </article>
-
-      <article class="entry">
-        <h3 class="entry__name">NFM — Nerd Font Mono</h3>
-        <p class="entry__id">Ioskeley Mono Nerd Font Mono</p>
-        <p class="entry__desc">
-          Strict single-cell geometry. Every glyph, icon included, stays inside
-          one cell with no overhang, which is what Fontconfig and some font
-          pickers require of a true monospace face.
-        </p>
-        <p class="entry__note">For tools that demand strict cell geometry.</p>
-      </article>
+    <div class="nerd">
+      <div>
+        <p class="slug micro"><span class="slug__time">NF</span><span class="slug__name">Nerd Font geometry</span></p>
+        <h2 class="section__title" id="nerd-title">NF or NFM?</h2>
+        <p class="sys-note">Each Nerd Font archive ships two patched variants with the same icons. They differ only in how icons sit in the cell.</p>
+      </div>
+      <dl class="nerd__list">
+        <div>
+          <dt>NF <span class="micro">Ioskeley Mono Nerd Font</span></dt>
+          <dd>Ordinary Nerd Font geometry. Larger icons stay intact and may extend a little past one cell, which looks right in most prompts. A good default.</dd>
+        </div>
+        <div>
+          <dt>NFM <span class="micro">Ioskeley Mono Nerd Font Mono</span></dt>
+          <dd>Strict single-cell geometry: every glyph, icon included, stays inside one cell. What Fontconfig and some font pickers require of a true monospace face.</dd>
+        </div>
+      </dl>
     </div>
 
     <p class="note note--timing">
@@ -321,77 +883,10 @@
     </p>
   </section>
 
-  <!-- ========================================================= weights -->
-  <section class="section wrap" id="weights" aria-labelledby="weights-title">
-    <div class="section__head">
-      <p class="section__label micro">05 — Weights &amp; styles</p>
-      <h2 class="section__title" id="weights-title">Ten weights</h2>
-      <p class="section__lede">
-        Upright and italic at every weight, in both widths. Switch the width with
-        the control below to see the whole axis change.
-      </p>
-    </div>
-
-    <div class="controls">
-      <div class="control">
-        <span class="control__label" id="ctl-w-style">Style</span>
-        <div class="seg" role="group" aria-labelledby="ctl-w-style" data-control="weight-style">
-          <button class="seg__btn" type="button" data-value="normal" aria-pressed="true">Upright</button>
-          <button class="seg__btn" type="button" data-value="italic" aria-pressed="false">Italic</button>
-        </div>
-      </div>
-      <div class="control">
-        <span class="control__label" id="ctl-w-width">Width</span>
-        <div class="seg" role="group" aria-labelledby="ctl-w-width" data-control="weight-width">
-          <button class="seg__btn" type="button" data-value="normal" aria-pressed="true">Normal</button>
-          <button class="seg__btn" type="button" data-value="sc" aria-pressed="false">SemiCondensed</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="weights__list" id="weights-list"></div>
-  </section>
-
-  <!-- =========================================================== width -->
-  <section class="section wrap" id="width" aria-labelledby="width-title">
-    <div class="section__head">
-      <p class="section__label micro">06 — Width</p>
-      <h2 class="section__title" id="width-title">Normal and SemiCondensed</h2>
-      <p class="section__lede">
-        The same text at the same size in both widths. SemiCondensed keeps the
-        design and tightens the spacing to 540 units per character.
-      </p>
-    </div>
-
-    <div class="width-compare" id="width-compare"></div>
-
-    <p class="note">
-      Both widths ship inside every desktop and Nerd Font archive. There is no
-      third, narrower width.
-    </p>
-  </section>
-
-  <!-- ========================================================= details -->
-  <section class="section wrap" id="details" aria-labelledby="details-title">
-    <div class="section__head">
-      <p class="section__label micro">07 — Design details</p>
-      <h2 class="section__title" id="details-title">Close inspection</h2>
-      <p class="section__lede">
-        A few forms worth looking at closely, each drawn against its declared
-        cap metric. The tick on each measurement line is the plate's registration
-        mark.
-      </p>
-    </div>
-
-    <div class="studies" id="studies"></div>
-  </section>
-
   <!-- ========================================================= origins -->
   <section class="section wrap" id="origins" aria-labelledby="origins-title">
-    <div class="section__head">
-      <p class="section__label micro">08 — Origins</p>
-      <h2 class="section__title" id="origins-title">Origins &amp; design evolution</h2>
-    </div>
+    <p class="slug micro"><span class="slug__time">Origins</span><span class="slug__name">Design evolution</span></p>
+    <h2 class="section__title" id="origins-title">Where it started</h2>
 
     <p class="section__lede">
       Berkeley Mono / TX-02 inspired the first experiment, and Iosevka made it
@@ -417,17 +912,60 @@
   </section>
 
   <!-- ======================================================== download -->
-  <section class="section wrap" id="download" aria-labelledby="download-title">
-    <div class="section__head">
-      <p class="section__label micro">09 — Download</p>
-      <h2 class="section__title" id="download-title">Packages</h2>
-      <p class="section__lede">
-        Not sure where to start? <strong>IoskeleyMono.zip</strong> is the plain
-        choice: the Standard family, both widths, all ten weights.
-      </p>
-    </div>
+  <section class="section wrap download" id="download" aria-labelledby="download-title">
+    <p class="slug micro"><span class="slug__time">Download</span><span class="slug__name">Free · SIL OFL 1.1</span></p>
+    <h2 class="download__title" id="download-title">Take it with you.</h2>
 
-    <div class="packages" id="packages"></div>
+    <div class="packages" id="packages">
+      <div class="package package--lead">
+        <span class="package__need">Start here</span>
+        <span class="package__name">IoskeleyMono.zip</span>
+        <span class="package__use">Standard family. Both widths, all ten weights, programming ligatures.</span>
+        <a class="package__dl package__dl--btn" href="https://github.com/ahatem/IoskeleyMono/releases/latest/download/IoskeleyMono.zip" rel="noopener" aria-label="Download IoskeleyMono.zip">Download</a>
+      </div>
+      <div class="package">
+        <span class="package__need">Terminal</span>
+        <span class="package__name">IoskeleyMono-Term.zip</span>
+        <span class="package__use">Term family. Terminal-tuned arrow and box-drawing forms.</span>
+        <a class="package__dl" href="https://github.com/ahatem/IoskeleyMono/releases/latest/download/IoskeleyMono-Term.zip" rel="noopener" aria-label="Download IoskeleyMono-Term.zip">Download →</a>
+      </div>
+      <div class="package">
+        <span class="package__need">No ligatures</span>
+        <span class="package__name">IoskeleyMono-NL.zip</span>
+        <span class="package__use">NL family. No programming ligatures.</span>
+        <a class="package__dl" href="https://github.com/ahatem/IoskeleyMono/releases/latest/download/IoskeleyMono-NL.zip" rel="noopener" aria-label="Download IoskeleyMono-NL.zip">Download →</a>
+      </div>
+      <div class="package">
+        <span class="package__need">With icons</span>
+        <span class="package__name">IoskeleyMono-NerdFont.zip</span>
+        <span class="package__use">Standard, patched. Contains NF and NFM from 2.2.0.</span>
+        <a class="package__dl" href="https://github.com/ahatem/IoskeleyMono/releases/latest/download/IoskeleyMono-NerdFont.zip" rel="noopener" aria-label="Download IoskeleyMono-NerdFont.zip">Download →</a>
+      </div>
+      <div class="package">
+        <span class="package__need" aria-hidden="true"></span>
+        <span class="package__name">IoskeleyMono-Term-NerdFont.zip</span>
+        <span class="package__use">Term, patched. Contains NF and NFM from 2.2.0.</span>
+        <a class="package__dl" href="https://github.com/ahatem/IoskeleyMono/releases/latest/download/IoskeleyMono-Term-NerdFont.zip" rel="noopener" aria-label="Download IoskeleyMono-Term-NerdFont.zip">Download →</a>
+      </div>
+      <div class="package">
+        <span class="package__need" aria-hidden="true"></span>
+        <span class="package__name">IoskeleyMono-NL-NerdFont.zip</span>
+        <span class="package__use">NL, patched. Contains NF and NFM from 2.2.0.</span>
+        <a class="package__dl" href="https://github.com/ahatem/IoskeleyMono/releases/latest/download/IoskeleyMono-NL-NerdFont.zip" rel="noopener" aria-label="Download IoskeleyMono-NL-NerdFont.zip">Download →</a>
+      </div>
+      <div class="package">
+        <span class="package__need">Web</span>
+        <span class="package__name">IoskeleyMono-Web.zip</span>
+        <span class="package__use">Compact WOFF2 subset for @font-face.</span>
+        <a class="package__dl" href="https://github.com/ahatem/IoskeleyMono/releases/latest/download/IoskeleyMono-Web.zip" rel="noopener" aria-label="Download IoskeleyMono-Web.zip">Download →</a>
+      </div>
+      <div class="package">
+        <span class="package__need" aria-hidden="true"></span>
+        <span class="package__name">IoskeleyMono-Web-Full.zip</span>
+        <span class="package__use">Full WOFF2 repertoire: Greek, Cyrillic, long arrows.</span>
+        <a class="package__dl" href="https://github.com/ahatem/IoskeleyMono/releases/latest/download/IoskeleyMono-Web-Full.zip" rel="noopener" aria-label="Download IoskeleyMono-Web-Full.zip">Download →</a>
+      </div>
+    </div>
 
     <p class="note note--timing">
       <strong>Release timing.</strong> The latest published release is
@@ -441,31 +979,24 @@
 
   <!-- ========================================================= install -->
   <section class="section wrap" id="install" aria-labelledby="install-title">
-    <div class="section__head">
-      <p class="section__label micro">10 — Install &amp; use</p>
-      <h2 class="section__title" id="install-title">Getting it running</h2>
-    </div>
+    <h2 class="sys-h" id="install-title">Install &amp; use</h2>
 
     <div class="install">
       <div class="install__cell">
         <h3>Manually</h3>
-        <p>Unzip an archive, choose <strong>Normal</strong> or
-          <strong>SemiCondensed</strong>, then <strong>Hinted</strong> for
-          standard-DPI Windows and Linux displays or <strong>Unhinted</strong>
-          for macOS and HiDPI.</p>
-        <p>Windows: right-click → Install. macOS: open in Font Book. Linux: copy to
-          <code>~/.local/share/fonts/IoskeleyMono/</code> and run
-          <code>fc-cache -fv</code>.</p>
+        <p>Unzip, choose <strong>Normal</strong> or <strong>SemiCondensed</strong>,
+          then <strong>Hinted</strong> for standard-DPI Windows and Linux or
+          <strong>Unhinted</strong> for macOS and HiDPI.</p>
+        <p>Windows: right-click → Install. macOS: Font Book. Linux: copy to
+          <code>~/.local/share/fonts/</code>, run <code>fc-cache -fv</code>.</p>
       </div>
 
       <div class="install__cell">
         <h3>Editors</h3>
-        <p>Use the family name that matches what you installed.</p>
         <pre>// VS Code — settings.json
 {
   "editor.fontFamily": "'Ioskeley Mono', monospace",
   "editor.fontLigatures": true,
-  "editor.fontWeight": "400",
   "editor.fontSize": 14.5
 }</pre>
         <div class="copy-row">
@@ -475,7 +1006,6 @@
 
       <div class="install__cell">
         <h3>Terminals</h3>
-        <p>The Term family keeps terminal forms on the grid.</p>
         <pre># Ghostty — config
 font-family = Ioskeley Mono Term
 font-size   = 14
@@ -490,9 +1020,6 @@ font_size   14.0</pre>
 
       <div class="install__cell">
         <h3>On the web</h3>
-        <p><code>IoskeleyMono-Web.zip</code> is a compact WOFF2 subset;
-          <code>IoskeleyMono-Web-Full.zip</code> adds Greek, Cyrillic and the
-          wider symbol range. Both use the same filenames.</p>
         <pre>@font-face {
   font-family: "Ioskeley Mono";
   src: url("./IoskeleyMono-Regular.woff2")
@@ -507,8 +1034,7 @@ font_size   14.0</pre>
     </div>
 
     <p class="note">
-      Full installation instructions, package managers, OpenType features and
-      build notes live in the
+      Package managers, OpenType features and build notes live in the
       <a href="https://github.com/ahatem/IoskeleyMono#installation">project README</a>.
     </p>
   </section>
@@ -522,7 +1048,8 @@ font_size   14.0</pre>
       with <a href="https://github.com/be5invis/Iosevka" rel="noopener">Iosevka</a>
       by Belleve Invis and contributors. Nerd Font variants use the
       <a href="https://github.com/ryanoasis/nerd-fonts" rel="noopener">Nerd Fonts</a>
-      project.
+      project. Every specimen on this page is live text set in Ioskeley Mono;
+      the people, services and data in the scenes are invented.
     </p>
     <div class="site-footer__links">
       <a href="https://github.com/ahatem/IoskeleyMono" rel="noopener">GitHub</a>
@@ -538,9 +1065,9 @@ font_size   14.0</pre>
   <div class="lightbox__panel">
     <div class="lightbox__bar">
       <span class="micro" id="lightbox-title">Origins plate</span>
-      <span style="display:flex;gap:14px">
+      <span class="lightbox__tools">
         <button class="theme-toggle" type="button" id="lightbox-zoom" aria-pressed="false">1:1</button>
-        <a class="theme-toggle" id="lightbox-raw" href="#" rel="noopener" style="display:inline-flex;align-items:center">Open</a>
+        <a class="theme-toggle" id="lightbox-raw" href="#" rel="noopener">Open</a>
         <button class="theme-toggle" type="button" id="lightbox-close" aria-label="Close">Close</button>
       </span>
     </div>
