@@ -1,1260 +1,764 @@
-// Multi-Theme Prism definitions
-const themesCSS = `
-code[class*="language-"], pre[class*="language-"] {
-  font-family: inherit; font-size: inherit; background: none; text-shadow: none;
-}
-pre[class*="language-"]::-moz-selection, pre[class*="language-"] ::-moz-selection,
-code[class*="language-"]::-moz-selection, code[class*="language-"] ::-moz-selection,
-pre[class*="language-"]::selection, pre[class*="language-"] ::selection,
-code[class*="language-"]::selection, code[class*="language-"] ::selection {
-  text-shadow: none; background: #6c7a8a30;
-}
-
-/* 1. Kintsugi Dark */
-.theme-kintsugi .token.comment, .theme-kintsugi .token.prolog, .theme-kintsugi .token.doctype, .theme-kintsugi .token.cdata { color: #5f5f5f; }
-.theme-kintsugi .token.punctuation { color: #7f7b66; }
-.theme-kintsugi .token.property, .theme-kintsugi .token.tag, .theme-kintsugi .token.boolean, .theme-kintsugi .token.number, .theme-kintsugi .token.constant, .theme-kintsugi .token.symbol, .theme-kintsugi .token.deleted { color: #DB9833; }
-.theme-kintsugi .token.selector, .theme-kintsugi .token.attr-name, .theme-kintsugi .token.string, .theme-kintsugi .token.char, .theme-kintsugi .token.builtin, .theme-kintsugi .token.inserted { color: #cc7f66; }
-.theme-kintsugi .token.operator, .theme-kintsugi .token.entity, .theme-kintsugi .token.url, .theme-kintsugi .language-css .token.string, .theme-kintsugi .style .token.string { color: #E08542; }
-.theme-kintsugi .token.atrule, .theme-kintsugi .token.attr-value, .theme-kintsugi .token.keyword { color: #D66848; font-weight: bold; }
-.theme-kintsugi .token.function, .theme-kintsugi .token.class-name { color: #798283; }
-.theme-kintsugi .token.regex, .theme-kintsugi .token.important, .theme-kintsugi .token.variable { color: #DBAD49; }
-
-/* 1b. Kintsugi Light Flared */
-.theme-kintsugi-light .token.comment, .theme-kintsugi-light .token.prolog, .theme-kintsugi-light .token.doctype, .theme-kintsugi-light .token.cdata { color: #8f8b83; }
-.theme-kintsugi-light .token.punctuation { color: #726e65; }
-.theme-kintsugi-light .token.property, .theme-kintsugi-light .token.tag, .theme-kintsugi-light .token.boolean, .theme-kintsugi-light .token.number, .theme-kintsugi-light .token.constant, .theme-kintsugi-light .token.symbol, .theme-kintsugi-light .token.deleted { color: #90671c; }
-.theme-kintsugi-light .token.selector, .theme-kintsugi-light .token.attr-name, .theme-kintsugi-light .token.string, .theme-kintsugi-light .token.char, .theme-kintsugi-light .token.builtin, .theme-kintsugi-light .token.inserted { color: #a85030; }
-.theme-kintsugi-light .token.operator, .theme-kintsugi-light .token.entity, .theme-kintsugi-light .token.url, .theme-kintsugi-light .language-css .token.string, .theme-kintsugi-light .style .token.string { color: #a45d1d; }
-.theme-kintsugi-light .token.atrule, .theme-kintsugi-light .token.attr-value, .theme-kintsugi-light .token.keyword { color: #b84020; font-weight: bold; }
-.theme-kintsugi-light .token.function, .theme-kintsugi-light .token.class-name { color: #506870; }
-.theme-kintsugi-light .token.regex, .theme-kintsugi-light .token.important, .theme-kintsugi-light .token.variable { color: #87691c; }
-
-/* 2. Tokyo Night */
-.theme-tokyonight .token.comment, .theme-tokyonight .token.prolog { color: #565f89; }
-.theme-tokyonight .token.punctuation { color: #89ddff; }
-.theme-tokyonight .token.property, .theme-tokyonight .token.boolean, .theme-tokyonight .token.number, .theme-tokyonight .token.constant { color: #ff9e64; }
-.theme-tokyonight .token.string, .theme-tokyonight .token.char, .theme-tokyonight .token.builtin { color: #9ece6a; }
-.theme-tokyonight .token.operator { color: #89ddff; }
-.theme-tokyonight .token.keyword, .theme-tokyonight .token.atrule { color: #bb9af7; font-weight: bold; }
-.theme-tokyonight .token.function, .theme-tokyonight .token.class-name { color: #7aa2f7; }
-.theme-tokyonight .token.variable, .theme-tokyonight .token.regex { color: #e0af68; }
-
-/* 3. Kanagawa Dragon */
-.theme-kanagawa .token.comment { color: #737c73; }
-.theme-kanagawa .token.punctuation { color: #9e9b93; }
-.theme-kanagawa .token.number, .theme-kanagawa .token.boolean, .theme-kanagawa .token.constant { color: #e46876; }
-.theme-kanagawa .token.string, .theme-kanagawa .token.char { color: #87a987; }
-.theme-kanagawa .token.operator { color: #c4b28a; }
-.theme-kanagawa .token.keyword { color: #8ba4b0; font-weight: bold; }
-.theme-kanagawa .token.function, .theme-kanagawa .token.class-name { color: #a292a3; }
-.theme-kanagawa .token.variable { color: #e6c384; }
-
-/* 4. Catppuccin Mocha */
-.theme-catppuccin .token.comment { color: #6c7086; }
-.theme-catppuccin .token.punctuation { color: #94e2d5; }
-.theme-catppuccin .token.number, .theme-catppuccin .token.boolean, .theme-catppuccin .token.constant { color: #fab387; }
-.theme-catppuccin .token.string, .theme-catppuccin .token.char { color: #a6e3a1; }
-.theme-catppuccin .token.operator { color: #89dceb; }
-.theme-catppuccin .token.keyword { color: #cba6f7; font-weight: bold; }
-.theme-catppuccin .token.function, .theme-catppuccin .token.class-name { color: #89b4fa; }
-.theme-catppuccin .token.variable { color: #f9e2af; }
-
-/* 5. Solarized Light */
-.theme-solarized-light .token.comment { color: #93a1a1; }
-.theme-solarized-light .token.punctuation { color: #586e75; }
-.theme-solarized-light .token.number, .theme-solarized-light .token.boolean, .theme-solarized-light .token.constant { color: #d33682; }
-.theme-solarized-light .token.string, .theme-solarized-light .token.char { color: #2aa198; }
-.theme-solarized-light .token.operator { color: #859900; }
-.theme-solarized-light .token.keyword { color: #b58900; font-weight: bold; }
-.theme-solarized-light .token.function, .theme-solarized-light .token.class-name { color: #268bd2; }
-.theme-solarized-light .token.variable { color: #cb4b16; }
-
-/* 6. Gruvbox Dark */
-.theme-gruvbox .token.comment { color: #928374; }
-.theme-gruvbox .token.punctuation { color: #d5c4a1; }
-.theme-gruvbox .token.number, .theme-gruvbox .token.boolean, .theme-gruvbox .token.constant { color: #d3869b; }
-.theme-gruvbox .token.string, .theme-gruvbox .token.char { color: #b8bb26; }
-.theme-gruvbox .token.operator { color: #83a598; }
-.theme-gruvbox .token.keyword { color: #fb4934; font-weight: bold; }
-.theme-gruvbox .token.function, .theme-gruvbox .token.class-name { color: #fabd2f; }
-.theme-gruvbox .token.variable { color: #fe8019; }
-
-/* 7. Nord */
-.theme-nord .token.comment { color: #616e88; }
-.theme-nord .token.punctuation { color: #81a1c1; }
-.theme-nord .token.number, .theme-nord .token.boolean, .theme-nord .token.constant { color: #b48ead; }
-.theme-nord .token.string, .theme-nord .token.char { color: #a3be8c; }
-.theme-nord .token.operator { color: #88c0d0; }
-.theme-nord .token.keyword { color: #81a1c1; font-weight: bold; }
-.theme-nord .token.function, .theme-nord .token.class-name { color: #88c0d0; }
-.theme-nord .token.variable { color: #d08770; }
-
-/* 8. Dracula */
-.theme-dracula .token.comment { color: #6272a4; }
-.theme-dracula .token.punctuation { color: #f8f8f2; }
-.theme-dracula .token.number, .theme-dracula .token.boolean, .theme-dracula .token.constant { color: #bd93f9; }
-.theme-dracula .token.string, .theme-dracula .token.char { color: #f1fa8c; }
-.theme-dracula .token.operator { color: #ff79c6; }
-.theme-dracula .token.keyword { color: #ff79c6; font-weight: bold; }
-.theme-dracula .token.function, .theme-dracula .token.class-name { color: #50fa7b; }
-.theme-dracula .token.variable { color: #8be9fd; }
-
-/* 9. One Dark */
-.theme-onedark .token.comment { color: #5c6370; }
-.theme-onedark .token.punctuation { color: #abb2bf; }
-.theme-onedark .token.number, .theme-onedark .token.boolean, .theme-onedark .token.constant { color: #d19a66; }
-.theme-onedark .token.string, .theme-onedark .token.char { color: #98c379; }
-.theme-onedark .token.operator { color: #56b6c2; }
-.theme-onedark .token.keyword { color: #c678dd; font-weight: bold; }
-.theme-onedark .token.function, .theme-onedark .token.class-name { color: #61afef; }
-.theme-onedark .token.variable { color: #e06c75; }
-
-/* 10. Solarized Dark */
-.theme-solarized-dark .token.comment { color: #586e75; }
-.theme-solarized-dark .token.punctuation { color: #839496; }
-.theme-solarized-dark .token.number, .theme-solarized-dark .token.boolean, .theme-solarized-dark .token.constant { color: #d33682; }
-.theme-solarized-dark .token.string, .theme-solarized-dark .token.char { color: #2aa198; }
-.theme-solarized-dark .token.operator { color: #859900; }
-.theme-solarized-dark .token.keyword { color: #b58900; font-weight: bold; }
-.theme-solarized-dark .token.function, .theme-solarized-dark .token.class-name { color: #268bd2; }
-.theme-solarized-dark .token.variable { color: #cb4b16; }
-
-/* 11. GitHub Dark */
-.theme-github-dark .token.comment { color: #8b949e; }
-.theme-github-dark .token.punctuation { color: #c9d1d9; }
-.theme-github-dark .token.number, .theme-github-dark .token.boolean, .theme-github-dark .token.constant { color: #79c0ff; }
-.theme-github-dark .token.string, .theme-github-dark .token.char { color: #a5d6ff; }
-.theme-github-dark .token.operator { color: #ff7b72; }
-.theme-github-dark .token.keyword { color: #ff7b72; font-weight: bold; }
-.theme-github-dark .token.function, .theme-github-dark .token.class-name { color: #d2a8ff; }
-.theme-github-dark .token.variable { color: #ffa657; }
-
-/* 12. Monokai Pro */
-.theme-monokai .token.comment { color: #75715e; }
-.theme-monokai .token.punctuation { color: #f8f8f2; }
-.theme-monokai .token.number, .theme-monokai .token.boolean, .theme-monokai .token.constant { color: #ae81ff; }
-.theme-monokai .token.string, .theme-monokai .token.char { color: #e6db74; }
-.theme-monokai .token.operator { color: #f92672; }
-.theme-monokai .token.keyword { color: #f92672; font-weight: bold; }
-.theme-monokai .token.function, .theme-monokai .token.class-name { color: #a6e22e; }
-.theme-monokai .token.variable { color: #66d9e8; }
-`.trim();
-
-(function() {
-  const s = document.createElement('style');
-  s.textContent = themesCSS;
-  document.head.appendChild(s);
-  document.getElementById('prism-theme')?.remove();
-})();
-
-// ── Width switcher ────────────────────────────────────────────────────
-
-const widthOpts = document.querySelectorAll('#width-switcher .seg-opt');
-const WIDTH_KEY = 'ioskeley-width';
-
-(function initWidth() {
-  const saved = localStorage.getItem(WIDTH_KEY);
-  if (saved) {
-    const btn = document.querySelector(`.seg-opt[data-width="${saved}"]`);
-    if (btn) btn.click();
-  }
-})();
-
-function applyWidth(width) {
-  document.documentElement.classList.remove('sc');
-  if (width === 'sc') document.documentElement.classList.add('sc');
-}
-
-widthOpts.forEach(btn => {
-  btn.addEventListener('click', () => {
-    widthOpts.forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    localStorage.setItem(WIDTH_KEY, btn.dataset.width);
-    document.body.classList.add('switching');
-    applyWidth(btn.dataset.width);
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => document.body.classList.remove('switching'));
-    });
-  });
-});
-
-// ── Try It editor ─────────────────────────────────────────────────────
-
-const tryInput = document.getElementById('try-input');
-const tryHighlight = document.getElementById('try-highlight');
-const tryGutter = document.getElementById('try-gutter');
-const tryLangBtns = document.querySelectorAll('.try-lang-opt');
-const trySamples = document.getElementById('try-samples');
-const tryStatusLang = document.getElementById('try-status-lang');
-let tryLang = 'js';
-const langNames = { js: 'JavaScript', py: 'Python', rust: 'Rust', cpp: 'C++', haskell: 'Haskell', java: 'Java', html: 'HTML' };
-
-const trySamplesData = {
-  js: [
-    {
-      label: 'Fibonacci',
-      code: [
-        'const fibonacci = (n) => {',
-        '    if (n < 2) return n;',
-        '    return fibonacci(n - 1) + fibonacci(n - 2);',
-        '};',
-        '',
-        'const seq = Array.from({ length: 15 }, (_, i) => fibonacci(i));',
-        'console.log("Fibonacci:", seq.join(", "));',
-      ].join('\n'),
-    },
-    {
-      label: 'Filter',
-      code: [
-        'const users = [',
-        '    { name: "Alice", role: "admin" },',
-        '    { name: "Bob", role: "user" },',
-        '    { name: "Charlie", role: "user" },',
-        '];',
-        '',
-        'const admins = users',
-        '    .filter(u => u.role === "admin")',
-        '    .map(u => u.name);',
-        '',
-        'console.log(`Admins: ${admins.join(", ")}`);',
-      ].join('\n'),
-    },
-    {
-      label: 'Async',
-      code: [
-        'async function fetchData(url) {',
-        '    try {',
-        '        const res = await fetch(url);',
-        '        if (!res.ok) throw new Error(`HTTP ${res.status}`);',
-        '        return await res.json();',
-        '    } catch (err) {',
-        '        console.error("Failed:", err.message);',
-        '        return null;',
-        '    }',
-        '}',
-      ].join('\n'),
-    },
-  ],
-  py: [
-    {
-      label: 'Data',
-      code: [
-        'from dataclasses import dataclass',
-        '',
-        '@dataclass',
-        'class Item:',
-        '    name: str',
-        '    price: float',
-        '',
-        '    @property',
-        '    def taxed(self) -> float:',
-        '        return self.price * 1.15',
-        '',
-        'items = [Item("widget", 9.99), Item("gadget", 14.50)]',
-        'for item in items:',
-        '    print(f"{item.name}: ${item.taxed:.2f}")',
-      ].join('\n'),
-    },
-    {
-      label: 'Comprehension',
-      code: [
-        'nums = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]',
-        '',
-        'evens = [x for x in nums if x % 2 == 0]',
-        'odds  = [x for x in nums if x % 2 != 0]',
-        'squares = {x: x**2 for x in nums}',
-        '',
-        'print(f"Evens: {evens}")',
-        'print(f"Odds:  {odds}")',
-        'print(f"Map:   {squares}")',
-      ].join('\n'),
-    },
-    {
-      label: 'Decorator',
-      code: [
-        'import time',
-        '',
-        'def timer(fn):',
-        '    def wrapper(*args, **kwargs):',
-        '        start = time.perf_counter()',
-        '        result = fn(*args, **kwargs)',
-        '        elapsed = time.perf_counter() - start',
-        '        print(f"{fn.__name__} took {elapsed:.4f}s")',
-        '        return result',
-        '    return wrapper',
-        '',
-        '@timer',
-        'def slow_add(a, b):',
-        '    time.sleep(0.1)',
-        '    return a + b',
-      ].join('\n'),
-    },
-  ],
-  rust: [
-    {
-      label: 'Enum',
-      code: [
-        '#[derive(Debug)]',
-        'enum Status {',
-        '    Active,',
-        '    Inactive,',
-        '    Pending(String),',
-        '}',
-        '',
-        'fn describe(s: &Status) -> &str {',
-        '    match s {',
-        '        Status::Active => "running",',
-        '        Status::Inactive => "stopped",',
-        '        Status::Pending(r) => r,',
-        '    }',
-        '}',
-      ].join('\n'),
-    },
-    {
-      label: 'Generics',
-      code: [
-        'fn identity<T: std::fmt::Display>(x: T) -> String {',
-        '    format!("value: {}", x)',
-        '}',
-        '',
-        'fn main() {',
-        '    let s = identity(42);',
-        '    let t = identity("hello");',
-        '    println!("{s}");',
-        '    println!("{t}");',
-        '}',
-      ].join('\n'),
-    },
-    {
-      label: 'Iterator',
-      code: [
-        'fn process(nums: &[i32]) -> Vec<i32> {',
-        '    nums.iter()',
-        '        .filter(|&&n| n > 0)',
-        '        .map(|&n| n * 2)',
-        '        .collect()',
-        '}',
-        '',
-        'let data = [-3, 0, 5, -1, 8, 2];',
-        'let result = process(&data);',
-        'println!("{:?}", result);',
-      ].join('\n'),
-    },
-  ],
-  html: [
-    {
-      label: 'Article',
-      code: [
-        '<article class="post">',
-        '    <header>',
-        '        <h1>Hello, <span class="hl">World</span></h1>',
-        '        <time datetime="2026-05-26">May 26</time>',
-        '    </header>',
-        '    <section class="content">',
-        '        <p>Styled with <strong>Ioskeley Mono</strong>.</p>',
-        '        <pre><code>npm run build</code></pre>',
-        '    </section>',
-        '</article>',
-      ].join('\n'),
-    },
-    {
-      label: 'Form',
-      code: [
-        '<form action="/submit" method="POST">',
-        '    <label for="email">Email:</label>',
-        '    <input type="email" id="email" name="email" required>',
-        '',
-        '    <label for="role">Role:</label>',
-        '    <select id="role" name="role">',
-        '        <option value="user">User</option>',
-        '        <option value="admin">Admin</option>',
-        '    </select>',
-        '',
-        '    <button type="submit">Submit</button>',
-        '</form>',
-      ].join('\n'),
-    },
-    {
-      label: 'Table',
-      code: [
-        '<table>',
-        '    <caption>Font Weights</caption>',
-        '    <thead>',
-        '        <tr><th>Name</th><th>Value</th></tr>',
-        '    </thead>',
-        '    <tbody>',
-        '        <tr><td>Regular</td><td>400</td></tr>',
-        '        <tr><td>Medium</td><td>500</td></tr>',
-        '        <tr><td>Bold</td><td>700</td></tr>',
-        '    </tbody>',
-        '</table>',
-      ].join('\n'),
-    },
-  ],
-  cpp: [
-    {
-      label: 'Template',
-      code: [
-        'template <typename T>',
-        'concept Numeric = std::is_arithmetic_v<T>;',
-        '',
-        'template <Numeric T>',
-        'T max(T a, T b) {',
-        '    return (a > b) ? a : b;',
-        '}',
-        '',
-        'auto result = max(3.14, 2.72);',
-        'auto r2 = max<int>(42, 7);',
-      ].join('\n'),
-    },
-    {
-      label: 'Lambda',
-      code: [
-        '#include <vector>',
-        '#include <algorithm>',
-        '',
-        'auto main() -> int {',
-        '    std::vector<int> nums = {1, 2, 3, 4, 5};',
-        '',
-        '    auto even = std::count_if(',
-        '        nums.begin(), nums.end(),',
-        '        [](int n) { return n % 2 == 0; }',
-        '    );',
-        '',
-        '    return even;',
-        '}',
-      ].join('\n'),
-    },
-    {
-      label: 'RAII',
-      code: [
-        'class Buffer {',
-        '    int* data;',
-        'public:',
-        '    explicit Buffer(size_t sz)',
-        '        : data(new int[sz]) {}',
-        '',
-        '    ~Buffer() { delete[] data; }',
-        '',
-        '    Buffer(const Buffer&) = delete;',
-        '    auto operator=(const Buffer&) = delete;',
-        '};',
-      ].join('\n'),
-    },
-  ],
-  haskell: [
-    {
-      label: 'Quicksort',
-      code: [
-        'quicksort :: Ord a => [a] -> [a]',
-        'quicksort [] = []',
-        'quicksort (p:xs) =',
-        '    quicksort smaller ++ [p] ++ quicksort larger',
-        '  where',
-        '    smaller = filter (< p) xs',
-        '    larger  = filter (>= p) xs',
-      ].join('\n'),
-    },
-    {
-      label: 'Functor',
-      code: [
-        'data Maybe\' a = Nothing\' | Just\' a',
-        '    deriving (Show, Eq)',
-        '',
-        'instance Functor Maybe\' where',
-        '    fmap _ Nothing\'  = Nothing\'',
-        '    fmap f (Just\' x) = Just\' (f x)',
-      ].join('\n'),
-    },
-    {
-      label: 'Eval',
-      code: [
-        'data Expr = Val Int',
-        '          | Add Expr Expr',
-        '          | Mul Expr Expr',
-        '',
-        'eval :: Expr -> Maybe Int',
-        'eval (Val n)   = Just n',
-        'eval (Add x y) = do',
-        '    a <- eval x',
-        '    b <- eval y',
-        '    return (a + b)',
-        'eval (Mul x y) = do',
-        '    a <- eval x',
-        '    b <- eval y',
-        '    return (a * b)',
-      ].join('\n'),
-    },
-  ],
-  java: [
-    {
-      label: 'Records',
-      code: [
-        'public sealed interface Shape',
-        '    permits Circle, Rectangle {}',
-        '',
-        'record Circle(double radius) implements Shape {',
-        '    public double area() {',
-        '        return Math.PI * radius * radius;',
-        '    }',
-        '}',
-        '',
-        'record Rectangle(double w, double h) implements Shape {',
-        '    public double area() {',
-        '        return w * h;',
-        '    }',
-        '}',
-      ].join('\n'),
-    },
-    {
-      label: 'Streams',
-      code: [
-        'var result = IntStream.rangeClosed(1, 20)',
-        '    .filter(n -> n % 2 == 0)',
-        '    .mapToObj(n -> "%d:%d".formatted(n, n * n))',
-        '    .collect(Collectors.joining(", "));',
-        '',
-        'System.out.println(result);',
-      ].join('\n'),
-    },
-    {
-      label: 'Generics',
-      code: [
-        'public class Pair<A, B> {',
-        '    private final A first;',
-        '    private final B second;',
-        '',
-        '    public Pair(A first, B second) {',
-        '        this.first = first;',
-        '        this.second = second;',
-        '    }',
-        '',
-        '    public A first()  { return first; }',
-        '    public B second() { return second; }',
-        '',
-        '    public static <A, B> Pair<A, B> of(A a, B b) {',
-        '        return new Pair<>(a, b);',
-        '    }',
-        '}',
-      ].join('\n'),
-    },
-  ],
-};
-
-function renderSamples() {
-  const samples = trySamplesData[tryLang] || [];
-  trySamples.innerHTML = samples.map((s, i) =>
-    `<button class="try-sample-btn" data-sample="${i}">${s.label}</button>`
-  ).join('');
-}
-
-function loadSample(index) {
-  const samples = trySamplesData[tryLang];
-  if (!samples || !samples[index]) return;
-  tryInput.value = samples[index].code;
-  updateEditor();
-  syncScroll();
-}
-
-// Load languages once, not on every keystroke, so re-highlighting stays sync.
-const loadedLangs = new Set();
-function ensureLang(lang, done) {
-  if (loadedLangs.has(lang) || Prism.languages[lang]) { loadedLangs.add(lang); done(); return; }
-  Prism.plugins.autoloader.loadLanguages([lang], () => { loadedLangs.add(lang); done(); });
-}
-
-function renderGutter(lineCount) {
-  // Typing inside a line shouldn't touch the gutter.
-  if (tryGutter.childElementCount === lineCount) return;
-  let s = '';
-  for (let i = 1; i <= lineCount; i++) s += i + '\n';
-  tryGutter.textContent = s;
-}
-
-function updateEditor() {
-  const text = tryInput.value;
-  renderGutter(text.split('\n').length);
-  // Trailing newline needs a placeholder or the layer ends up a row short.
-  tryHighlight.textContent = text.endsWith('\n') ? text + ' ' : text;
-  tryHighlight.className = `language-${tryLang}`;
-  ensureLang(tryLang, () => Prism.highlightElement(tryHighlight));
-}
-
-function syncScroll() {
-  const wrap = tryHighlight.parentElement;   // the <pre class="try-highlight">
-  wrap.scrollTop = tryInput.scrollTop;
-  wrap.scrollLeft = tryInput.scrollLeft;
-  tryGutter.scrollTop = tryInput.scrollTop;
-
-  // A scrollbar shrinks the textarea's viewport but not the highlight layer,
-  // so match it or the colored text bleeds under the scrollbar.
-  const h = tryInput.clientHeight, w = tryInput.clientWidth;
-  if (h && wrap.style.height !== h + 'px') wrap.style.height = h + 'px';
-  if (w && wrap.style.width !== w + 'px') wrap.style.width = w + 'px';
-}
-
-tryInput.addEventListener('scroll', syncScroll, { passive: true });
-tryInput.addEventListener('input', () => { updateEditor(); syncScroll(); });
-
-tryInput.addEventListener('keydown', (e) => {
-  if (e.key !== 'Tab') return;
-  e.preventDefault();
-  const { selectionStart: a, selectionEnd: b, value } = tryInput;
-
-  if (a === b && !e.shiftKey) {
-    // setRangeText keeps native undo working; execCommand doesn't.
-    tryInput.setRangeText('\t', a, b, 'end');
-  } else {
-    // Indent or outdent every line the selection touches.
-    const start = value.lastIndexOf('\n', a - 1) + 1;
-    const end = value.indexOf('\n', b) === -1 ? value.length : value.indexOf('\n', b);
-    const block = value.slice(start, end);
-    const shifted = e.shiftKey
-      ? block.replace(/^(\t| {1,4})/gm, '')
-      : block.replace(/^/gm, '\t');
-    tryInput.setRangeText(shifted, start, end, 'select');
-  }
-  updateEditor();
-  syncScroll();
-});
-
-tryLangBtns.forEach(btn => {
-  btn.addEventListener('click', () => {
-    tryLangBtns.forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    tryLang = btn.dataset.tryLang;
-    tryStatusLang.textContent = langNames[tryLang] || tryLang;
-    renderSamples();
-    loadSample(0);
-  });
-});
-
-trySamples.addEventListener('click', (e) => {
-  const btn = e.target.closest('.try-sample-btn');
-  if (!btn) return;
-  loadSample(parseInt(btn.dataset.sample));
-});
-
-// Init — load first sample, pre-highlight
-renderSamples();
-tryInput.value = trySamplesData.js[0].code;
-tryStatusLang.textContent = 'JavaScript';
-Prism.plugins.autoloader.loadLanguages(
-  ['javascript', 'python', 'rust', 'cpp', 'haskell', 'java', 'markup'],
-  () => {
-    updateEditor();
-  }
-);
-
-// ── Playground Interactive Controls ───────────────────────────────────
-
-const tryEditorBox = document.getElementById('try-editor-box');
-const sizeSlider = document.getElementById('try-size-slider');
-const sizeVal = document.getElementById('try-size-val');
-const weightSel = document.getElementById('try-weight-sel');
-const themeSel = document.getElementById('try-theme-sel');
-const ligaturesBtn = document.getElementById('try-ligatures-btn');
-
-if (sizeSlider && sizeVal && tryEditorBox) {
-  sizeSlider.addEventListener('input', () => {
-    const val = sizeSlider.value;
-    sizeVal.textContent = `${val}px`;
-    // Drive ALL layers via CSS variables — no per-element style mutations
-    // This prevents the highlight/input font-size desync (jaggedness bug)
-    tryEditorBox.style.setProperty('--try-fz', `${val}px`);
-    updateEditor();
-  });
-}
-
-if (weightSel) {
-  weightSel.addEventListener('change', () => {
-    const w = weightSel.value;
-    tryEditorBox.style.setProperty('--try-fw', w);
-    tryInput.style.fontWeight = w;
-    tryHighlight.style.fontWeight = w;
-  });
-}
-
-const ALL_THEMES = [
-  'theme-kintsugi', 'theme-kintsugi-light', 'theme-kanagawa', 'theme-tokyonight',
-  'theme-catppuccin', 'theme-gruvbox', 'theme-nord', 'theme-dracula', 'theme-onedark',
-  'theme-solarized-dark', 'theme-solarized-light', 'theme-github-dark', 'theme-monokai'
-];
-
-if (themeSel && tryEditorBox) {
-  themeSel.addEventListener('change', () => {
-    tryEditorBox.classList.remove(...ALL_THEMES);
-    tryEditorBox.classList.add(themeSel.value);
-  });
-}
-
-if (ligaturesBtn) {
-  let ligaturesOn = true;
-  ligaturesBtn.addEventListener('click', () => {
-    ligaturesOn = !ligaturesOn;
-    ligaturesBtn.classList.toggle('active', ligaturesOn);
-    const val = ligaturesOn ? 'normal' : 'none';
-    tryInput.style.fontVariantLigatures = val;
-    tryHighlight.style.fontVariantLigatures = val;
-  });
-}
-
-// ── 1-Click Editor Setup Tabs ─────────────────────────────────────────
-
-const configSnippets = {
-  vscode: `// VS Code / Cursor: settings.json
-{
-  "editor.fontFamily": "'Ioskeley Mono', monospace",
-  "editor.fontLigatures": true,
-  "editor.fontWeight": "400",
-  "editor.fontSize": 14.5,
-  "editor.lineHeight": 1.55
-}`,
-  zed: `// Zed: settings.json
-{
-  "buffer_font_family": "Ioskeley Mono",
-  "buffer_font_size": 15,
-  "buffer_line_height": "comfortable"
-}`,
-  ghostty: `# Ghostty: config
-font-family = Ioskeley Mono
-font-size = 14`,
-  kitty: `# Kitty: kitty.conf
-font_family      Ioskeley Mono Term
-bold_font        auto
-italic_font      auto
-bold_italic_font auto
-font_size        14.0`,
-  alacritty: `# Alacritty: alacritty.toml
-[font.normal]
-family = "Ioskeley Mono"
-style = "Regular"`,
-  wezterm: `-- WezTerm: wezterm.lua
-local wezterm = require 'wezterm'
-local config = wezterm.config_builder()
-config.font = wezterm.font('Ioskeley Mono')
-config.font_size = 14.0
-return config`,
-  neovim: `-- Neovim GUI (Neovide / Goneovim)
-vim.opt.guifont = "IoskeleyMono Nerd Font:h14"`
-};
-
-(function initConfigTabs() {
-  const tabs = document.querySelectorAll('.config-tab');
-  const codeEl = document.getElementById('config-code');
-  const copyBtn = document.getElementById('copy-cfg-btn');
-  const copyText = document.getElementById('copy-cfg-text');
-  let currentKey = 'vscode';
-
-  if (!codeEl) return;
-
-  function renderConfig(key) {
-    currentKey = key;
-    const raw = configSnippets[key] || '';
-    // Highlighter is registered further down, so the first render is plain.
-    if (window.__cfgHighlight) codeEl.innerHTML = window.__cfgHighlight(raw);
-    else codeEl.textContent = raw;
-  }
-
-  tabs.forEach(tab => {
-    tab.addEventListener('click', () => {
-      tabs.forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
-      renderConfig(tab.dataset.cfg);
-    });
-  });
-
-  if (copyBtn) {
-    copyBtn.addEventListener('click', async () => {
-      try {
-        await navigator.clipboard.writeText(configSnippets[currentKey]);
-        copyBtn.classList.add('copied');
-        if (copyText) copyText.textContent = '✓ Copied';
-        setTimeout(() => {
-          copyBtn.classList.remove('copied');
-          if (copyText) copyText.textContent = 'Copy';
-        }, 2000);
-      } catch (_) {}
-    });
-  }
-
-  renderConfig('vscode');
-})();
-
-// ── Download counts ──────────────────────────────────────────────────
-
-(async function loadDownloads() {
-  try {
-    const res = await fetch('https://api.github.com/repos/ahatem/IoskeleyMono/releases/latest');
-    if (!res.ok) return;
-    const release = await res.json();
-    const assetMap = {};
-    release.assets.forEach(a => { assetMap[a.name] = a.download_count; });
-
-    const rows = document.querySelectorAll('.dl-cell[data-zip]');
-    let maxCount = 0;
-    const counts = [];
-    rows.forEach(el => {
-      const c = assetMap[el.dataset.zip] || 0;
-      counts.push(c);
-      if (c > maxCount) maxCount = c;
-    });
-    if (maxCount === 0) return;
-
-    rows.forEach((el, i) => {
-      const pct = (counts[i] / maxCount) * 100;
-      el.querySelector('.dl-fill').style.width = pct + '%';
-      el.querySelector('.dl-num').textContent = counts[i].toLocaleString();
-    });
-  } catch (_) {}
-})();
-
-// ── Hover Loupe Magnifier ─────────────────────────────────────────────
-
-(function initLoupe() {
-  if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
-
-  const cards = document.querySelectorAll('.comp-card');
-  const ZOOM_LEVEL = 2.4;
-
-  cards.forEach(card => {
-    const img = card.querySelector('img');
-    if (!img) return;
-
-    const loupe = document.createElement('div');
-    loupe.className = 'comp-loupe';
-    card.appendChild(loupe);
-
-    let rect = null;
-
-    function updateRect() {
-      rect = card.getBoundingClientRect();
-      loupe.style.backgroundImage = `url("${img.currentSrc || img.src}")`;
-      loupe.style.backgroundSize = `${rect.width * ZOOM_LEVEL}px ${rect.height * ZOOM_LEVEL}px`;
-    }
-
-    card.addEventListener('mouseenter', (e) => {
-      updateRect();
-      loupe.classList.add('is-active');
-      moveLoupe(e);
-    });
-
-    card.addEventListener('mouseleave', () => {
-      loupe.classList.remove('is-active');
-    });
-
-    function moveLoupe(e) {
-      if (!rect) updateRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-
-      loupe.style.left = `${x}px`;
-      loupe.style.top = `${y}px`;
-
-      const bgX = (x / rect.width) * 100;
-      const bgY = (y / rect.height) * 100;
-      loupe.style.backgroundPosition = `${bgX}% ${bgY}%`;
-    }
-
-    card.addEventListener('mousemove', moveLoupe);
-  });
-})();
-
-// ── Lightbox & Image Zoom ─────────────────────────────────────────────
-
-(function initLightbox() {
-  const lightbox = document.getElementById('lightbox');
-  if (!lightbox) return;
-
-  const backdrop = document.getElementById('lightbox-backdrop');
-  const closeBtn = document.getElementById('lightbox-close');
-  const prevBtn = document.getElementById('lightbox-prev');
-  const nextBtn = document.getElementById('lightbox-next');
-  const zoomBtn = document.getElementById('lightbox-zoom');
-  const zoomLabel = document.getElementById('lightbox-zoom-label');
-  const rawLink = document.getElementById('lightbox-raw');
-  const titleEl = document.getElementById('lightbox-title');
-  const viewport = document.getElementById('lightbox-viewport');
-  const imgEl = document.getElementById('lightbox-img');
-  const cards = Array.from(document.querySelectorAll('.comp-card'));
-
-  if (!cards.length) return;
-
-  let currentIndex = 0;
-  let isZoomed = false;
-
-  // Hold the <img>, not its src — the art swaps on theme change and a cached
-  // src would reopen the old one.
-  const galleryItems = cards.map(card => {
-    const img = card.querySelector('img');
-    return {
-      img,
-      alt: img ? img.getAttribute('alt') : '',
-      title: card.dataset.title || (img ? img.getAttribute('alt') : 'Comparison Specimen'),
-    };
-  });
-
-  function showImage(index) {
-    if (index < 0) index = galleryItems.length - 1;
-    if (index >= galleryItems.length) index = 0;
-    currentIndex = index;
-
-    const item = galleryItems[currentIndex];
-    const src = item.img ? item.img.getAttribute('src') : '';
-    imgEl.src = src;
-    imgEl.alt = item.alt;
-    titleEl.textContent = item.title;
-    if (rawLink) rawLink.href = src;
-
-    setZoom(false);
-  }
-
-  function setZoom(zoomed) {
-    isZoomed = zoomed;
-    if (isZoomed) {
-      viewport.classList.add('is-zoomed');
-      if (zoomLabel) zoomLabel.textContent = 'Fit Screen';
-    } else {
-      viewport.classList.remove('is-zoomed');
-      if (zoomLabel) zoomLabel.textContent = '1:1 Zoom';
-      viewport.scrollTop = 0;
-      viewport.scrollLeft = 0;
+/* ==========================================================================
+   Ioskeley Mono — showcase site
+   No framework, no syntax-highlighting library. The frozen hierarchy is
+   implemented here so the page keeps exact control over which punctuation
+   takes Proof Red, and so a visitor pays for no third-party script.
+   ========================================================================== */
+(function () {
+  'use strict';
+
+  var root = document.documentElement;
+  var $ = function (sel, ctx) { return (ctx || document).querySelector(sel); };
+  var $$ = function (sel, ctx) { return Array.prototype.slice.call((ctx || document).querySelectorAll(sel)); };
+
+  /* ------------------------------------------------------------- fonts -- */
+
+  var WEIGHT_FILE = {
+    100: 'Thin', 200: 'ExtraLight', 300: 'Light', 350: 'SemiLight', 400: 'Regular',
+    500: 'Medium', 600: 'SemiBold', 700: 'Bold', 800: 'ExtraBold', 900: 'Black'
+  };
+  var WEIGHT_NAME = {
+    100: 'Thin', 200: 'ExtraLight', 300: 'Light', 350: 'SemiLight', 400: 'Regular',
+    500: 'Medium', 600: 'SemiBold', 700: 'Bold', 800: 'ExtraBold', 900: 'Black'
+  };
+  var ALL_WEIGHTS = [100, 200, 300, 350, 400, 500, 600, 700, 800, 900];
+
+  /* Regular, Bold and Italic are declared in the stylesheet and preloaded.
+     Everything else is declared on demand so a visitor who never scrolls to a
+     section never downloads its faces. */
+  var declared = {};
+  function ensureFace(weight, italic, semiCondensed) {
+    var key = weight + '|' + (italic ? 1 : 0) + '|' + (semiCondensed ? 1 : 0);
+    if (declared[key]) return;
+    declared[key] = true;
+
+    var name = WEIGHT_FILE[weight];
+    if (!name) return;
+    /* Regular is spelled out only for the Normal upright face; the other
+       Regulars are IoskeleyMono-Italic and IoskeleyMono-SemiCondensed[Italic]. */
+    if (weight === 400 && (italic || semiCondensed)) name = '';
+    var file = 'IoskeleyMono-' + (semiCondensed ? 'SemiCondensed' : '') + name + (italic ? 'Italic' : '') + '.woff2';
+    var style = document.createElement('style');
+    /* Injected into the document, so the path is relative to index.html,
+       not to the stylesheet. */
+    style.textContent = '@font-face{font-family:' + (semiCondensed ? 'IoskeleySC' : 'Ioskeley') +
+      ';src:url("fonts/' + file + '") format("woff2");font-weight:' + weight +
+      ';font-style:' + (italic ? 'italic' : 'normal') + ';font-display:swap;}';
+    document.head.appendChild(style);
+
+    if (document.fonts && document.fonts.load) {
+      document.fonts.load(weight + ' 16px "' + (semiCondensed ? 'IoskeleySC' : 'Ioskeley') + '"' +
+        (italic ? ' italic' : '')).catch(function () {});
     }
   }
 
-  function toggleZoom() {
-    setZoom(!isZoomed);
+  /* Faces needed by a section the visitor is about to reach. */
+  function whenNear(el, fn, margin) {
+    if (!el || !('IntersectionObserver' in window)) { fn(); return; }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        io.disconnect();
+        fn();
+      });
+    }, { rootMargin: margin || '800px 0px' });
+    io.observe(el);
   }
 
-  function openLightbox(index) {
-    showImage(index);
-    lightbox.classList.add('active');
-    lightbox.setAttribute('aria-hidden', 'false');
-    document.body.style.overflow = 'hidden';
-  }
+  /* ------------------------------------------------------------- theme -- */
 
-  function closeLightbox() {
-    lightbox.classList.remove('active');
-    lightbox.setAttribute('aria-hidden', 'true');
-    document.body.style.overflow = '';
-    setZoom(false);
-  }
+  var themeLabel = $('#theme-label');
+  var themeButton = $('#theme-toggle');
 
-  cards.forEach((card, i) => {
-    card.addEventListener('click', () => openLightbox(i));
-  });
+  function isLight() { return root.getAttribute('data-theme') === 'light'; }
 
-  if (backdrop) backdrop.addEventListener('click', closeLightbox);
-  if (closeBtn) closeBtn.addEventListener('click', closeLightbox);
-  if (zoomBtn) zoomBtn.addEventListener('click', toggleZoom);
-  if (viewport) viewport.addEventListener('click', (e) => {
-    if (e.target === viewport || e.target === imgEl) {
-      toggleZoom();
-    }
-  });
-
-  if (prevBtn) prevBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    showImage(currentIndex - 1);
-  });
-
-  if (nextBtn) nextBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    showImage(currentIndex + 1);
-  });
-
-  document.addEventListener('keydown', (e) => {
-    if (!lightbox.classList.contains('active')) return;
-
-    if (e.key === 'Escape') {
-      closeLightbox();
-    } else if (e.key === 'ArrowLeft') {
-      showImage(currentIndex - 1);
-    } else if (e.key === 'ArrowRight') {
-      showImage(currentIndex + 1);
-    } else if (e.key === 'z' || e.key === 'Z') {
-      toggleZoom();
-    }
-  });
-})();
-
-// ── Split Diff Slider ─────────────────────────────────────────────────
-
-(function initSplitDiff() {
-  const container = document.querySelector('.split-diff-container');
-  if (!container) return;
-
-  const beforeLayer = container.querySelector('.split-diff-layer--before');
-  const handle = container.querySelector('.split-diff-handle');
-  if (!beforeLayer || !handle) return;
-
-  let dragging = false;
-
-  function setPosition(clientX) {
-    const rect = container.getBoundingClientRect();
-    let pct = ((clientX - rect.left) / rect.width) * 100;
-    pct = Math.max(5, Math.min(95, pct));
-    beforeLayer.style.width = pct + '%';
-    handle.style.left = pct + '%';
-  }
-
-  handle.addEventListener('mousedown', (e) => {
-    e.preventDefault();
-    dragging = true;
-    document.body.style.cursor = 'ew-resize';
-    document.body.style.userSelect = 'none';
-  });
-
-  document.addEventListener('mousemove', (e) => {
-    if (!dragging) return;
-    setPosition(e.clientX);
-  });
-
-  document.addEventListener('mouseup', () => {
-    if (!dragging) return;
-    dragging = false;
-    document.body.style.cursor = '';
-    document.body.style.userSelect = '';
-  });
-
-  // Touch support
-  handle.addEventListener('touchstart', (e) => {
-    e.preventDefault();
-    dragging = true;
-  }, { passive: false });
-
-  document.addEventListener('touchmove', (e) => {
-    if (!dragging) return;
-    setPosition(e.touches[0].clientX);
-  }, { passive: true });
-
-  document.addEventListener('touchend', () => { dragging = false; });
-})();
-
-// ── Header Width Switcher Sync ────────────────────────────────────────
-
-(function initHeaderWidth() {
-  const headerBtns = document.querySelectorAll('.header-w-btn');
-  const tryWidthSel = document.getElementById('try-width-sel');
-
-  function applyWidthClass(w) {
-    document.documentElement.classList.remove('sc');
-    if (w === 'sc') document.documentElement.classList.add('sc');
-    localStorage.setItem('ioskeley-width', w);
-  }
-
-  function syncAll(w) {
-    // sync header buttons
-    headerBtns.forEach(b => b.classList.toggle('active', b.dataset.width === w));
-    // sync Try It dropdown
-    if (tryWidthSel) tryWidthSel.value = w;
-    applyWidthClass(w);
-  }
-
-  headerBtns.forEach(btn => {
-    btn.addEventListener('click', () => syncAll(btn.dataset.width));
-  });
-
-  if (tryWidthSel) {
-    tryWidthSel.addEventListener('change', () => syncAll(tryWidthSel.value));
-  }
-
-  // Restore saved width
-  const saved = localStorage.getItem('ioskeley-width');
-  if (saved) syncAll(saved);
-})();
-
-// ── Light / dark toggle ───────────────────────────────────────────────
-
-(function initThemeToggle() {
-  const btn = document.getElementById('theme-toggle');
-  if (!btn) return;
-  const root = document.documentElement;
-
-  // Baked art can't inherit CSS vars, so swap the file. data-* keeps the
-  // light renders lazy for anyone who never leaves dark mode.
   function syncArtwork() {
-    const light = root.getAttribute('data-theme') === 'light';
-    document.querySelectorAll('img[data-light]').forEach(img => {
-      const next = light ? img.dataset.light : img.dataset.dark;
+    var light = isLight();
+    $$('img[data-dark][data-light]').forEach(function (img) {
+      var next = light ? img.dataset.light : img.dataset.dark;
       if (next && img.getAttribute('src') !== next) img.setAttribute('src', next);
     });
-
-    // Only follow the site between the two Kintsugi variants. If they've
-    // picked Dracula to preview, leave it alone.
-    const box = document.getElementById('try-editor-box');
-    const sel = document.getElementById('try-theme-sel');
-    if (!box || !sel) return;
-    const want = light ? 'theme-kintsugi-light' : 'theme-kintsugi';
-    const other = light ? 'theme-kintsugi' : 'theme-kintsugi-light';
-    if (box.classList.contains(other)) {
-      box.classList.remove(other);
-      box.classList.add(want);
-      sel.value = want;
-    }
+    if (themeLabel) themeLabel.textContent = light ? 'Light' : 'Dark';
+    if (themeButton) themeButton.setAttribute('aria-label', 'Switch to ' + (light ? 'dark' : 'light') + ' theme');
   }
-  syncArtwork();
 
-  btn.addEventListener('click', () => {
-    const light = root.getAttribute('data-theme') === 'light';
-    if (light) root.removeAttribute('data-theme');
-    else root.setAttribute('data-theme', 'light');
-    try { localStorage.setItem('ioskeley-theme', light ? 'dark' : 'light'); } catch (_) {}
-    syncArtwork();
-  });
+  if (themeButton) {
+    themeButton.addEventListener('click', function () {
+      if (isLight()) root.removeAttribute('data-theme');
+      else root.setAttribute('data-theme', 'light');
+      try { localStorage.setItem('ioskeley-theme', isLight() ? 'light' : 'dark'); } catch (e) {}
+      syncArtwork();
+    });
+  }
 
-  // Follow the OS until they pick a side.
-  const mq = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)');
+  // Follow the system until the visitor picks a side.
+  var mq = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)');
   if (mq && mq.addEventListener) {
-    mq.addEventListener('change', e => {
-      let saved = null;
-      try { saved = localStorage.getItem('ioskeley-theme'); } catch (_) {}
+    mq.addEventListener('change', function (e) {
+      var saved = null;
+      try { saved = localStorage.getItem('ioskeley-theme'); } catch (e) {}
       if (saved) return;
       if (e.matches) root.setAttribute('data-theme', 'light');
       else root.removeAttribute('data-theme');
       syncArtwork();
     });
   }
-})();
 
-// ── Comparison font picker (lazy-loaded web fonts) ────────────────────
+  /* ------------------------------------------------------- tokenizing -- */
 
-(function initSplitFontPicker() {
-  const sel = document.getElementById('split-font-sel');
-  const layer = document.querySelector('.split-diff-layer--after');
-  const badge = document.getElementById('split-badge-right');
-  if (!sel || !layer || !badge) return;
+  /* Structural punctuation takes Proof Red. Everything else stays neutral. */
+  var STRUCTURAL = '{ } [ ] ( ) " \''.split(' ');
 
-  // Fetched on first pick, so the page costs nothing if this is never used.
-  const loaded = new Set();
-
-  function loadWebFont(spec, family) {
-    if (loaded.has(spec)) return Promise.resolve();
-    loaded.add(spec);
-
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = `https://fonts.googleapis.com/css2?family=${spec}&display=swap`;
-    document.head.appendChild(link);
-
-    // Resolve once the face is usable, not just when the CSS lands.
-    return new Promise(resolve => {
-      link.addEventListener('load', () => {
-        if (document.fonts && document.fonts.load) {
-          document.fonts.load(`400 1em "${family}"`).then(resolve, resolve);
-        } else resolve();
-      });
-      link.addEventListener('error', resolve);
-    });
-  }
-
-  async function apply() {
-    const opt = sel.selectedOptions[0];
-    const value = sel.value;
-    const spec = opt.dataset.webfont;
-    badge.textContent = opt.textContent.trim();
-
-    if (spec) {
-      layer.classList.add('is-loading-font');
-      await loadWebFont(spec, value);
-      layer.classList.remove('is-loading-font');
-      // Quoted, with a fallback for the load window.
-      layer.style.fontFamily = `"${value}", monospace`;
-    } else {
-      layer.style.fontFamily = value;
+  var LANGS = {
+    js: {
+      line: ['//'], block: [['/*', '*/']], quotes: ['"', "'", '`'],
+      keywords: 'const let var function return if else for while do switch case break continue new class extends super this typeof instanceof in of delete void try catch finally throw import export from default async await yield static',
+      literals: 'true false null undefined NaN Infinity'
+    },
+    py: {
+      line: ['#'], block: [], quotes: ['"', "'"],
+      keywords: 'def class return if elif else for while import from as pass break continue with lambda yield global nonlocal assert del raise try except finally in is not and or async await match case',
+      literals: 'True False None self'
+    },
+    rust: {
+      line: ['//'], block: [['/*', '*/']], quotes: ['"'],
+      keywords: 'fn let mut const struct enum impl trait pub use mod match if else for while loop return where as in ref self crate super type static move unsafe async await break continue',
+      literals: 'true false None Some Ok Err'
+    },
+    c: {
+      line: ['//'], block: [['/*', '*/']], quotes: ['"', "'"],
+      keywords: 'int char long short unsigned signed float double void struct union enum typedef static const volatile extern inline return if else for while do switch case break continue sizeof goto register restrict',
+      literals: 'NULL true false'
     }
+  };
+  var LANG_LABEL = { js: 'JavaScript', py: 'Python', rust: 'Rust', c: 'C' };
+
+  function esc(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   }
 
-  sel.addEventListener('change', apply);
-  apply();
-})();
+  function words(list) {
+    var set = {};
+    list.split(/\s+/).forEach(function (w) { if (w) set[w] = true; });
+    return set;
+  }
 
-// ── Syntax highlight the comparison slider ────────────────────────────
+  var OP_CHARS = '+-*/%=<>!&|^~?';
+  var PUNCT_CHARS = '{}()[];,:.';
 
-(function highlightSplitDiff() {
-  const blocks = document.querySelectorAll('.split-diff-content code.language-js');
-  if (!blocks.length || typeof Prism === 'undefined') return;
-  // Identical markup both sides, so the colors line up across the divider.
-  blocks.forEach(b => Prism.highlightElement(b));
-})();
+  /* One pass, longest match first. A delimiter is punctuation and the content
+     it encloses keeps its own role — the same split the production artwork
+     uses. */
+  function tokenize(src, langName) {
+    var L = LANGS[langName] || LANGS.js;
+    var kw = L._kw || (L._kw = words(L.keywords));
+    var lit = L._lit || (L._lit = words(L.literals));
+    var out = '';
+    var n = src.length;
+    var i = 0;
 
-// ── Installation Tabs ─────────────────────────────────────────────────
+    function span(cls, text) { return '<span class="' + cls + '">' + esc(text) + '</span>'; }
+    function mark(ch) {
+      return STRUCTURAL.indexOf(ch) > -1 ? span('t-mark', ch) : span('t-punct', ch);
+    }
 
-(function initInstallTabs() {
-  const tabs = document.querySelectorAll('.install-tab');
-  const panels = document.querySelectorAll('.install-tab-content');
-  if (!tabs.length) return;
+    while (i < n) {
+      var c = src.charAt(i);
+      var hit = null;
 
-  tabs.forEach(tab => {
-    tab.addEventListener('click', () => {
-      tabs.forEach(t => t.classList.remove('active'));
-      panels.forEach(p => p.classList.remove('active'));
-      tab.classList.add('active');
-      const target = document.querySelector(`.install-tab-content[data-os-content="${tab.dataset.os}"]`);
-      if (target) target.classList.add('active');
-    });
-  });
-
-  // Activate first tab
-  if (tabs[0]) tabs[0].click();
-})();
-
-// ── Kintsugi Config Syntax Highlight ─────────────────────────────────
-// Color the config code blocks (not Prism, uses custom span classes)
-
-(function highlightConfigs() {
-  // Single pass, so emitted markup never gets re-scanned. Chained .replace()
-  // breaks here: once the colon is wrapped in a span the string and number
-  // patterns stop matching, and class="..." reads as a string.
-  function highlight(raw) {
-    const esc = t => t
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;');
-
-    const token = new RegExp([
-      '(\\/\\/[^\\n]*|#[^\\n]*)',              // 1 comment
-      '("(?:[^"\\\\]|\\\\.)*")(\\s*:)?',       // 2 string, 3 trailing colon => JSON key
-      '\\b(true|false)\\b',                    // 4 boolean
-      '\\b(require|local|return)\\b',          // 5 keyword
-      '\\b(\\d+(?:\\.\\d+)?)\\b',              // 6 number
-      '^([ \\t]*)([A-Za-z_][\\w.]*)(?=\\s*=)'  // 7 indent, 8 TOML/Lua key
-    ].join('|'), 'gm');
-
-    let out = '', last = 0, m;
-    while ((m = token.exec(raw)) !== null) {
-      out += esc(raw.slice(last, m.index));
-      last = m.index + m[0].length;
-
-      if (m[1]) {
-        out += `<span class="cfg-cmt">${esc(m[1])}</span>`;
-      } else if (m[2]) {
-        // A string followed by ":" is a key; otherwise it's a value.
-        out += m[3]
-          ? `<span class="cfg-key">${esc(m[2])}</span><span class="cfg-punc">${esc(m[3])}</span>`
-          : `<span class="cfg-str">${esc(m[2])}</span>`;
-      } else if (m[4]) {
-        out += `<span class="cfg-bool">${m[4]}</span>`;
-      } else if (m[5]) {
-        out += `<span class="cfg-kw">${m[5]}</span>`;
-      } else if (m[6]) {
-        out += `<span class="cfg-num">${m[6]}</span>`;
-      } else if (m[8]) {
-        out += esc(m[7]) + `<span class="cfg-key">${esc(m[8])}</span>`;
+      // line comment
+      for (var li = 0; li < L.line.length && !hit; li++) {
+        if (src.indexOf(L.line[li], i) === i) {
+          var nl = src.indexOf('\n', i);
+          hit = ['t-comment', i, nl < 0 ? n : nl];
+        }
       }
+      // block comment
+      for (var bi = 0; bi < L.block.length && !hit; bi++) {
+        if (src.indexOf(L.block[bi][0], i) === i) {
+          var end = src.indexOf(L.block[bi][1], i + L.block[bi][0].length);
+          hit = ['t-comment', i, end < 0 ? n : end + L.block[bi][1].length];
+        }
+      }
+      if (hit) { out += span(hit[0], src.slice(hit[1], hit[2])); i = hit[2]; continue; }
+
+      // string literal, delimiters split from content
+      if (L.quotes.indexOf(c) > -1) {
+        var j = i + 1;
+        var closed = -1;
+        while (j < n) {
+          if (src.charAt(j) === '\\') { j += 2; continue; }
+          if (src.charAt(j) === c) { closed = j; break; }
+          if (src.charAt(j) === '\n' && c !== '`') break;   // unterminated
+          j++;
+        }
+        if (closed > -1) {
+          out += mark(c) + span('t-string', src.slice(i + 1, closed)) + mark(c);
+          i = closed + 1;
+        } else {
+          out += span('t-string', src.slice(i, j));
+          i = j;
+        }
+        continue;
+      }
+
+      // number
+      var num = /^(?:0[xX][0-9a-fA-F_]+|\d[\d_]*(?:\.\d+)?(?:[eE][+-]?\d+)?)/.exec(src.slice(i));
+      if (num && !/[\w]/.test(src.charAt(i - 1) || '')) {
+        out += span('t-number', num[0]);
+        i += num[0].length;
+        continue;
+      }
+
+      // word
+      var word = /^[A-Za-z_][A-Za-z0-9_]*/.exec(src.slice(i));
+      if (word) {
+        var w = word[0];
+        out += kw[w] ? span('t-keyword', w) : (lit[w] ? span('t-number', w) : esc(w));
+        i += w.length;
+        continue;
+      }
+
+      // operator, then single-character punctuation
+      if (OP_CHARS.indexOf(c) > -1) {
+        var op = '';
+        while (i < n && OP_CHARS.indexOf(src.charAt(i)) > -1) op += src.charAt(i++);
+        out += span('t-operator', op);
+        continue;
+      }
+      if (PUNCT_CHARS.indexOf(c) > -1) { out += mark(c); i++; continue; }
+
+      out += esc(c);
+      i++;
     }
-    out += esc(raw.slice(last));
     return out;
   }
 
-  const codeEl = document.getElementById('config-code');
-  if (!codeEl) return;
+  /* ---------------------------------------------------------- samples -- */
 
-  // renderConfig calls this directly. The old version hooked tab clicks and
-  // re-highlighted in rAF, which raced it and never fired in a background tab.
-  window.__cfgHighlight = highlight;
+  var SAMPLES = {
+    js: [
+      {
+        label: 'Config',
+        code: [
+          '// Ioskeley Mono — programming specimen',
+          'import { readFile } from "node:fs/promises";',
+          '',
+          'const CONFIG = {',
+          '  family: "Ioskeley Mono",',
+          '  widths: ["Normal", "SemiCondensed"],',
+          '  metrics: { cap: 690, xHeight: 520, advance: 600 },',
+          '};',
+          '',
+          'export async function resolve(path) {',
+          '  if (path === \'\') {',
+          '    throw new TypeError("empty path");',
+          '  }',
+          '  const raw = await readFile(path, "utf8");',
+          '  return Object.keys(CONFIG.metrics).map((key) => [key, raw]);',
+          '}'
+        ].join('\n')
+      },
+      {
+        label: 'Parse',
+        code: [
+          'export function tokenize(line) {',
+          '  const out = [];',
+          '  let depth = 0;',
+          '',
+          '  for (const ch of line) {',
+          '    if (ch === "{" || ch === "(" || ch === "[") depth += 1;',
+          '    if (ch === "}" || ch === ")" || ch === "]") depth -= 1;',
+          '    if (ch === "/" && depth === 0) break;',
+          '    out.push(ch);',
+          '  }',
+          '  return out.join("");',
+          '}'
+        ].join('\n')
+      }
+    ],
+    py: [
+      {
+        label: 'Metrics',
+        code: [
+          '# Ioskeley Mono — programming specimen',
+          'from dataclasses import dataclass',
+          '',
+          '@dataclass',
+          'class Metrics:',
+          '    cap: int = 690',
+          '    x_height: int = 520',
+          '    advance: int = 600',
+          '',
+          'def ratio(m: Metrics) -> float:',
+          "    if m.cap == '' or m.cap == 0:",
+          '        return 0.0',
+          '    return m.x_height / m.cap',
+          '',
+          'print(f"ratio: {ratio(Metrics()):.3f}")'
+        ].join('\n')
+      },
+      {
+        label: 'Tables',
+        code: [
+          'WEIGHTS = [100, 200, 300, 350, 400, 500, 600, 700, 800, 900]',
+          '',
+          '',
+          'def table(rows: dict) -> list:',
+          '    out = []',
+          '    for name, value in rows.items():',
+          '        if value <= 0:',
+          '            continue',
+          '        out.append((name, value, f"{value / 1000:.2f}"))',
+          '    return sorted(out, key=lambda row: row[1])'
+        ].join('\n')
+      }
+    ],
+    rust: [
+      {
+        label: 'Struct',
+        code: [
+          '// Ioskeley Mono — programming specimen',
+          'use std::collections::HashMap;',
+          '',
+          'pub struct Metrics {',
+          '    pub cap: u16,',
+          '    pub x_height: u16,',
+          '    pub advance: u16,',
+          '}',
+          '',
+          'impl Metrics {',
+          '    pub fn ratio(&self) -> f32 {',
+          '        if self.cap == 0 {',
+          '            return 0.0;',
+          '        }',
+          '        self.x_height as f32 / self.cap as f32',
+          '    }',
+          '}',
+          '',
+          'pub fn build(rows: &[(&str, u16)]) -> HashMap<String, Metrics> {',
+          '    rows.iter().map(|(k, v)| (k.to_string(), *v)).collect()',
+          '}'
+        ].join('\n')
+      },
+      {
+        label: 'Iter',
+        code: [
+          "fn longest<'a>(items: &[&'a str]) -> Option<&'a str> {",
+          "    let mut best: Option<(&'a str, usize)> = None;",
+          '',
+          '    for item in items {',
+          '        let len = item.chars().count();',
+          '        if len == 0 {',
+          '            continue;',
+          '        }',
+          '        match best {',
+          '            Some((_, prev)) if prev >= len => {}',
+          '            _ => best = Some((item, len)),',
+          '        }',
+          '    }',
+          '',
+          '    best.map(|(item, _)| item)',
+          '}'
+        ].join('\n')
+      }
+    ],
+    c: [
+      {
+        label: 'Header',
+        code: [
+          '/* Ioskeley Mono — programming specimen */',
+          '#include <stdint.h>',
+          '',
+          'typedef struct {',
+          '    uint16_t cap;      /* declared metric, not ink bounds */',
+          '    uint16_t x_height;',
+          '    uint16_t advance;',
+          '} ioskeley_metrics_t;',
+          '',
+          'int32_t ioskeley_ratio(ioskeley_metrics_t m) {',
+          '    if (m.cap == 0) {',
+          '        return 0;',
+          '    }',
+          '    return (int32_t)((m.x_height * 1000) / m.cap);',
+          '}'
+        ].join('\n')
+      },
+      {
+        label: 'Buffer',
+        code: [
+          '#include <stdlib.h>',
+          '#include <string.h>',
+          '',
+          'char *duplicate(const char *src) {',
+          '    size_t len;',
+          '    char *out;',
+          '',
+          '    if (src == NULL || src[0] == \'\\0\') {',
+          '        return NULL;',
+          '    }',
+          '    len = strlen(src);',
+          '    out = (char *)malloc(len + 1);',
+          '    if (out == NULL) {',
+          '        return NULL;',
+          '    }',
+          '    memcpy(out, src, len + 1);',
+          '    return out;',
+          '}'
+        ].join('\n')
+      }
+    ]
+  };
 
-  // renderConfig already painted the default as plain text; redo it.
-  codeEl.innerHTML = highlight(codeEl.textContent);
+  /* ----------------------------------------------------------- editor -- */
+
+  var editor = $('#editor');
+  var input = $('#editor-input');
+  var highlight = $('#editor-hl');
+  var sampleBar = $('#samples');
+  var metaLine = $('#editor-meta');
+  var advLine = $('#editor-adv');
+
+  var state = { lang: 'js', weight: 400, style: 'normal', width: 'normal', size: 14.5, liga: 'common-ligatures contextual' };
+
+  function renderSamples() {
+    if (!sampleBar) return;
+    sampleBar.innerHTML = SAMPLES[state.lang].map(function (s, i) {
+      return '<button class="seg__btn" type="button" data-sample="' + i + '">' + esc(s.label) + '</button>';
+    }).join('');
+  }
+
+  function paint() {
+    if (!input || !highlight) return;
+    highlight.innerHTML = tokenize(input.value, state.lang);
+  }
+
+  function loadSample(i) {
+    var s = SAMPLES[state.lang][i];
+    if (!s || !input) return;
+    input.value = s.code;
+    paint();
+  }
+
+  if (editor) {
+    renderSamples();
+    loadSample(0);
+
+    input.addEventListener('input', paint);
+    input.addEventListener('keydown', function (e) {
+      if (e.key !== 'Tab') return;
+      e.preventDefault();
+      var a = input.selectionStart, b = input.selectionEnd, v = input.value;
+      if (a === b && !e.shiftKey) {
+        input.setRangeText('\t', a, b, 'end');
+      } else {
+        var start = v.lastIndexOf('\n', a - 1) + 1;
+        var idx = v.indexOf('\n', b);
+        var end = idx === -1 ? v.length : idx;
+        var block = v.slice(start, end);
+        var shifted = e.shiftKey ? block.replace(/^(\t| {1,4})/gm, '') : block.replace(/^/gm, '\t');
+        input.setRangeText(shifted, start, end, 'select');
+      }
+      paint();
+    });
+
+    if (sampleBar) {
+      sampleBar.addEventListener('click', function (e) {
+        var btn = e.target.closest('[data-sample]');
+        if (!btn) return;
+        $$('[data-sample]', sampleBar).forEach(function (b) { b.setAttribute('aria-pressed', String(b === btn)); });
+        loadSample(parseInt(btn.dataset.sample, 10));
+      });
+    }
+  }
+
+  /* ------------------------------------------------------- controls -- */
+
+  var WEIGHT_LABEL = { 300: 'Light', 400: 'Regular', 500: 'Medium', 700: 'Bold' };
+
+  function applyEditor() {
+    if (!editor) return;
+    var sc = state.width === 'sc';
+    ensureFace(state.weight, state.style === 'italic', sc);
+    editor.style.setProperty('--editor-family', (sc ? 'IoskeleySC' : 'Ioskeley') + ', ui-monospace, monospace');
+    editor.style.setProperty('--editor-size', state.size + 'px');
+    editor.style.setProperty('--editor-weight', String(state.weight));
+    editor.style.setProperty('--editor-style', state.style);
+    editor.style.setProperty('--editor-liga', state.liga);
+    if (metaLine) {
+      metaLine.textContent = 'Ioskeley Mono · ' + (sc ? 'SemiCondensed' : 'Normal') + ' · ' +
+        WEIGHT_LABEL[state.weight] + ' ' + state.weight + ' · ' + LANG_LABEL[state.lang];
+    }
+    if (advLine) advLine.textContent = (sc ? '540' : '600') + ' units/char';
+  }
+
+  /* One handler for every segmented control on the page. */
+  function wireSeg(name, onPick) {
+    $$('[data-control="' + name + '"]').forEach(function (group) {
+      group.addEventListener('click', function (e) {
+        var btn = e.target.closest('.seg__btn');
+        if (!btn || !group.contains(btn)) return;
+        $$('.seg__btn', group).forEach(function (b) { b.setAttribute('aria-pressed', String(b === btn)); });
+        onPick(btn.dataset.value, btn, group);
+      });
+    });
+  }
+
+  wireSeg('width', function (v) {
+    state.width = v;
+    applyEditor();
+    $$('[data-control="weight-width"] .seg__btn').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.value === v)); });
+  });
+  wireSeg('weight', function (v) {
+    state.weight = parseInt(v, 10);
+    applyEditor();
+  });
+  wireSeg('style', function (v) { state.style = v; applyEditor(); });
+  wireSeg('ligatures', function (v) {
+    state.liga = v === 'on' ? 'common-ligatures contextual' : 'none';
+    applyEditor();
+  });
+  wireSeg('language', function (v) {
+    state.lang = v;
+    renderSamples();
+    loadSample(0);
+    applyEditor();
+  });
+
+  var sizeInput = $('#ctl-size');
+  var sizeValue = $('#size-value');
+  if (sizeInput) {
+    sizeInput.addEventListener('input', function () {
+      state.size = parseFloat(sizeInput.value);
+      if (sizeValue) sizeValue.textContent = state.size + 'px';
+      applyEditor();
+    });
+  }
+
+  applyEditor();
+
+  /* ---------------------------------------------------------- weights -- */
+
+  var weightsList = $('#weights-list');
+  var weightStyle = 'normal';
+  var weightWidth = 'normal';
+  var WEIGHT_TEXT = 'Handgloves 0123 {glyphs} =&gt;';
+
+  function renderWeights() {
+    if (!weightsList) return;
+    var sc = weightWidth === 'sc';
+    weightsList.innerHTML = ALL_WEIGHTS.map(function (w) {
+      return '<div class="weight-row">' +
+        '<span class="weight-row__name">' + WEIGHT_NAME[w] + '</span>' +
+        '<span class="weight-row__css">' + w + '</span>' +
+        '<span class="weight-row__demo" style="font-weight:' + w + ';' +
+        (weightStyle === 'italic' ? 'font-style:italic;' : '') +
+        (sc ? 'font-family:IoskeleySC, ui-monospace, monospace;' : '') + '">' + WEIGHT_TEXT + '</span>' +
+        '</div>';
+    }).join('');
+    ALL_WEIGHTS.forEach(function (w) { ensureFace(w, weightStyle === 'italic', sc); });
+  }
+
+  wireSeg('weight-style', function (v) { weightStyle = v; renderWeights(); });
+  wireSeg('weight-width', function (v) { weightWidth = v; renderWeights(); });
+
+  whenNear($('#weights'), function () { renderWeights(); }, '1200px 0px');
+
+  /* ------------------------------------------------------------ width -- */
+
+  var WIDTH_TEXT = 'const glyphs = { figures: [0xFC82, 100_000, 0.0] };';
+
+  function renderWidthCompare() {
+    var host = $('#width-compare');
+    if (!host) return;
+    host.innerHTML =
+      row('Normal', '600', false) + row('SemiCondensed', '540', true);
+    function row(name, adv, sc) {
+      ensureFace(400, false, sc);
+      return '<div class="width-compare__row">' +
+        '<div class="width-compare__head"><span class="width-compare__name">' + name + '</span>' +
+        '<span class="width-compare__adv">advance ' + adv + '</span></div>' +
+        '<div class="width-compare__text" style="' +
+        (sc ? 'font-family:IoskeleySC, ui-monospace, monospace;' : '') + '">' + WIDTH_TEXT + '</div>' +
+        '</div>';
+    }
+  }
+  whenNear($('#width'), renderWidthCompare, '900px 0px');
+
+  /* ---------------------------------------------------------- studies -- */
+
+  var STUDIES = [
+    { glyph: 'g', note: 'Single-storey' },
+    { glyph: 'a', note: 'Double-storey' },
+    { glyph: 'Q', note: 'Straight tail' },
+    { glyph: '@', note: 'Compact' },
+    { glyph: '$', note: 'Ascends' },
+    { glyph: '0', note: 'Dotted' },
+    { glyph: '1 I l', note: 'Separated' }
+  ];
+
+  function renderStudies() {
+    var host = $('#studies');
+    if (!host) return;
+    ensureFace(400, false, false);
+    host.innerHTML = STUDIES.map(function (s) {
+      return '<div class="study">' +
+        '<div class="study__glyph' + (s.glyph.length > 1 ? ' study__glyph--run' : '') + '">' + esc(s.glyph) + '</div>' +
+        '<div class="study__measure" aria-hidden="true"></div>' +
+        '<div class="study__meta"><span>' + esc(s.note) + '</span><span>cap 690</span></div>' +
+        '</div>';
+    }).join('');
+  }
+  whenNear($('#details'), renderStudies, '900px 0px');
+
+  /* ---------------------------------------------------------- origins -- */
+
+  var ORIGINS = [
+    { file: 'Origins-01-Character-Forms', title: '01 · Character forms', alt: 'Character forms of Ioskeley Mono and TX-02 set beside one another for study' },
+    { file: 'Origins-02-Overlay-Study', title: '02 · Overlay study', alt: 'Overlay plot of Ioskeley Mono and TX-02 outlines showing where the forms agree and diverge' },
+    { file: 'Origins-03-Code-Texture', title: '03 · Code texture', alt: 'The same code sample set in Ioskeley Mono and TX-02 for comparison of colour and rhythm' }
+  ];
+
+  var originsGrid = $('#origins-grid');
+  var originsDetails = $('#origins-details');
+  var originsBuilt = false;
+
+  function buildOrigins() {
+    if (originsBuilt || !originsGrid) return;
+    originsBuilt = true;
+    var light = isLight();
+    originsGrid.innerHTML = ORIGINS.map(function (o, i) {
+      return '<figure class="plate">' +
+        '<img src="imgs/' + o.file + (light ? '-Light' : '') + '.png" ' +
+        'data-dark="imgs/' + o.file + '.png" ' +
+        'data-light="imgs/' + o.file + '-Light.png" ' +
+        'alt="' + esc(o.alt) + '" loading="lazy" decoding="async" width="1280" height="640">' +
+        '<figcaption class="plate__cap"><span>' + esc(o.title) + '</span>' +
+        '<button class="plate__open" type="button" data-plate="' + i + '">Enlarge</button></figcaption>' +
+        '</figure>';
+    }).join('');
+    syncArtwork();
+  }
+
+  if (originsDetails) {
+    originsDetails.addEventListener('toggle', function () {
+      if (originsDetails.open) whenNear(originsGrid, buildOrigins, '200px 0px');
+    });
+  }
+
+  /* --------------------------------------------------------- lightbox -- */
+
+  var lightbox = $('#lightbox');
+  var lbImg = $('#lightbox-img');
+  var lbTitle = $('#lightbox-title');
+  var lbRaw = $('#lightbox-raw');
+  var lbZoom = $('#lightbox-zoom');
+  var lastFocus = null;
+
+  function openPlate(index) {
+    if (!lightbox || !originsGrid) return;
+    var img = originsGrid.querySelector('img[data-dark][data-light]');
+    if (!img) return;
+    lastFocus = document.activeElement;
+    lbImg.src = img.dataset.light && isLight() ? img.dataset.light : img.dataset.dark;
+    lbImg.alt = img.alt;
+    lbTitle.textContent = img.closest('.plate').querySelector('.plate__cap span').textContent;
+    if (lbRaw) lbRaw.href = lbImg.src;
+    lightbox.setAttribute('data-open', 'true');
+    lightbox.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    $('#lightbox-close').focus();
+  }
+
+  function closePlate() {
+    if (!lightbox) return;
+    lightbox.setAttribute('data-open', 'false');
+    lightbox.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+
+  if (lightbox) {
+    originsGrid && originsGrid.addEventListener('click', function (e) {
+      var btn = e.target.closest('[data-plate]');
+      if (btn) { openPlate(parseInt(btn.dataset.plate, 10)); return; }
+      if (e.target.tagName === 'IMG') {
+        var fig = e.target.closest('.plate');
+        var b = fig && fig.querySelector('[data-plate]');
+        if (b) openPlate(parseInt(b.dataset.plate, 10));
+      }
+    });
+
+    $('#lightbox-backdrop').addEventListener('click', closePlate);
+    $('#lightbox-close').addEventListener('click', closePlate);
+    lbZoom.addEventListener('click', function () {
+      var on = lightbox.getAttribute('data-zoom') === 'true';
+      lightbox.setAttribute('data-zoom', on ? 'false' : 'true');
+      lbZoom.setAttribute('aria-pressed', String(!on));
+      lbZoom.textContent = on ? '1:1' : 'Fit';
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (lightbox.getAttribute('data-open') !== 'true') return;
+      if (e.key === 'Escape') { closePlate(); return; }
+      if (e.key === 'Tab') {
+        // Keep focus inside the dialog while it is open.
+        var focusable = $$('button, a[href]', lightbox);
+        if (!focusable.length) return;
+        var first = focusable[0];
+        var last = focusable[focusable.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
+    });
+  }
+
+  /* --------------------------------------------------------- packages -- */
+
+  var RELEASE = 'https://github.com/ahatem/IoskeleyMono/releases/latest/download/';
+  var PACKAGES = [
+    ['IoskeleyMono.zip', 'Standard family. Both widths, all ten weights, programming ligatures.'],
+    ['IoskeleyMono-Term.zip', 'Term family. Terminal-tuned arrow and box-drawing forms.'],
+    ['IoskeleyMono-NL.zip', 'NL family. No programming ligatures.'],
+    ['IoskeleyMono-NerdFont.zip', 'Standard, patched. Contains NF and NFM from 2.2.0.'],
+    ['IoskeleyMono-Term-NerdFont.zip', 'Term, patched. Contains NF and NFM from 2.2.0.'],
+    ['IoskeleyMono-NL-NerdFont.zip', 'NL, patched. Contains NF and NFM from 2.2.0.'],
+    ['IoskeleyMono-Web.zip', 'Compact WOFF2 subset for @font-face.'],
+    ['IoskeleyMono-Web-Full.zip', 'Full WOFF2 repertoire: Greek, Cyrillic, long arrows.']
+  ];
+
+  (function renderPackages() {
+    var host = $('#packages');
+    if (!host) return;
+    host.innerHTML = PACKAGES.map(function (p) {
+      return '<div class="package">' +
+        '<span class="package__name">' + esc(p[0]) + '</span>' +
+        '<span class="package__use">' + esc(p[1]) + '</span>' +
+        '<a class="package__dl" href="' + RELEASE + esc(p[0]) + '" rel="noopener">Download →</a>' +
+        '</div>';
+    }).join('');
+  })();
+
+  /* ------------------------------------------------------------ copy -- */
+
+  $$('[data-copy]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var cell = btn.closest('.install__cell');
+      var pre = cell && cell.querySelector('pre');
+      if (!pre) return;
+      var done = function () {
+        var original = btn.textContent;
+        btn.textContent = 'Copied';
+        setTimeout(function () { btn.textContent = original; }, 1600);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(pre.textContent).then(done, function () {});
+      } else {
+        done();
+      }
+    });
+  });
+
+  /* Keep the artwork and the label in step on first paint. */
+  syncArtwork();
 })();

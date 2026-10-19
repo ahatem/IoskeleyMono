@@ -23,6 +23,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Pages publishes `site/` as the site root, so artwork has to exist inside
+      # it. `assets/` stays the single canonical source and is synced here
+      # rather than referenced with a relative path that would escape the root.
+      - name: Sync artwork into site
+        run: cp assets/*.png site/imgs/
+
       - name: Upload site folder as Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
