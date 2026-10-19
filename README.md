@@ -177,6 +177,7 @@ These community packages may update on a different schedule from GitHub Releases
 | Slackware | [SlackBuilds.org](https://slackbuilds.org/repository/15.0/system/IoskeleyMono/) | `IoskeleyMono` |
 
 Thanks to [@zhimoe](https://github.com/zhimoe),
+Thanks to [@dave-atx](https://github.com/dave-atx),
 [@ForsakenHarmony](https://github.com/ForsakenHarmony), and
 [@frovere](https://github.com/frovere) for helping bring Ioskeley to Homebrew.
 
