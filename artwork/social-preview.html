@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ioskeley Mono — Social Preview Source</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <style>
+    @font-face { font-family: Ioskeley; src: url("../site/fonts/IoskeleyMono-Regular.woff2") format("woff2"); font-style: normal; font-weight: 400; font-display: block; }
+    @font-face { font-family: Ioskeley; src: url("../site/fonts/IoskeleyMono-Italic.woff2") format("woff2"); font-style: italic; font-weight: 400; font-display: block; }
+    @font-face { font-family: Ioskeley; src: url("../site/fonts/IoskeleyMono-Bold.woff2") format("woff2"); font-style: normal; font-weight: 700; font-display: block; }
+
+    * { box-sizing: border-box; }
+    body { margin: 0; padding: 24px; color: #242424; background: #E8E8E6; font-family: Ioskeley; font-synthesis: none; }
+    .toolbar, .boards { width: min(1360px, 100%); margin: 0 auto; }
+    .toolbar { display: flex; justify-content: space-between; align-items: center; gap: 20px; padding-bottom: 16px; border-bottom: 1px solid #BDBDBA; }
+    .toolbar h1 { margin: 0; font-size: 22px; font-weight: 700; }
+    .toolbar p { margin: 5px 0 0; color: #5D5D59; font-size: 10px; }
+    .font-status { color: #494946; font-size: 9px; letter-spacing: .07em; text-transform: uppercase; }
+    .boards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; padding-top: 18px; }
+    .proof-head { display: flex; justify-content: space-between; align-items: center; min-height: 30px; margin-bottom: 6px; }
+    .proof-label { font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+    button { appearance: none; border: 1px solid #AFAFAC; border-radius: 0; padding: 7px 10px; background: transparent; color: #30302D; font: 9px/1 Ioskeley; cursor: pointer; }
+    button:hover { border-color: #555550; }
+    button:disabled { opacity: .6; cursor: progress; }
+    .stage { width: 100%; aspect-ratio: 2 / 1; position: relative; overflow: hidden; background: #D4D4D1; }
+    .artboard { position: absolute; inset: 0 auto auto 0; width: 1280px; height: 640px; overflow: hidden; transform-origin: top left; isolation: isolate; color: var(--primary); background: var(--canvas); font-family: Ioskeley; font-synthesis: none; text-rendering: geometricPrecision; -webkit-font-smoothing: antialiased; }
+    .inner { display: flex; flex-direction: column; width: 100%; height: 100%; padding: 48px 76px 33px; }
+    .running { display: flex; justify-content: space-between; gap: 20px; color: var(--grammar); font-size: 10px; line-height: 1; letter-spacing: .105em; text-transform: uppercase; }
+    .running-head { flex: 0 0 auto; padding-bottom: 13px; }
+    .running-foot { flex: 0 0 auto; padding-top: 13px; }
+    .rule { height: 1px; flex: 0 0 auto; background: var(--rule); }
+    .main { display: grid; grid-template-columns: minmax(0, 1fr) 405px; gap: 20px; flex: 1 1 auto; min-height: 0; padding-top: 25px; position: relative; }
+    .copy { min-width: 0; position: relative; z-index: 1; }
+    .title { margin: 0; color: var(--title); font-size: 50px; font-weight: 700; line-height: 1; letter-spacing: -.035em; font-feature-settings: "calt" 1, "liga" 0; }
+    .tagline { margin: 11px 0 0; color: var(--secondary); font-size: 15px; line-height: 1.35; }
+    .code { margin: 31px 0 0; color: var(--primary); font: 400 15px/1.55 Ioskeley; letter-spacing: 0; white-space: pre; font-feature-settings: "calt" 1, "liga" 1; font-variant-ligatures: common-ligatures contextual; tab-size: 2; }
+    .identifier { color: var(--primary); }
+    .secondary { color: var(--secondary); }
+    .keyword { color: var(--keyword); font-weight: 700; }
+    .operator { color: var(--operator); }
+    .punctuation { color: var(--punctuation); }
+    .comment { color: var(--comment); font-style: italic; }
+    .measure { width: 405px; height: 465px; align-self: center; overflow: visible; z-index: 0; }
+    .measure-line { stroke: var(--guide); stroke-width: 1; }
+    .measure-tick { stroke: var(--grammar); stroke-width: 1; }
+    .measure-label { fill: var(--grammar); font-family: Ioskeley; font-size: 9px; letter-spacing: 1px; }
+    .measure-glyph { fill: var(--primary); font-family: Ioskeley; font-size: 400px; font-weight: 400; }
+    .facts { display: flex; align-items: center; gap: 23px; color: var(--grammar); font-size: 9px; line-height: 1; letter-spacing: .07em; text-transform: uppercase; }
+    .facts b { margin-left: 5px; color: var(--secondary); font-weight: 400; }
+    .artboard.exporting { transform: none !important; }
+    @media (max-width: 900px) { body { padding: 16px; } .boards { grid-template-columns: 1fr; } .toolbar { align-items: flex-start; flex-direction: column; } }
+  </style>
+</head>
+<body>
+  <header class="toolbar">
+    <div><h1>Ioskeley Mono / Social Preview</h1><p>Two fixed 1280 × 640 production artboards · local font faces · PNG at 1×</p></div>
+    <div class="font-status" id="fontStatus" role="status">Checking Ioskeley faces…</div>
+  </header>
+  <main class="boards" id="boards"></main>
+
+  <template id="socialCard">
+    <article class="artboard">
+      <div class="inner">
+        <header class="running running-head"><span>Ioskeley Mono · Type specimen 01</span><span>Normal · Regular 400</span></header>
+        <div class="rule"></div>
+        <main class="main">
+          <section class="copy">
+            <h2 class="title">Ioskeley Mono</h2>
+            <p class="tagline">An open programming typeface built on Iosevka.</p>
+            <pre class="code"><span class="keyword">const</span> <span class="identifier">glyphs</span> <span class="operator">=</span> {
+  <span class="identifier">forms</span>: <span class="secondary">"g a Q @ $ · 0 O 1 I l"</span>,
+  <span class="identifier">figures</span>: [<span class="identifier">0xFC82</span>, <span class="identifier">100_000</span>, <span class="identifier">0.0</span>],
+  <span class="identifier">ops</span>: [<span class="secondary">"!="</span>, <span class="secondary">"==="</span>, <span class="secondary">"&lt;="</span>, <span class="secondary">"=&gt;"</span>, <span class="secondary">"-&gt;"</span>, <span class="secondary">"::"</span>],
+};
+
+<span class="comment">// Forms are quiet; shape does the talking.</span>
+<span class="keyword">export function</span> <span class="identifier">resolve</span>(value: <span class="secondary">string</span>) {
+  <span class="keyword">if</span> (value <span class="operator">!==</span> <span class="secondary">""</span> <span class="operator">&amp;&amp;</span> value.includes(<span class="secondary">"=&gt;"</span>)) {
+    <span class="keyword">return</span> <span class="keyword">new</span> Map([[<span class="secondary">"=&gt;"</span>, <span class="identifier">1</span>], [<span class="secondary">"-&gt;"</span>, <span class="identifier">2</span>]]);
+  }
+  <span class="keyword">return</span> <span class="keyword">new</span> Map();
+}</pre>
+          </section>
+          <svg class="measure" viewBox="0 0 405 465" role="img" aria-label="Ioskeley single-storey g aligned to cap, x-height and baseline guides">
+            <text class="measure-label" x="1" y="104">CAP · 690</text><line class="measure-line" x1="63" y1="110" x2="398" y2="110" /><line class="measure-tick" x1="57" y1="110" x2="69" y2="110" />
+            <text class="measure-label" x="1" y="172">X · 520</text><line class="measure-line" x1="63" y1="178" x2="398" y2="178" /><line class="measure-tick" x1="57" y1="178" x2="69" y2="178" />
+            <text class="measure-label" x="1" y="392">BASE</text><line class="measure-line" x1="63" y1="386" x2="398" y2="386" /><line class="measure-tick" x1="57" y1="386" x2="69" y2="386" />
+            <text class="measure-glyph" x="74" y="386">g</text>
+          </svg>
+        </main>
+        <div class="rule"></div>
+        <footer class="running running-foot">
+          <div class="facts"><span>Cap<b>690</b></span><span>X-height<b>520</b></span><span>Width<b>600</b></span><span>Italic<b>11.8°</b></span></div>
+          <span>Technical character · quiet by design</span>
+        </footer>
+      </div>
+    </article>
+  </template>
+
+  <script>
+    const palettes = {
+      dark: { name: "Dark", canvas: "#101010", ink: "#D8D5CE", primary: "#D8D5CE", secondary: "#B8B5AF", grammar: "#7E7C77", keyword: "#74726E", operator: "#74726E", punctuation: "#686763", comment: "#5F5D58", title: "#ECE9E2", rule: "#343330", guide: "#4A4843", selection: "#302F2B", file: "SocialPreview.png" },
+      light: { name: "Light", canvas: "#F2F0EA", ink: "#292826", primary: "#292826", secondary: "#4E4D49", grammar: "#807D77", keyword: "#68655F", operator: "#77746E", punctuation: "#918E87", comment: "#A09D95", title: "#171614", rule: "#D3D0C8", guide: "#BDBAB2", selection: "#E2DFD8", file: "SocialPreview-Light.png" }
+    };
+
+    const fontSpecs = [['Regular 400', '400 16px "Ioskeley"'], ['Italic 400', 'italic 400 16px "Ioskeley"'], ['Bold 700', '700 50px "Ioskeley"']];
+    let facesReady = false;
+
+    async function verifyFonts() {
+      await Promise.all(fontSpecs.map(([, spec]) => document.fonts.load(spec)));
+      await document.fonts.ready;
+      const checks = fontSpecs.map(([name, spec]) => ({name, loaded: document.fonts.check(spec)}));
+      facesReady = checks.every(face => face.loaded);
+      document.getElementById('fontStatus').textContent = checks.map(face => `${face.name} ${face.loaded ? '✓' : '×'}`).join(' · ');
+      return facesReady;
+    }
+
+    function fit() {
+      document.querySelectorAll('.stage').forEach(stage => {
+        stage.querySelector('.artboard').style.transform = `scale(${stage.clientWidth / 1280})`;
+      });
+    }
+
+    function add(mode) {
+      const palette = palettes[mode];
+      const section = document.createElement('section');
+      section.className = 'proof';
+      section.innerHTML = `<div class="proof-head"><span class="proof-label">${palette.name} / Social preview</span><button type="button" data-export="${mode}">Export 1280 × 640 PNG</button></div><div class="stage"></div>`;
+      const board = document.getElementById('socialCard').content.firstElementChild.cloneNode(true);
+      board.id = `social-${mode}`;
+      board.dataset.mode = mode;
+      for (const [name, value] of Object.entries(palette)) if (name !== 'name' && name !== 'file') board.style.setProperty(`--${name}`, value);
+      section.querySelector('.stage').append(board);
+      document.getElementById('boards').append(section);
+    }
+
+    async function exportPng(mode, button) {
+      if (!window.html2canvas) throw new Error('html2canvas 1.4.1 did not load.');
+      if (!await verifyFonts()) throw new Error('A local Ioskeley face did not load.');
+      const palette = palettes[mode];
+      const board = document.getElementById(`social-${mode}`);
+      const transform = board.style.transform;
+      board.classList.add('exporting');
+      await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      try {
+        const canvas = await html2canvas(board, {scale: 1, width: 1280, height: 640, backgroundColor: palette.canvas, useCORS: true, allowTaint: false, logging: false, scrollX: 0, scrollY: 0});
+        if (canvas.width !== 1280 || canvas.height !== 640) throw new Error(`Unexpected PNG size: ${canvas.width} × ${canvas.height}`);
+        const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png', 1));
+        if (!blob) throw new Error('PNG encoding failed.');
+        const url = URL.createObjectURL(blob);
+        const anchor = document.createElement('a');
+        anchor.href = url;
+        anchor.download = palette.file;
+        anchor.click();
+        setTimeout(() => URL.revokeObjectURL(url), 1200);
+      } finally { board.classList.remove('exporting'); board.style.transform = transform; fit(); }
+    }
+
+    add('dark');
+    add('light');
+    new ResizeObserver(fit).observe(document.getElementById('boards'));
+    window.addEventListener('resize', fit);
+    document.querySelectorAll('[data-export]').forEach(button => button.addEventListener('click', async () => {
+      button.disabled = true;
+      try { await exportPng(button.dataset.export, button); }
+      catch (error) { console.error(error); alert(error.message || error); }
+      finally { button.disabled = false; }
+    }));
+    window.addEventListener('load', verifyFonts);
+  </script>
+</body>
+</html>
