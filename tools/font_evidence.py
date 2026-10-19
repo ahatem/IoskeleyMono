@@ -10,7 +10,7 @@ from fontTools.pens.boundsPen import BoundsPen
 from fontTools.ttLib import TTFont
 
 ROOT = Path(__file__).resolve().parents[1]
-SAMPLES = [ord(c) for c in " HxMWmn0O1Il|gj_()—…→─"] + [0x301, 0x200B, 0xE0B0, 0xE0B2, 0xF0C12, 0xE711, 0xF113, 0x276C]
+SAMPLES = [ord(c) for c in " HxMWmn0O1Il|gj_()—…→─"] + [0x301, 0x200B, 0xE0B0, 0xE0B2, 0xF0C12, 0xE711, 0xF113, 0x276C, 0x27F6]
 
 
 def digest(data: bytes) -> str:

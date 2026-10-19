@@ -35,6 +35,14 @@ def sha(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def nerd_flags_for_variant(variant):
+    spec = LOCK["nerd_fonts"]
+    variants = spec.get("flags_by_variant", {})
+    if variant not in variants:
+        raise ValueError(f"Unknown Nerd Font variant: {variant}")
+    return [*spec["flags"], *variants[variant]]
+
+
 def check_tools():
     import uharfbuzz
     check_validation_runtime()
@@ -112,21 +120,32 @@ def compile_fonts(work, jobs):
     (work / "provenance.json").write_text(json.dumps(provenance, indent=2) + "\n")
 
 
-def patch_fonts(work):
+def patch_fonts(work, face_names_by_plan=None):
     from fontTools.ttLib import TTFont
     check_tools()
     source = source_check(work)
     for plan in (p for p in CONTRACT["plans"] if p != "IoskeleyMonoWeb"):
         fonts = sorted((source / "dist" / plan / "TTF").glob("*.ttf"))
-        if len(fonts) != STYLE_COUNT:
-            raise RuntimeError(f"Expected {STYLE_COUNT} input faces for {plan}, got {len(fonts)}")
+        if face_names_by_plan is None:
+            expected_count = STYLE_COUNT
+        else:
+            requested = set(face_names_by_plan.get(plan, ()))
+            available = {font.name for font in fonts}
+            missing = requested - available
+            if missing:
+                raise RuntimeError(f"Missing selected {plan} input faces: {sorted(missing)}")
+            fonts = [font for font in fonts if font.name in requested]
+            expected_count = len(requested)
+        if len(fonts) != expected_count:
+            raise RuntimeError(f"Expected {expected_count} input faces for {plan}, got {len(fonts)}")
         for font in fonts:
             width = "SemiCondensed" if "-SemiCondensed" in font.name else "Normal"
             dest = work / "patched" / plan / width
             dest.mkdir(parents=True, exist_ok=True)
-            # Keep production flags and hinted TTF inputs exactly.
-            run(["fontforge", "-script", work / "nerd-fonts-patcher/font-patcher", font,
-                 *LOCK["nerd_fonts"]["flags"], "--outputdir", dest])
+            # Ship both upstream geometry contracts from the same hinted input.
+            for variant in CONTRACT["nerd_variants"]:
+                run(["fontforge", "-script", work / "nerd-fonts-patcher/font-patcher", font,
+                     *nerd_flags_for_variant(variant), "--outputdir", dest])
         for path in sorted((work / "patched" / plan).rglob("*.ttf")):
             font = TTFont(path)
             if "post" in font and font["post"].isFixedPitch != 1:
@@ -135,22 +154,32 @@ def patch_fonts(work):
             font.close()
 
 
-def package(work):
-    source = source_check(work)
-    for name, spec in CONTRACT["packages"].items():
-        members = []
-        plan, kind = spec["plan"], spec["kind"]
-        dist = source / "dist" / plan
-        if kind == "desktop":
-            for folder, hint in [("TTF", "Hinted"), ("TTF-Unhinted", "Unhinted")]:
-                for path in sorted((dist / folder).glob("*.ttf")):
-                    width = "SemiCondensed" if "-SemiCondensed" in path.name else "Normal"
-                    members.append((path, f"{width}/{hint}/{path.name}"))
-        elif kind == "nerd":
-            for width in CONTRACT["widths"]:
-                members.extend((p, f"{width}/{p.name}") for p in sorted((work / "patched" / plan / width).glob("*.ttf")))
-        else:
-            members.extend((p, "WOFF2/" + p.name.replace("IoskeleyMonoWeb-", "IoskeleyMono-", 1)) for p in sorted((dist / "WOFF2").glob("*.woff2")))
+def package_members(work, spec):
+    members = []
+    plan, kind = spec["plan"], spec["kind"]
+    dist = work / "iosevka-src" / "dist" / plan
+    if kind == "desktop":
+        for folder, hint in [("TTF", "Hinted"), ("TTF-Unhinted", "Unhinted")]:
+            for path in sorted((dist / folder).glob("*.ttf")):
+                width = "SemiCondensed" if "-SemiCondensed" in path.name else "Normal"
+                members.append((path, f"{width}/{hint}/{path.name}"))
+    elif kind == "nerd":
+        for width in CONTRACT["widths"]:
+            members.extend((p, f"{width}/{p.name}") for p in sorted((work / "patched" / plan / width).glob("*.ttf")))
+    else:
+        members.extend((p, "WOFF2/" + p.name.replace("IoskeleyMonoWeb-", "IoskeleyMono-", 1)) for p in sorted((dist / "WOFF2").glob("*.woff2")))
+    return members
+
+
+def package(work, package_names=None):
+    source_check(work)
+    selected = tuple(package_names or CONTRACT["packages"])
+    unknown = set(selected) - set(CONTRACT["packages"])
+    if unknown:
+        raise ValueError(f"Unknown packages: {sorted(unknown)}")
+    for name in selected:
+        spec = CONTRACT["packages"][name]
+        members = package_members(work, spec)
         if len(members) != spec["count"] or len({n for _, n in members}) != spec["count"]:
             raise RuntimeError(f"Wrong or duplicate package members: {name}: {len(members)}")
         target = work / name

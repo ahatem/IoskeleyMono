@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import io
 import json
+import os
 from pathlib import Path
 import sys
 import shutil
@@ -13,6 +14,7 @@ import platform
 import importlib.metadata
 import unicodedata
 import zipfile
+from xml.sax.saxutils import escape
 
 from fontTools.ttLib import TTFont
 import uharfbuzz as hb
@@ -83,18 +85,86 @@ def expects_bold(weight, nerd):
     return weight == 700 if nerd else weight > 650
 
 
-def check_font(data, key, plan, nerd, results):
+def check_nerd_geometry(samples, upm, cell, mode, checks):
+    checks(mode in CONTRACT["nerd_geometry"], f"unknown Nerd geometry mode {mode!r}")
+    if mode not in CONTRACT["nerd_geometry"]:
+        return
+    probes = {f"U+{cp:04X}": samples.get(f"U+{cp:04X}") for cp in CONTRACT["nerd_probes"]}
+    checks(all(probes.values()), "missing Nerd geometry regression probe")
+    for label, sample in probes.items():
+        if not sample:
+            continue
+        checks(sample["advance"] == cell, f"Nerd probe {label} must advance one cell")
+        checks(not sample["outside_win_metrics"], f"Nerd probe {label} exceeds vertical clipping metrics")
+        bounds = sample["bounds"]
+        checks(bool(bounds), f"Nerd probe {label} has no ink bounds")
+        if not bounds:
+            continue
+        xmin, _, xmax, _ = bounds
+        ink_width = xmax - xmin
+        overhang = max(0, -xmin, xmax - sample["advance"])
+        if mode == "single":
+            limits = CONTRACT["nerd_geometry"]["single"]
+            checks(ink_width <= cell * limits["maximum_ink_width_cells"],
+                   f"single-width Nerd probe {label} exceeds its cell geometry")
+            checks(overhang <= cell * limits["maximum_overhang_cells"],
+                   f"single-width Nerd probe {label} overhangs too far")
+        elif mode == "normal":
+            limits = CONTRACT["nerd_geometry"]["normal"]
+            checks(ink_width <= cell * limits["maximum_ink_width_cells"],
+                   f"normal Nerd probe {label} exceeds its two-cell geometry")
+            checks(overhang <= cell * limits["maximum_overhang_cells"],
+                   f"normal Nerd probe {label} overhangs too far")
+
+    if mode == "normal":
+        minimums = CONTRACT["nerd_geometry"]["normal"]["minimum_ink_em"]
+        for cp, limits in minimums.items():
+            label = f"U+{int(cp):04X}"
+            sample = samples.get(label)
+            if not sample or not sample["bounds"]:
+                continue
+            xmin, ymin, xmax, ymax = sample["bounds"]
+            measured = {"width": (xmax - xmin) / upm, "height": (ymax - ymin) / upm}
+            for dimension, minimum in limits.items():
+                checks(measured[dimension] >= minimum,
+                       f"normal Nerd probe {label} {dimension} is below {minimum:.2f} em")
+
+
+def check_nerd_advance_profile(advances, cell, strict_mono, checks):
+    if strict_mono:
+        checks(advances == {cell}, "NFM encoded glyph advances must all be one cell")
+    else:
+        checks(advances <= {0, cell, 2 * cell}, "unexpected NF encoded glyph advance")
+
+
+def nerd_variant_from_filename(filename):
+    name = Path(filename).name
+    if "NerdFontMono-" in name:
+        return "NFM"
+    if "NerdFont-" in name:
+        return "NF"
+    return None
+
+
+def check_font(data, key, plan, nerd, results, nerd_variant=None):
     ev = inspect_font(data)
     s = ev["semantic"]
     results.fonts[key] = ev
     checks = lambda condition, message: results.check(condition, f"{key}: {message}")
+    variant_contract = CONTRACT["nerd_variants"].get(nerd_variant) if nerd else None
+    if nerd:
+        checks(variant_contract is not None, f"unknown Nerd Font variant {nerd_variant!r}")
+        if variant_contract is None:
+            nerd_variant = "NFM"
+            variant_contract = CONTRACT["nerd_variants"][nerd_variant]
+    strict_mono = bool(variant_contract and variant_contract["strict_mono"])
     checks(set(CONTRACT["required_tables"]) <= set(s["table_semantic_sha256"]), "missing required tables")
     names = s["names"]
     for i in [1, 2, 4, 5, 6] + ([] if nerd else [16, 17]):
         checks(bool(names[str(i)]), f"missing name ID {i}")
     checks(bool(names["13"] or names["14"]), "missing embedded license evidence")
     checks(" " not in (names["6"] or ""), "PostScript name contains spaces")
-    family = plan + " Nerd Font Mono" if nerd else CONTRACT["plans"][plan]["family"]
+    family = plan + variant_contract["family_suffix"] if nerd else CONTRACT["plans"][plan]["family"]
     if names["16"] or not nerd:
         checks(names["16"] == family, f"unexpected typographic family {names['16']!r}; expected {family!r}")
     checks(bool(names["16"]) == bool(names["17"]), "incomplete typographic name pair")
@@ -130,18 +200,29 @@ def check_font(data, key, plan, nerd, results):
         cm = font.getBestCmap()
         glyph_order = font.getGlyphOrder()
         # ASCII text must occupy one cell. Combining marks and intended wide symbols
-        # are checked separately; plain Term is deliberately not fontconfig-mono.
+        # are checked separately; Term may preserve valid two-cell Unicode glyphs.
         checks(all(c in cm and font["hmtx"][cm[c]][0] == cell for c in range(32, 127)), "ordinary ASCII cell advances changed")
-        mark_expected = cell if nerd else 0
+        mark_expected = cell if strict_mono else 0
         checks(0x301 in cm and font["hmtx"][cm[0x301]][0] == mark_expected, "combining acute raw advance changed")
         checks(0x200B in cm and font["hmtx"][cm[0x200B]][0] == mark_expected, "zero-width-space raw advance profile changed")
         marks = [font["hmtx"][g][0] for c, g in cm.items() if unicodedata.category(chr(c)) in {"Mn", "Me"}]
         checks(all(advance == mark_expected for advance in marks), "nonspacing mark raw advance profile changed")
         ev["nonspacing_mark_advances"] = {str(advance): marks.count(advance) for advance in set(marks)}
-        allowed = {0, cell} if nerd else {0, cell, 2 * cell}
-        checks(all(font["hmtx"][g][0] in allowed for g in cm.values()), "unexpected encoded glyph advance")
-        if not nerd and plan == "IoskeleyMonoTerm":
-            checks(0x27F6 in cm and font["hmtx"][cm[0x27F6]][0] == 2 * cell, "intended long-arrow coverage/width changed")
+        advances = {font["hmtx"][g][0] for g in cm.values()}
+        # NF keeps valid source zero- and two-cell advances; NFM remains strict.
+        if nerd:
+            check_nerd_advance_profile(advances, cell, strict_mono, checks)
+        else:
+            checks(advances <= {0, cell, 2 * cell}, "unexpected encoded glyph advance")
+        if plan == "IoskeleyMonoTerm":
+            arrow_width = cell if strict_mono else 2 * cell
+            checks(0x27F6 in cm and font["hmtx"][cm[0x27F6]][0] == arrow_width,
+                   "Term long-arrow width changed for its NF/NFM contract")
+            if nerd_variant == "NF":
+                arrow = s["samples"].get("U+27F6")
+                checks(bool(arrow and arrow["bounds"] and arrow["bounds"][0] >= 0
+                            and arrow["bounds"][2] <= 2 * cell),
+                       "Term NF long arrow no longer fits its two-cell advance")
         if CONTRACT["plans"][plan]["glyph_names"]:
             checks(s["post_format"] == 2.0, "terminal ligature glyph names were lost")
         for cp in [0x2014, 0x2026, 0x2192, 0x2500]:
@@ -156,9 +237,7 @@ def check_font(data, key, plan, nerd, results):
             checks(all(cp in cm for cp in range(32, 127)), "web ASCII coverage incomplete")
             checks(json_digest(sorted(cm)) == CONTRACT.get("web_effective_coverage_sha256"), "effective web repertoire changed")
         if nerd:
-            probes = {f"U+{cp:04X}": s["samples"].get(f"U+{cp:04X}") for cp in CONTRACT["nerd_probes"]}
-            checks(all(probes.values()), "missing Nerd geometry regression probe")
-            checks(all(v and v["advance"] == cell for v in probes.values()), "Nerd icon is not single-cell")
+            check_nerd_geometry(s["samples"], s["upm"], cell, variant_contract["geometry"], checks)
         ev["coverage_sha256"] = json_digest(sorted(cm))
         ev["encoded_advances_sha256"] = json_digest([(c, font["hmtx"][g][0]) for c, g in sorted(cm.items())])
     shapes = shaping(data)
@@ -187,7 +266,7 @@ def expected_members(spec):
     members = set()
     plan, kind = spec["plan"], spec["kind"]
     if kind == "nerd":
-        return None  # Patcher filenames are checked through the complete metadata matrix.
+        return None  # Upstream patcher naming is validated by the variant/style matrix.
     for width in CONTRACT["widths"]:
         for weight in CONTRACT["weights"]:
             for slope in CONTRACT["slopes"]:
@@ -201,14 +280,80 @@ def expected_members(spec):
     return members
 
 
-def validate_run(work, report):
+def check_nfm_fontconfig(fonts, archive_name, expected_nfm_count, results):
+    if not shutil.which("fc-list") or not shutil.which("fc-cache"):
+        message = f"{archive_name}: fc-list/fc-cache unavailable; NFM :mono listing was not checked"
+        if sys.platform.startswith("linux"):
+            results.check(False, message)
+        else:
+            results.warn(message)
+        return
+
+    try:
+        with tempfile.TemporaryDirectory(prefix="ioskeley-nfm-fontconfig-") as folder:
+            root = Path(folder)
+            font_dir, cache_dir = root / "fonts", root / "cache"
+            font_dir.mkdir()
+            cache_dir.mkdir()
+            expected = set()
+            nf_probe = None
+            for variant, filename, data in fonts:
+                include_nf_probe = (variant == "NF" and "/Normal/" in "/" + filename
+                                    and Path(filename).name.endswith("NerdFont-Regular.ttf"))
+                if variant != "NFM" and not include_nf_probe:
+                    continue
+                target = font_dir / Path(filename).name
+                results.check(not target.exists(), f"{archive_name}: duplicate Fontconfig test filename {target.name}")
+                target.write_bytes(data)
+                if variant == "NFM":
+                    expected.add(str(target.resolve()))
+                else:
+                    nf_probe = str(target.resolve())
+            config = root / "fonts.conf"
+            config.write_text(
+                '<?xml version="1.0"?>\n'
+                '<!DOCTYPE fontconfig SYSTEM "urn:fontconfig:fonts.dtd">\n'
+                '<fontconfig>\n'
+                f'  <dir>{escape(str(font_dir))}</dir>\n'
+                f'  <cachedir>{escape(str(cache_dir))}</cachedir>\n'
+                '</fontconfig>\n'
+            )
+            env = {**os.environ, "FONTCONFIG_FILE": str(config), "FONTCONFIG_PATH": str(root)}
+            subprocess.run(["fc-cache", "-f"], env=env, check=True,
+                           stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+            listed = subprocess.check_output(
+                ["fc-list", ":mono", "--format", "%{file}\\n"], env=env,
+                stderr=subprocess.STDOUT, text=True
+            )
+            mono_files = {str(Path(line).resolve()) for line in listed.splitlines() if line}
+            missing = sorted(expected - mono_files)
+            results.check(nf_probe is not None, f"{archive_name}: NF coexistence probe is missing")
+            results.check(len(expected) == expected_nfm_count,
+                          f"{archive_name}: expected {expected_nfm_count} NFM files for Fontconfig")
+            results.check(not missing,
+                          f"{archive_name}: NFM files missing from fc-list :mono ({len(missing)})")
+            results.archives[archive_name]["fontconfig_mono"] = {
+                "expected_nfm_files": len(expected),
+                "nfm_files_listed": len(expected & mono_files),
+                "nf_geometry_requires_mono": False,
+                "nf_probe_file": nf_probe,
+                "nf_probe_in_mono_list": nf_probe in mono_files if nf_probe else None,
+            }
+    except Exception as exc:
+        results.check(False, f"{archive_name}: Fontconfig NFM check failed: {type(exc).__name__}: {exc}")
+
+
+def validate_run(work, report, package_names=None):
     results = Results()
+    selected_names = tuple(package_names or CONTRACT["packages"])
+    selected = set(selected_names)
     found = {p.name for p in work.glob("IoskeleyMono*.zip")}
-    results.check(found == set(CONTRACT["packages"]), f"archive set mismatch: {sorted(found)}")
+    results.check(found == selected, f"archive set mismatch: expected {sorted(selected)}, found {sorted(found)}")
     coverage = {}
     signatures = {}
     ps_names = {}
-    for name, spec in CONTRACT["packages"].items():
+    for name in selected_names:
+        spec = CONTRACT["packages"][name]
         path = work / name
         if not path.exists():
             continue
@@ -230,14 +375,21 @@ def validate_run(work, report):
                                           "font_count": len(fontfiles), "members": {i.filename: digest(archive.read(i)) for i in files}, "standalone_notices": notices}
                 seen = set()
                 package_ps = {}
+                nerd_font_data = []
                 for info in fontfiles:
                     key = name + "/" + info.filename
                     try:
                         data = archive.read(info)
-                        style = check_font(data, key, spec["plan"], spec["kind"] == "nerd", results)
+                        variant = nerd_variant_from_filename(info.filename) if spec["kind"] == "nerd" else None
+                        if spec["kind"] == "nerd":
+                            results.check(variant in spec["variants"], f"{key}: unknown or missing NF/NFM filename marker")
+                            nerd_font_data.append((variant, info.filename, data))
+                        style = check_font(data, key, spec["plan"], spec["kind"] == "nerd", results,
+                                           variant)
                         width, weight, italic = style
                         hint = "Unhinted" if "/Unhinted/" in info.filename else "Hinted"
-                        slot = (hint, *style) if spec["kind"] == "desktop" else style
+                        slot = ((hint, *style) if spec["kind"] == "desktop"
+                                else (variant, *style) if spec["kind"] == "nerd" else style)
                         results.check(slot not in seen, f"{key}: duplicate style slot {slot}")
                         seen.add(slot)
                         if spec["kind"] in {"desktop", "nerd"}:
@@ -251,30 +403,44 @@ def validate_run(work, report):
                                 scan_path.write_bytes(data)
                                 spacing = subprocess.check_output(["fc-scan", "--format", "%{spacing}", str(scan_path)], text=True).strip()
                             ev["fontconfig_spacing"] = spacing
-                            if spec["kind"] == "nerd":
-                                results.check(spacing == "100", f"{key}: FontConfig no longer recognizes Nerd Mono as mono ({spacing!r})")
+                            if (spec["kind"] == "nerd"
+                                    and CONTRACT["nerd_variants"][variant]["strict_mono"]):
+                                results.check(spacing == "100", f"{key}: NFM must have Fontconfig spacing 100, found {spacing!r}")
                         ps = ev["semantic"]["names"]["6"]
                         results.check(ps not in package_ps or package_ps[ps] == style, f"{key}: PostScript collision")
                         package_ps[ps] = style
-                        owner = (spec["plan"].replace("IoskeleyMonoWeb", "IoskeleyMono"), spec["kind"] == "nerd", style)
+                        owner = (spec["plan"].replace("IoskeleyMonoWeb", "IoskeleyMono"), variant, style)
                         results.check(ps not in ps_names or ps_names[ps] == owner, f"{key}: cross-package naming collision")
                         ps_names[ps] = owner
-                        coverage[(name, style)] = ev["coverage_sha256"]
-                        signatures[(name, style, hint)] = ev
+                        coverage[(name, variant, style)] = ev["coverage_sha256"]
+                        signatures[(name, variant, style, hint)] = ev
                     except Exception as exc:
                         results.errors.append(f"{key}: {type(exc).__name__}: {exc}")
                 results.check(len(seen) == spec["count"], f"{name}: incomplete style matrix")
+                if spec["kind"] == "nerd":
+                    variant_count = len(spec["variants"])
+                    results.check(variant_count > 0 and spec["count"] % variant_count == 0,
+                                  f"{name}: Nerd face count must divide evenly across variants")
+                    expected_nfm_count = spec["count"] // variant_count if variant_count else 0
+                    check_nfm_fontconfig(nerd_font_data, name, expected_nfm_count, results)
         except Exception as exc:
             results.errors.append(f"{name}: {type(exc).__name__}: {exc}")
-    for style in [(w, v, i) for w in CONTRACT["widths"] for v in CONTRACT["weights"].values() for i in [False, True]]:
-        results.check(coverage.get(("IoskeleyMono.zip", style)) == coverage.get(("IoskeleyMono-Web-Full.zip", style)) is not None, f"{style}: full web coverage differs from desktop")
-        for base, patched in [("IoskeleyMono.zip", "IoskeleyMono-NerdFont.zip"), ("IoskeleyMono-Term.zip", "IoskeleyMono-Term-NerdFont.zip"), ("IoskeleyMono-NL.zip", "IoskeleyMono-NL-NerdFont.zip")]:
-            a = signatures.get((base, style, "Hinted"))
-            b = signatures.get((patched, style, "Hinted"))
-            if a and b:
-                results.check(a["programming_substitutions"] == b["programming_substitutions"], f"{style}: patching changed substitutions for {base}")
-                if "named_programming_shaping" in a:
-                    results.check(a["named_programming_shaping"] == b.get("named_programming_shaping"), f"{style}: patching changed named programming glyphs/positions for {base}")
+    styles = [(w, v, i) for w in CONTRACT["widths"] for v in CONTRACT["weights"].values() for i in [False, True]]
+    if {"IoskeleyMono.zip", "IoskeleyMono-Web-Full.zip"} <= selected:
+        for style in styles:
+            results.check(coverage.get(("IoskeleyMono.zip", None, style)) == coverage.get(("IoskeleyMono-Web-Full.zip", None, style)) is not None, f"{style}: full web coverage differs from desktop")
+    pairs = [("IoskeleyMono.zip", "IoskeleyMono-NerdFont.zip"), ("IoskeleyMono-Term.zip", "IoskeleyMono-Term-NerdFont.zip"), ("IoskeleyMono-NL.zip", "IoskeleyMono-NL-NerdFont.zip")]
+    for base, patched in pairs:
+        if base not in selected or patched not in selected:
+            continue
+        for style in styles:
+            a = signatures.get((base, None, style, "Hinted"))
+            for variant in CONTRACT["nerd_variants"]:
+                b = signatures.get((patched, variant, style, "Hinted"))
+                if a and b:
+                    results.check(a["programming_substitutions"] == b["programming_substitutions"], f"{style}/{variant}: patching changed substitutions for {base}")
+                    if "named_programming_shaping" in a:
+                        results.check(a["named_programming_shaping"] == b.get("named_programming_shaping"), f"{style}/{variant}: patching changed named programming glyphs/positions for {base}")
     return results.write(report)
 
 

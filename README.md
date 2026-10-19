@@ -62,6 +62,11 @@ Not sure which file to choose? Start with **[`IoskeleyMono.zip`](https://github.
 | **[`IoskeleyMono-Web.zip`](https://github.com/ahatem/IoskeleyMono/releases/latest/download/IoskeleyMono-Web.zip)** | Websites using Latin text, punctuation, arrows, math, or box drawing | Yes | No |
 | **[`IoskeleyMono-Web-Full.zip`](https://github.com/ahatem/IoskeleyMono/releases/latest/download/IoskeleyMono-Web-Full.zip)** | Websites that also need the complete desktop glyph set | Yes | No |
 
+Each Nerd Font archive contains **Nerd Font (NF)** for larger icons when the
+application supports ordinary Nerd Font geometry, and **Nerd Font Mono (NFM)**
+for strict single-cell advances when a terminal or font picker requires
+Fontconfig `:mono` classification. NF icons may overhang their advance cell.
+
 > [!TIP]
 > **Using a terminal?** Choose a `Term` package. Its spacing keeps arrows and box-drawing glyphs inside their cells.
 >
@@ -185,11 +190,14 @@ Use the family name that matches the package you installed.
 | Package | Font family |
 |---|---|
 | Standard | `Ioskeley Mono` |
-| Standard Nerd Font | `IoskeleyMono Nerd Font Mono` |
+| Standard Nerd Font (NF) | `IoskeleyMono Nerd Font` |
+| Standard Nerd Font Mono (NFM) | `IoskeleyMono Nerd Font Mono` |
 | Term | `Ioskeley Mono Term` |
-| Term Nerd Font | `IoskeleyMonoTerm Nerd Font Mono` |
+| Term Nerd Font (NF) | `IoskeleyMonoTerm Nerd Font` |
+| Term Nerd Font Mono (NFM) | `IoskeleyMonoTerm Nerd Font Mono` |
 | No Ligatures | `Ioskeley Mono NL` |
-| No Ligatures Nerd Font | `IoskeleyMonoNL Nerd Font Mono` |
+| No Ligatures Nerd Font (NF) | `IoskeleyMonoNL Nerd Font` |
+| No Ligatures Nerd Font Mono (NFM) | `IoskeleyMonoNL Nerd Font Mono` |
 
 ### VS Code / Cursor
 

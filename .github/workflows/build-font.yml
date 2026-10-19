@@ -44,7 +44,7 @@ jobs:
             return 1
           }
           retry sudo apt-get update
-          retry sudo apt-get install -y ttfautohint fontforge
+          retry sudo apt-get install -y ttfautohint fontforge fontconfig
       - name: Install pinned validation tools
         run: python -m pip install -r tools/requirements.txt
       - name: Check current site web assets
@@ -111,8 +111,9 @@ jobs:
             Each desktop zip has `Hinted/` and `Unhinted/` per width — Hinted for
             standard displays, Unhinted for Retina and HiDPI.
 
-            Nerd Font builds are now patched single-width, so they install as
-            `Ioskeley Mono Nerd Font Mono`.
+            Each Nerd Font archive includes ordinary Nerd Font (NF) and strict
+            Nerd Font Mono (NFM) families. Choose NF for larger icons or NFM
+            when strict single-cell Fontconfig classification is required.
 
             Not sure which to pick? [See the README](https://github.com/ahatem/IoskeleyMono#downloads--variants).
           fail_on_unmatched_files: true

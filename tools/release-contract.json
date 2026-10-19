@@ -84,17 +84,20 @@
     "IoskeleyMono-NerdFont.zip": {
       "plan": "IoskeleyMono",
       "kind": "nerd",
-      "count": 40
+      "variants": ["NF", "NFM"],
+      "count": 80
     },
     "IoskeleyMono-Term-NerdFont.zip": {
       "plan": "IoskeleyMonoTerm",
       "kind": "nerd",
-      "count": 40
+      "variants": ["NF", "NFM"],
+      "count": 80
     },
     "IoskeleyMono-NL-NerdFont.zip": {
       "plan": "IoskeleyMonoNL",
       "kind": "nerd",
-      "count": 40
+      "variants": ["NF", "NFM"],
+      "count": 80
     },
     "IoskeleyMono-Web.zip": {
       "plan": "IoskeleyMonoWeb",
@@ -167,6 +170,33 @@
     61715,
     10092
   ],
+  "nerd_variants": {
+    "NF": {
+      "family_suffix": " Nerd Font",
+      "geometry": "normal",
+      "strict_mono": false
+    },
+    "NFM": {
+      "family_suffix": " Nerd Font Mono",
+      "geometry": "single",
+      "strict_mono": true
+    }
+  },
+  "nerd_geometry": {
+    "normal": {
+      "maximum_ink_width_cells": 2.1,
+      "maximum_overhang_cells": 1.1,
+      "minimum_ink_em": {
+        "986130": {"width": 0.72, "height": 0.72},
+        "59153": {"height": 0.76},
+        "61715": {"height": 0.68}
+      }
+    },
+    "single": {
+      "maximum_ink_width_cells": 1.1,
+      "maximum_overhang_cells": 0.1
+    }
+  },
   "required_tables": [
     "head",
     "hhea",

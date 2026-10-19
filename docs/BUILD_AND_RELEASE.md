@@ -4,9 +4,11 @@
 configuration. `tools/build.py` is the canonical local build and packaging
 implementation used by both maintainers and GitHub Actions. It invokes
 Iosevka's upstream `npm install` and `npm run build` operations; it does not
-generate fonts itself. Nerd Font patches use the locked patcher with
-`--complete --careful --mono`, hinted TTF inputs, and the documented
-`post.isFixedPitch` repair.
+generate fonts itself. Each Nerd archive contains two variants patched from
+the same hinted TTF inputs: NF uses `--complete --careful`; NFM adds `--mono`.
+Both receive the `post.isFixedPitch` repair. NF has larger icons and may
+overhang a cell; NFM preserves strict one-cell advances and Fontconfig `:mono`
+recognition.
 
 `tools/release-contract.json` records current product and packaging
 expectations: package membership, style matrix, metrics, version policy, and
@@ -16,10 +18,10 @@ web repertoire limits. `tools/validate_fonts.py` is the validation mechanism.
 ## Prerequisites
 
 Use Linux, including WSL, for the complete pipeline. Install Git, curl, Python
-3.14 with venv support, Node 20.20.0, ttfautohint 1.8.4, and FontForge
-20230101. The orchestrator checks these versions and the Python dependency pins
-in `tools/requirements.txt`. Exact source, patcher, Node, npm, and validation
-tool versions live in `tools/toolchain.lock.json`.
+3.14 with venv support, Node 20.20.0, ttfautohint 1.8.4, FontForge 20230101,
+and Fontconfig. The orchestrator checks these versions and the Python dependency
+pins in `tools/requirements.txt`. Exact source, patcher, Node, npm, and
+validation tool versions live in `tools/toolchain.lock.json`.
 
 CI uses `ubuntu-24.04` because the system tool versions are checked exactly.
 Native Windows validation is possible with compatible Python/Brotli wheels; the
@@ -89,11 +91,13 @@ directory unless `--report` is supplied; `site` defaults to a temporary file.
 - Fonts parse; required tables, embedded license notice, and names
   1/2/4/5/6/16/17 are checked. Family, weight, width, italic/bold linkage, and
   PostScript uniqueness are checked across the installation matrix.
-- Fixed-pitch metadata, PANOSE proportion, design metrics, ordinary ASCII cell
-  advances, nonspacing-mark advances, and encoded advance limits are checked.
-- Nerd samples must remain single-cell. When `fc-scan` is installed, Nerd Mono
-  must also report FontConfig spacing 100. Plain Term is not forced through a
-  strict `:mono` filter.
+- Fixed-pitch metadata, PANOSE proportion, design metrics, ASCII advances,
+  nonspacing-mark advances, and encoded advance limits are checked.
+- NFM must use the Nerd Font Mono names, have one-cell encoded advances, report
+  Fontconfig spacing 100, and appear in an isolated `fc-list :mono` query. NF
+  uses ordinary Nerd Font names, keeps source zero-/two-cell advances, and does
+  not promise `:mono`. Its issue probes enforce larger injected-icon sizes,
+  bounded overhang, and vertical metrics; Term NF preserves its two-cell arrow.
 - Standard and Term must shape programming ligatures. NL must not. Combining
   and format-control sequences are shaped separately and checked for cell
   width. Standard and Term retain `post` format 2 glyph names for terminal
@@ -112,14 +116,16 @@ directory unless `--report` is supplied; `site` defaults to a temporary file.
 
 - Name ID 5 and the font revision still identify upstream Iosevka. Validation
   emits one non-blocking warning for this condition.
-- Nerd icon geometry remains issue #29; `--mono` remains the supported build.
-- The existing patcher gives nonspacing marks and the sampled zero-width space
-  a cell advance in `hmtx`. HarfBuzz combining and format-control behavior is
+- Both NF and NFM are shipped for Standard, Term, and NL. NF uses ordinary
+  Nerd Font geometry; NFM keeps the existing `--mono` behavior, including its
+  strict advances and one-cell Term long-arrow advance.
+- NF preserves source combining/format-control advances; NFM uses `--mono`'s
+  strict cell advances. HarfBuzz combining and format-control behavior is
   checked separately.
 - Archives do not add standalone license/notice files; embedded notices are
   checked.
-- Plain Term keeps intended wide characters, so it is not expected to satisfy a
-  strict FontConfig `:mono` query. Nerd Mono has its own single-cell contract.
+- Plain Term and Term NF keep intended wide characters, so Fontconfig may not
+  satisfy a strict `:mono` query. Term NFM is the strict-mono terminal variant.
 
 ## Testing the validators
 
@@ -129,17 +135,19 @@ $PYTHON -m unittest discover -s tests -v
 
 The tests use the checked-in web fonts and controlled in-memory mutations. They
 cover fixed pitch, ASCII advances, subset leakage, glyph names, NL ligature
-policy, package filename edge cases, bold linkage, empty comparison reports,
-corrupt archives, the absence of a publishing CLI operation, intentional
+policy, NF/NFM flags, naming and geometry, strict NFM Fontconfig membership,
+package filename edge cases, bold linkage, empty comparison reports, corrupt
+archives, the absence of a publishing CLI operation, and intentional
 current-design changes. Tests do not alter font assets.
 
 ## Packages
 
 The contract enumerates eight archive names. Standard, Term, and NL each contain
-80 TTFs under `Normal|SemiCondensed/Hinted|Unhinted`. Their Nerd derivatives
-contain 40 patched TTFs under the two width directories. Each Web archive
-contains 40 WOFF2 files under `WOFF2` with identical public filenames. Web-Full
-comes from the base plan, not a separate generator plan.
+80 TTFs under `Normal|SemiCondensed/Hinted|Unhinted`. Each Nerd archive contains
+80 patched TTFs (40 NF and 40 NFM) under the two width directories; their
+distinct family prefixes preserve unique filenames. Each Web archive contains
+40 WOFF2 files under `WOFF2` with identical public filenames. Web-Full comes
+from the base plan, not a separate generator plan.
 
 Packaging preserves font contents and paths. ZIP entries are sorted and
 directory entries are omitted, so container bytes need not match another ZIP
