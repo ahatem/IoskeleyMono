@@ -1,8 +1,6 @@
-name: Build and Release Font
+name: Build and Validate RC
 
 on:
-  push:
-    tags: ["v*.*.*"]
   # Manual runs preserve validated RC artifacts without release creation.
   workflow_dispatch:
 
@@ -64,68 +62,14 @@ jobs:
             .ci-build/provenance.json
           if-no-files-found: error
           retention-days: 7
-      - name: Transfer validated archives to publishing job
-        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+      - name: Preserve failed manual RC evidence
+        if: failure() && github.event_name == 'workflow_dispatch'
         uses: actions/upload-artifact@v4
         with:
-          name: release-archives
-          path: .ci-build/IoskeleyMono*.zip
-          if-no-files-found: error
-
-  # Publishing is separate from build.py and cannot run on workflow_dispatch.
-  publish:
-    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
-    needs: build
-    runs-on: ubuntu-24.04
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/download-artifact@v4
-        with:
-          name: release-archives
-          path: release-archives
-      - name: Create tagged release
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: ${{ github.ref_name }}
-          name: Ioskeley Mono ${{ github.ref_name }}
-          body: |
-            ## Ioskeley Mono ${{ github.ref_name }}
-
-            <!-- What's new in this release -->
-
-            ---
-
-            ### Downloads
-
-            **Using a terminal?** Take one of the `Term` builds. They redraw arrows
-            and box-drawing to sit inside the cell, and they are the ones detected
-            as monospace by fontconfig and Font Book.
-
-            | I want it in | Download |
-            |---|---|
-            | An editor — VS Code, JetBrains, Zed | `IoskeleyMono.zip` |
-            | An editor, with Nerd Font icons | `IoskeleyMono-NerdFont.zip` |
-            | A terminal — kitty, Ghostty, WezTerm | `IoskeleyMono-Term.zip` |
-            | A terminal, with Nerd Font icons | `IoskeleyMono-Term-NerdFont.zip` |
-            | An app that can't turn ligatures off | `IoskeleyMono-NL.zip` |
-            | Same, with Nerd Font icons | `IoskeleyMono-NL-NerdFont.zip` |
-            | A website — small subset | `IoskeleyMono-Web.zip` |
-            | A website — full coverage | `IoskeleyMono-Web-Full.zip` |
-
-            `IoskeleyMono-Web.zip` is trimmed to Latin, punctuation, arrows,
-            math operators and box drawing (≈94 KB per face) — the right choice
-            for page loads. `IoskeleyMono-Web-Full.zip` carries the complete
-            character set (Greek, Cyrillic, long arrows, rare math) at the cost
-            of size, for sites that need those glyphs.
-
-            Each desktop zip has `Hinted/` and `Unhinted/` per width — Hinted for
-            standard displays, Unhinted for Retina and HiDPI.
-
-            Each Nerd Font archive includes ordinary Nerd Font (NF) and strict
-            Nerd Font Mono (NFM) families. Choose NF for larger icons or NFM
-            when strict single-cell Fontconfig classification is required.
-
-            Not sure which to pick? [See the README](https://github.com/ahatem/IoskeleyMono#choose-your-ioskeley).
-          fail_on_unmatched_files: true
-          files: release-archives/IoskeleyMono*.zip
+          name: ioskeley-failed-${{ github.sha }}
+          path: |
+            .ci-build/IoskeleyMono*.zip
+            .ci-build/validation.json
+            .ci-build/provenance.json
+          if-no-files-found: warn
+          retention-days: 7

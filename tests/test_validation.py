@@ -392,9 +392,8 @@ class RegressionGuards(unittest.TestCase):
 
     def test_manual_workflow_preserves_rc_artifacts_without_publishing(self):
         workflow = yaml.load((ROOT / ".github/workflows/build-font.yml").read_text(), Loader=yaml.BaseLoader)
-        self.assertIn("workflow_dispatch", workflow["on"])
-        gate = "github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')"
-        self.assertEqual(gate, workflow["jobs"]["publish"]["if"])
+        self.assertEqual({"workflow_dispatch"}, set(workflow["on"]))
+        self.assertEqual({"build"}, set(workflow["jobs"]))
         self.assertEqual("read", workflow["permissions"]["contents"])
         steps = workflow["jobs"]["build"]["steps"]
         uploads = [step for step in steps if "upload" in step.get("uses", "")]
@@ -416,8 +415,11 @@ class RegressionGuards(unittest.TestCase):
         for step in steps:
             action = step.get("uses", "")
             if "upload" in action and step is not rc:
-                self.assertEqual(gate, step.get("if"))
-                self.assertEqual("release-archives", step["with"]["name"])
+                self.assertEqual("failure() && github.event_name == 'workflow_dispatch'", step.get("if"))
+                self.assertEqual("ioskeley-failed-${{ github.sha }}", step["with"]["name"])
+                self.assertEqual("warn", step["with"]["if-no-files-found"])
+                self.assertEqual(rc["with"]["path"], step["with"]["path"])
+                self.assertEqual("7", step["with"]["retention-days"])
             self.assertNotIn("action-gh-release", action)
 
 

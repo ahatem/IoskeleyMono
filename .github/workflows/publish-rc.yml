@@ -1,0 +1,56 @@
+name: Publish Validated RC
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: Successful Build and Validate RC run ID
+        required: true
+        type: string
+      tag:
+        description: Release tag matching the source contract (e.g. v2.2.0)
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: publish-validated-rc
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    permissions:
+      actions: read
+      contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      SOURCE_RUN: ${{ inputs.run_id }}
+      RELEASE_TAG: ${{ inputs.tag }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Verify source run and artifact identity
+        id: source
+        run: python3 tools/promote_rc.py inspect --repo "$GITHUB_REPOSITORY" --run-id "$SOURCE_RUN"
+      - name: Check out exact RC contract and release notes
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.source.outputs.sha }}
+          path: rc-source
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          artifact-ids: ${{ steps.source.outputs.artifact_id }}
+          run-id: ${{ inputs.run_id }}
+          github-token: ${{ github.token }}
+          path: rc-deliverables
+          merge-multiple: true
+      - name: Verify bundle and publish exact validated ZIPs
+        run: >-
+          python3 tools/promote_rc.py publish --repo "$GITHUB_REPOSITORY"
+          --run-id "$SOURCE_RUN" --tag "$RELEASE_TAG"
+          --directory rc-deliverables --source-root rc-source

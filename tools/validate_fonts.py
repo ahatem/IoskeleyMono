@@ -59,6 +59,8 @@ def expected_typographic_subfamily(width, weight, italic, nerd):
         400: "", 500: "Medium", 600: "Semibold", 700: "Bold",
         800: "Extrabold", 900: "Heavy",
     }
+    if nerd:
+        labels.update({200: "ExtraLight", 600: "SemiBold", 800: "ExtraBold"})
     pieces = []
     if nerd and width != "Normal":
         pieces.append("SemiCondensed")

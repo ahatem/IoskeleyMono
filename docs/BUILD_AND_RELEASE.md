@@ -197,10 +197,22 @@ than silently accepting them.
 operation. Local commands produce local files only. Dependency downloads do not
 upload fonts.
 
-GitHub Actions calls the same `all` operation. Manual dispatch runs checks and
-builds without uploading an artifact or creating a draft release. A separate
-publishing job requires a pushed version tag and a successful build/validation
-job. Only that tag path transfers archives and invokes release creation.
+`build-font.yml` is the manual-only RC builder. It runs the same `all`
+operation, then uploads `ioskeley-rc-<source SHA>` with the eight ZIPs,
+`validation.json`, and `provenance.json`. Failed runs preserve whatever exists
+under `ioskeley-failed-<source SHA>` instead. Both expire after seven days.
+Branch and tag pushes do not trigger a font build.
+
+After inspecting a successful RC, manually dispatch `publish-rc.yml` with
+`run_id` set to that successful builder run and `tag` set to `v2.2.0` (or the
+source contract's product version). Promotion checks the source run, artifact
+identity, PASS verdict, empty errors, provenance SHA, exact package inventory,
+font counts and each ZIP's SHA-256 against the report. It checks out the source
+SHA's release contract and notes, creates a new tag at that exact SHA, and
+publishes those downloaded ZIP bytes without compiling or patching again.
+Existing tags are refused. Only this separate workflow has release write access.
+The source artifact must still be available; failed runs cannot be promoted.
+Human-facing release notes live in `docs/RELEASE_NOTES.md`.
 
 Keep generated fonts, archives, build directories, logs, and temporary
 experiments out of Git.
