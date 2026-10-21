@@ -7,8 +7,8 @@
 ### Downloads
 
 **Using a terminal?** Take one of the `Term` builds. They redraw arrows
-and box-drawing to sit inside the cell, and they are the ones detected
-as monospace by fontconfig and Font Book.
+and box-drawing to sit cleanly inside terminal cells. For Nerd Fonts,
+choose NFM when strict single-cell Fontconfig classification is required.
 
 | I want it in | Download |
 |---|---|
