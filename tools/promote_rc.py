@@ -68,7 +68,7 @@ def main():
     parser.add_argument("--tag")
     parser.add_argument("--directory", type=Path)
     parser.add_argument("--source-root", type=Path)
-    parser.add_argument("--notes-root", type=Path)
+    parser.add_argument("--notes-root", type=Path, default=Path("."))
     args = parser.parse_args()
     run = api(args.repo, f"actions/runs/{args.run_id}")
     artifacts = api(args.repo, f"actions/runs/{args.run_id}/artifacts?per_page=100")
@@ -77,8 +77,7 @@ def main():
         with open(os.environ["GITHUB_OUTPUT"], "a") as output:
             output.write(f"sha={sha}\nartifact_id={artifact_id}\n")
         return
-    require(args.directory and args.source_root and args.notes_root and args.tag,
-            "Missing promotion arguments")
+    require(args.directory and args.source_root and args.tag, "Missing promotion arguments")
     require(subprocess.check_output(["git", "-C", str(args.source_root), "rev-parse", "HEAD"],
                                     text=True).strip() == sha, "Checkout differs from RC SHA")
     names = verify_bundle(args.directory, args.source_root, sha, args.tag)
