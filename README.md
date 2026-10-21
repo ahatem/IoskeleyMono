@@ -90,10 +90,7 @@ NL keeps ordinary character shaping; it only drops the programming ligatures.
 
 ### Nerd Font or Nerd Font Mono?
 
-> **From 2.2.0.** The published v2.1.0 Nerd Font archives do not contain this
-> split. If you download today, skip this section until 2.2.0 is released.
-
-From 2.2.0, every Nerd Font archive contains both patched variants:
+Starting with 2.2.0, every Nerd Font archive contains both patched variants:
 
 - **Nerd Font (NF):** ordinary Nerd Fonts geometry with larger icons. A good
   starting point for most setups that want icons; some icons may extend beyond
@@ -131,11 +128,7 @@ Neither is universally better. Choose the geometry your application expects.
 | Web · smaller WOFF2 subset | [`IoskeleyMono-Web.zip`](https://github.com/ahatem/IoskeleyMono/releases/latest/download/IoskeleyMono-Web.zip) |
 | Web Full · desktop glyph repertoire | [`IoskeleyMono-Web-Full.zip`](https://github.com/ahatem/IoskeleyMono/releases/latest/download/IoskeleyMono-Web-Full.zip) |
 
-> **Release timing.** These links always serve the latest published release,
-> currently **v2.1.0**. Its Nerd Font archives predate the NF / NFM split
-> described above; everything else (families, widths, weights, web packages) is
-> the same. The links will resolve to the 2.2.0 archives once 2.2.0 is
-> published. No unreleased asset URLs are used.
+> These links always serve the latest published release.
 
 <details>
 <summary><strong>Web fonts</strong></summary>
@@ -172,12 +165,13 @@ These community packages may update on a different schedule from GitHub Releases
 | System | Package | Install |
 |---|---|---|
 | macOS | [Homebrew](https://formulae.brew.sh/cask/font-ioskeley-mono) | `brew install --cask font-ioskeley-mono` |
+| macOS | [Homebrew](https://formulae.brew.sh/cask/font-ioskeley-mono-term-nerd-font) (Term Nerd Font) | `brew install --cask font-ioskeley-mono-term-nerd-font` |
 | Nix / NixOS | [nixpkgs](https://github.com/NixOS/nixpkgs/tree/master/pkgs/data/fonts/ioskeley-mono) | `nix profile install nixpkgs#ioskeley-mono.normal` |
 | Arch Linux | [AUR](https://aur.archlinux.org/packages/ttf-ioskeley-mono) | `ttf-ioskeley-mono` |
 | Slackware | [SlackBuilds.org](https://slackbuilds.org/repository/15.0/system/IoskeleyMono/) | `IoskeleyMono` |
 
 Thanks to [@zhimoe](https://github.com/zhimoe),
-Thanks to [@dave-atx](https://github.com/dave-atx),
+[@dave-atx](https://github.com/dave-atx),
 [@ForsakenHarmony](https://github.com/ForsakenHarmony), and
 [@frovere](https://github.com/frovere) for helping bring Ioskeley to Homebrew.
 
