@@ -36,7 +36,7 @@ jobs:
       - name: Verify source run and artifact identity
         id: source
         run: python3 tools/promote_rc.py inspect --repo "$GITHUB_REPOSITORY" --run-id "$SOURCE_RUN"
-      - name: Check out exact RC contract and release notes
+      - name: Check out exact RC contract
         uses: actions/checkout@v4
         with:
           ref: ${{ steps.source.outputs.sha }}
@@ -53,4 +53,4 @@ jobs:
         run: >-
           python3 tools/promote_rc.py publish --repo "$GITHUB_REPOSITORY"
           --run-id "$SOURCE_RUN" --tag "$RELEASE_TAG"
-          --directory rc-deliverables --source-root rc-source
+          --directory rc-deliverables --source-root rc-source --notes-root .
