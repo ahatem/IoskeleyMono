@@ -9,7 +9,7 @@
 
 <p align="center">
   An open programming typeface built on Iosevka.<br>
-  Compact, geometric, and tuned for editors and terminals.
+  Compact and geometric, for editors and terminals.
 </p>
 
 <p align="center">
@@ -33,8 +33,8 @@
 
 Ioskeley Mono is a free, open-source programming typeface: ten weights, two
 widths, upright and italic, in three families for editors, terminals, and apps
-that cannot turn ligatures off. It is built for long days of reading code, with
-technical character and no visual noise.
+that cannot turn ligatures off. I built it for long sessions in editors and
+terminals, where the letters should stay out of the way.
 
 <p align="center">
   <a href="https://ahatem.github.io/IoskeleyMono/#workbench">
@@ -322,12 +322,12 @@ improvements are welcome.
 ## Support
 
 Ioskeley is free, and every style is in the open release; there is no paid
-edition and nothing held back.
+edition.
 
 If it has become part of how you work, you can help keep it maintained through
 [GitHub Sponsors](https://github.com/sponsors/ahatem). Sponsorship goes into the
-quiet work behind each release: testing builds across editors, terminals and
-platforms, keeping the packages, showcase and documentation in order, and
+work behind each release: testing builds across editors, terminals and
+platforms, keeping the packages, site and documentation in order, and
 continuing to refine the forms.
 
 A star, a careful bug report, or a screenshot of your setup helps too.
