@@ -137,9 +137,9 @@ class LiveLabFaces(unittest.TestCase):
 
 
 class NerdTimingNote(unittest.TestCase):
-    def test_v210_is_not_said_to_ship_neither_variant(self):
+    def test_both_nerd_variants_are_stated_to_ship_from_2_2_0(self):
         self.assertNotIn("ship neither variant", HTML)
-        self.assertIn("predates the NF / NFM split", HTML)
+        self.assertIn("Every Nerd Font archive includes both NF and NFM", HTML)
 
 
 if __name__ == "__main__":
